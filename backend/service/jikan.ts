@@ -1,27 +1,21 @@
-import { SERVICE_URI, WEEKDAYS } from '@/common/constants';
-import { AnimeData } from '@/common/interfaces';
+import { WEEKDAYS } from '@/common/constants';
+import { JikanAnimeData, JikanPaginationData } from '@/common/interfaces';
 
-interface SeasonResponse {
-    data: AnimeData[];
-    pagination: {
-        last_visible_page: number;
-        has_next_page: boolean;
-        items: {
-            count: number;
-            total: number;
-            per_page: number;
-        };
-    };
+interface JikanSeasonResponse {
+    data: JikanAnimeData[];
+    pagination: JikanPaginationData;
 }
+
+const JIKAN_URI = 'https://api.jikan.moe/v4';
 
 async function getCurrentSeasonAnime() {
     try {
-        const response = await fetch(SERVICE_URI + '/seasons/now?continuing');
+        const response = await fetch(JIKAN_URI + '/seasons/now?continuing');
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
 
-        const data: SeasonResponse = await response.json();
+        const data: JikanSeasonResponse = await response.json();
         return data;
     } catch (error) {
         console.error(error);
@@ -30,23 +24,23 @@ async function getCurrentSeasonAnime() {
 
 async function getTrendingAnimeData() {
     try {
-        const response = await fetch(SERVICE_URI + '/seasons/now?continuing');
+        const response = await fetch(JIKAN_URI + '/seasons/now?continuing');
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
 
-        const data: SeasonResponse = await response.json();
+        const data: JikanSeasonResponse = await response.json();
         return data;
     } catch (error) {
         console.error(error);
     }
 }
 
-function filterAnimeData(response: SeasonResponse, today: string): SeasonResponse {
+function filterAnimeData(response: JikanSeasonResponse, today: string): JikanSeasonResponse {
     const data = response.data;
     const perPage = 5;
 
-    const filteredAnimeData: AnimeData[] = [];
+    const filteredAnimeData: JikanAnimeData[] = [];
     let itemCount = 0;
     let totalCount = 0;
 

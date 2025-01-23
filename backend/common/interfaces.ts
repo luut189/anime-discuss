@@ -1,4 +1,4 @@
-export interface AnimeData {
+export interface JikanAnimeData {
     mal_id: number;
     url: string;
     images: {
@@ -109,4 +109,14 @@ export interface AnimeData {
         name: string;
         url: string;
     }[];
+}
+
+export interface JikanPaginationData {
+    last_visible_page: number;
+    has_next_page: boolean;
+    items: {
+        count: number;
+        total: number;
+        per_page: number;
+    };
 }

@@ -12,5 +12,6 @@ export const WEEKDAYS = [
     'Saturday',
 ];
 
-export const PORT = process.env.PORT;
-export const SERVICE_URI = process.env.SERVICE_URI;
+export const ENV_VARS = {
+    PORT: process.env.PORT,
+};

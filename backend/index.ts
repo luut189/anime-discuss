@@ -1,10 +1,13 @@
+import { ENV_VARS } from '@/common/constants';
+import animeRoute from '@/routes/anime.route';
+
 import express from 'express';
-import { PORT } from '@/common/constants';
 
 const app = express();
 
 app.use(express.json());
+app.use('/anime', animeRoute);
 
-app.listen(PORT, () => {
-    console.log('Server started at http://localhost:' + PORT);
+app.listen(ENV_VARS.PORT, () => {
+    console.log('Server started at http://localhost:' + ENV_VARS.PORT);
 });
