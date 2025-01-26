@@ -1,5 +1,6 @@
 import { WEEKDAYS } from '@/common/constants';
 import { JikanAnimeData, JikanPaginationData } from '@/common/interfaces';
+import { delay } from '@/common/utils';
 
 interface JikanSeasonResponse {
     data: JikanAnimeData[];
@@ -9,22 +10,36 @@ interface JikanSeasonResponse {
 const JIKAN_URI = 'https://api.jikan.moe/v4';
 
 async function getCurrentSeasonAnime() {
-    try {
-        const response = await fetch(JIKAN_URI + '/seasons/now?continuing');
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
+    let hasNextPage = true;
+    let index = 1;
+    const returnedData: JikanAnimeData[] = [];
+    while (hasNextPage) {
+        try {
+            const response = await fetch(JIKAN_URI + `/seasons/now?page=${index}`);
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
 
-        const data: JikanSeasonResponse = await response.json();
-        return data;
-    } catch (error) {
-        console.error(error);
+            const data: JikanSeasonResponse = await response.json();
+            returnedData.push(...data.data);
+            hasNextPage = data.pagination.has_next_page;
+            index++;
+
+            if (hasNextPage) {
+                await delay(400);
+            }
+        } catch (error) {
+            console.error(error);
+            break;
+        }
     }
+
+    return returnedData;
 }
 
 async function getTrendingAnimeData() {
     try {
-        const response = await fetch(JIKAN_URI + '/seasons/now?continuing');
+        const response = await fetch(JIKAN_URI + '/top/anime');
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
@@ -36,11 +51,11 @@ async function getTrendingAnimeData() {
     }
 }
 
-function filterAnimeData(response: JikanSeasonResponse, today: string): JikanSeasonResponse {
-    const data = response.data;
+function filterAnimeData(data: JikanAnimeData[], today: string): JikanSeasonResponse {
     const perPage = 5;
 
     const filteredAnimeData: JikanAnimeData[] = [];
+    const seenId = new Set<number>();
     let itemCount = 0;
     let totalCount = 0;
 
@@ -49,9 +64,12 @@ function filterAnimeData(response: JikanSeasonResponse, today: string): JikanSea
 
         // since the response is plural, we slice the 's' away
         if (broadcastDay && broadcastDay.slice(0, -1) === today) {
-            filteredAnimeData.push(anime);
-            if (itemCount < perPage) itemCount++;
-            totalCount++;
+            if (!seenId.has(anime.mal_id)) {
+                seenId.add(anime.mal_id);
+                filteredAnimeData.push(anime);
+                if (itemCount < perPage) itemCount++;
+                totalCount++;
+            }
         }
     });
 
