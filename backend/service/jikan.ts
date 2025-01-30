@@ -8,6 +8,7 @@ interface JikanSeasonResponse {
 }
 
 const JIKAN_URI = 'https://api.jikan.moe/v4';
+const REQUEST_DELAY = 1000;
 
 async function getCurrentSeasonAnime() {
     let hasNextPage = true;
@@ -25,9 +26,7 @@ async function getCurrentSeasonAnime() {
             hasNextPage = data.pagination.has_next_page;
             index++;
 
-            if (hasNextPage) {
-                await delay(400);
-            }
+            if (hasNextPage) await delay(REQUEST_DELAY);
         } catch (error) {
             console.error(error);
             break;
