@@ -21,7 +21,8 @@ export async function getTodayAnime(req: Request, res: Response) {
 
 export async function getTrendingAnime(req: Request, res: Response) {
     try {
-        const data = await getTrendingAnimeData();
+        const page = req.query.page as string;
+        const data = await getTrendingAnimeData(page ? page : '1');
         if (data) {
             res.status(200).json({
                 success: true,
