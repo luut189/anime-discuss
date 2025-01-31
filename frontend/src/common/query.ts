@@ -17,3 +17,16 @@ export async function fetchTodayAnimeData() {
         console.error(error);
     }
 }
+
+export async function fetchTrendingAnimeData(page?: number) {
+    try {
+        const response = await fetch(`/api/anime/trending?${page ? 'page=' + page : ''}`);
+        if (!response.ok) {
+            throw new Error();
+        }
+        const data: JikanData = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
