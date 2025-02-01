@@ -9,44 +9,72 @@ interface JikanSeasonResponse {
 
 const JIKAN_URI = 'https://api.jikan.moe/v4';
 const REQUEST_DELAY = 500;
+const MAX_RETRIES = 3;
 
-async function getCurrentSeasonAnime() {
-    let hasNextPage = true;
-    let index = 1;
-    const returnedData: JikanAnimeData[] = [];
-    while (hasNextPage) {
-        try {
-            const response = await fetch(JIKAN_URI + `/seasons/now?page=${index}`);
-            if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
+const cache = new Map<string, { data: JikanSeasonResponse; timestamp: number }>();
+const CACHE_TTL = 300_000; // 5 minutes
+
+async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<JikanSeasonResponse> {
+    try {
+        // Check cache first
+        const cached = cache.get(url);
+        if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+            return cached.data;
+        }
+        await delay(REQUEST_DELAY);
+
+        const response = await fetch(url);
+
+        if (response.status === 429) {
+            const retryAfter = Number(response.headers.get('Retry-After') || 5) * 1000;
+            if (retries > 0) {
+                await delay(retryAfter);
+                return fetchWithRetry(url, retries - 1);
             }
+            throw new Error('Rate limit exceeded after retries');
+        }
 
-            const data: JikanSeasonResponse = await response.json();
-            returnedData.push(...data.data);
-            hasNextPage = data.pagination.has_next_page;
-            index++;
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-            if (hasNextPage) await delay(REQUEST_DELAY);
+        const data = await response.json();
+        cache.set(url, { data, timestamp: Date.now() });
+        return data;
+    } catch (error) {
+        if (retries > 0) {
+            await delay(2000);
+            return fetchWithRetry(url, retries - 1);
+        }
+        throw error;
+    }
+}
+
+async function getCurrentSeasonAnime(): Promise<JikanAnimeData[]> {
+    let page = 1;
+    const results: JikanAnimeData[] = [];
+
+    while (true) {
+        try {
+            const { data, pagination } = (await fetchWithRetry(
+                `${JIKAN_URI}/seasons/now?page=${page}`,
+            )) as JikanSeasonResponse;
+
+            results.push(...data);
+            if (!pagination.has_next_page) break;
+            page++;
         } catch (error) {
-            console.error(error);
-            continue;
+            console.error('Failed to fetch season data:', error);
+            break;
         }
     }
 
-    return returnedData;
+    return results;
 }
 
-async function getTrendingAnimeData(page: string) {
+async function getTrendingAnimeData(page: string): Promise<JikanSeasonResponse | undefined> {
     try {
-        const response = await fetch(JIKAN_URI + `/top/anime?page=${page}`);
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-
-        const data: JikanSeasonResponse = await response.json();
-        return data;
+        return await fetchWithRetry(`${JIKAN_URI}/top/anime?page=${page}`);
     } catch (error) {
-        console.error(error);
+        console.error('Failed to fetch trending anime:', error);
     }
 }
 
