@@ -8,7 +8,7 @@ interface JikanSeasonResponse {
 }
 
 const JIKAN_URI = 'https://api.jikan.moe/v4';
-const REQUEST_DELAY = 500;
+const REQUEST_DELAY = 350;
 const MAX_RETRIES = 3;
 
 const cache = new Map<string, { data: JikanSeasonResponse; timestamp: number }>();
@@ -21,12 +21,12 @@ async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<Jikan
         if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
             return cached.data;
         }
-        await delay(REQUEST_DELAY);
 
         const response = await fetch(url);
 
         if (response.status === 429) {
-            const retryAfter = Number(response.headers.get('Retry-After') || 5) * 1000;
+            const retryAfter = Number(response.headers.get('Retry-After') || 1) * REQUEST_DELAY;
+
             if (retries > 0) {
                 await delay(retryAfter);
                 return fetchWithRetry(url, retries - 1);
@@ -41,7 +41,6 @@ async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<Jikan
         return data;
     } catch (error) {
         if (retries > 0) {
-            await delay(2000);
             return fetchWithRetry(url, retries - 1);
         }
         throw error;
