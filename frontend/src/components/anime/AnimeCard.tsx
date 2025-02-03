@@ -1,47 +1,57 @@
 import { JikanAnimeData } from '@/common/interfaces';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CirclePlay, CircleCheck, CircleHelp } from 'lucide-react';
+import { CirclePlay, CircleCheck, CircleHelp, Star } from 'lucide-react';
 
-function AnimeCard(AnimeCardProp: { animeData: JikanAnimeData }) {
+interface AnimeCardProp {
+    animeData: JikanAnimeData;
+}
+
+function AnimeCard({ animeData }: AnimeCardProp) {
     return (
         <>
             <HoverCard>
                 <HoverCardTrigger>
                     <img
-                        src={AnimeCardProp.animeData.images.jpg.large_image_url}
-                        alt={AnimeCardProp.animeData.title_english}
+                        src={animeData.images.jpg.large_image_url}
+                        alt={animeData.title_english}
                         className='h-48 w-32 rounded-sm shadow-md transition-all hover:scale-105'
                     />
                 </HoverCardTrigger>
                 <HoverCardContent className='flex w-full flex-col gap-3'>
-                    <div>
-                        <div className='font-bold'>{AnimeCardProp.animeData.title || 'Untitled'}</div>
-                        <div className='text-sm'>{AnimeCardProp.animeData.title_english || 'Unknown English Title'}</div>
+                    <div className='flex flex-row'>
+                        <div className='ml-auto w-72'>
+                            <div className='font-bold'>{animeData.title || 'Untitled'}</div>
+                            <div className='text-sm'>
+                                {animeData.title_english || 'Unknown English Title'}
+                            </div>
+                        </div>
+                        <div className='mr-auto flex flex-row items-start justify-end gap-2 font-bold'>
+                            {animeData.score}
+                            <Star color='#fef084' fill='#fef083' />
+                        </div>
                     </div>
                     <div className='flex gap-3'>
                         <div className='mr-auto flex flex-row items-center justify-center gap-1'>
-                            {getAiringStatusIcon(AnimeCardProp.animeData.status)}
-                            {AnimeCardProp.animeData.status || 'Unknown Status'}
+                            {getAiringStatusIcon(animeData.status)}
+                            {animeData.status || 'Unknown Status'}
                         </div>
                         <div className='ml-auto flex flex-row items-center justify-center'>
-                            {AnimeCardProp.animeData.episodes || '?'} episodes
+                            {animeData.episodes || '?'} episodes
                         </div>
                     </div>
                     <div className='flex flex-wrap gap-1'>
-                        {AnimeCardProp.animeData.genres.map((genre) => (
+                        {animeData.genres.map((genre) => (
                             <div
                                 key={genre.name}
-                                className='rounded-md border bg-blue-200 p-1 text-sm'>
+                                className='flex gap-1 rounded-md border bg-blue-200 p-1 text-xs font-bold'>
                                 {genre.name}
                             </div>
                         ))}
                     </div>
                 </HoverCardContent>
             </HoverCard>
-            <div className='line-clamp-2 w-32 break-words text-sm'>
-                {AnimeCardProp.animeData.title}
-            </div>
+            <div className='line-clamp-2 w-32 break-words text-sm'>{animeData.title}</div>
         </>
     );
 }
