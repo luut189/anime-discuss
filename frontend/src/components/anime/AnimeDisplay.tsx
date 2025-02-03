@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { fetchTodayAnimeData } from '@/common/query';
+import { fetchTodayAnimeData, fetchTrendingAnimeData } from '@/common/query';
+import { REFRESH_INTERVAL } from '@/common/constants';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import ErrorFallback from '@/components/ErrorFallback';
+import { useNavigate } from 'react-router';
 
-const REFRESH_INTERVAL = 1000 * 60;
 const MAX_ITEMS = 6;
 
-export default function TodayAnimeDisplay() {
+function TodayAnimeDisplay() {
     const { isError, isPending, data } = useQuery({
         queryKey: [`today-anime`],
         queryFn: fetchTodayAnimeData,
@@ -46,3 +47,42 @@ export default function TodayAnimeDisplay() {
         </>
     );
 }
+
+function TrendingAnimeDisplay() {
+    const { isError, isPending, data } = useQuery({
+        queryKey: [`trending-anime`],
+        queryFn: () => fetchTrendingAnimeData(1, MAX_ITEMS),
+        refetchInterval: REFRESH_INTERVAL,
+        retry: 5,
+    });
+    const navigate = useNavigate();
+
+    return (
+        <>
+            <div className='flex w-full flex-row p-3 px-4'>
+                <div className='mb-2 mr-auto text-xl font-bold'>Trending Anime</div>
+
+                <Button
+                    variant={'link'}
+                    className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
+                    onClick={() => navigate('/anime/trending')}>
+                    Show All
+                </Button>
+            </div>
+            {isError ? (
+                <ErrorFallback errorMessage='Error Fetching Trending Anime' />
+            ) : (
+                <AnimeCardGrid
+                    isPendingData={isPending}
+                    items={
+                        data
+                            ? data.data.slice(0, MAX_ITEMS)
+                            : Array.from({ length: MAX_ITEMS }).map(() => null)
+                    }
+                />
+            )}
+        </>
+    );
+}
+
+export { TodayAnimeDisplay, TrendingAnimeDisplay };

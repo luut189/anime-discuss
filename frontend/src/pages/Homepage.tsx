@@ -1,9 +1,10 @@
-import TodayAnimeDisplay from '@/components/anime/TodayAnimeDisplay';
+import { TodayAnimeDisplay, TrendingAnimeDisplay } from '@/components/anime/AnimeDisplay';
 
 export default function Homepage() {
     return (
         <>
             <TodayAnimeDisplay />
+            <TrendingAnimeDisplay />
         </>
     );
 }
