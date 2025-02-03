@@ -18,9 +18,9 @@ export async function fetchTodayAnimeData() {
     }
 }
 
-export async function fetchTrendingAnimeData(page?: number) {
+export async function fetchTrendingAnimeData(page = 1, limit = 25) {
     try {
-        const response = await fetch(`/api/anime/trending?${page ? 'page=' + page : ''}`);
+        const response = await fetch(`/api/anime/trending?page=${page}&limit=${limit}`);
         if (!response.ok) {
             throw new Error();
         }

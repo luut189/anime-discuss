@@ -69,9 +69,9 @@ async function getCurrentSeasonAnime(): Promise<JikanAnimeData[]> {
     return results;
 }
 
-async function getTrendingAnimeData(page: string): Promise<JikanSeasonResponse | undefined> {
+async function getTrendingAnimeData(page: string, limit: string): Promise<JikanSeasonResponse | undefined> {
     try {
-        return await fetchWithRetry(`${JIKAN_URI}/top/anime?page=${page}`);
+        return await fetchWithRetry(`${JIKAN_URI}/top/anime?page=${page}&limit=${limit}`);
     } catch (error) {
         console.error('Failed to fetch trending anime:', error);
     }
