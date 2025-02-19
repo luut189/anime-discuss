@@ -1,11 +1,13 @@
 {
     "name": "anime-discuss",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "backend/index.ts",
     "scripts": {
-        "dev": "tsx watch backend/index.ts",
+        "dev": "NODE_ENV=development tsx watch backend/index.ts",
         "prettier": "prettier --write .",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "start": "NODE_ENV=production node dist/index.js",
+        "build": "npm install && tsc && npm install --prefix frontend && npm run build --prefix frontend"
     },
     "type": "module",
     "keywords": [],
