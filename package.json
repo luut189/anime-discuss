@@ -6,9 +6,10 @@
         "dev": "NODE_ENV=development tsx watch backend/index.ts",
         "prettier": "prettier --write .",
         "lint": "eslint .",
-        "start": "NODE_ENV=production node dist/index.js",
-        "build": "npm install && tsc && npm install --prefix frontend && npm run build --prefix frontend"
+        "start": "NODE_ENV=production tsx backend/index.ts",
+        "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
     },
+    "type": "module",
     "keywords": [],
     "author": "",
     "license": "ISC",
@@ -22,7 +23,6 @@
     "devDependencies": {
         "@types/cors": "^2.8.17",
         "@types/express": "^5.0.0",
-        "@types/mongoose": "^5.11.96",
         "@types/node": "^22.10.7",
         "eslint": "^9.18.0",
         "globals": "^15.14.0",
