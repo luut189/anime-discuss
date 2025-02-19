@@ -9,7 +9,6 @@
         "start": "NODE_ENV=production node dist/index.js",
         "build": "npm install && tsc && npm install --prefix frontend && npm run build --prefix frontend"
     },
-    "type": "module",
     "keywords": [],
     "author": "",
     "license": "ISC",
