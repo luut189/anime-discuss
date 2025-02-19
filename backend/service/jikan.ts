@@ -69,14 +69,6 @@ async function getCurrentSeasonAnime(): Promise<JikanAnimeData[]> {
     return results;
 }
 
-async function getTrendingAnimeData(page: string, limit: string): Promise<JikanSeasonResponse | undefined> {
-    try {
-        return await fetchWithRetry(`${JIKAN_URI}/top/anime?page=${page}&limit=${limit}`);
-    } catch (error) {
-        console.error('Failed to fetch trending anime:', error);
-    }
-}
-
 function filterAnimeData(data: JikanAnimeData[], today: string): JikanSeasonResponse {
     const perPage = 5;
 
@@ -129,4 +121,4 @@ async function getTodayAnimeData() {
     }
 }
 
-export { getTodayAnimeData, getTrendingAnimeData };
+export { getTodayAnimeData };
