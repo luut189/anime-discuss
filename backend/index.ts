@@ -12,8 +12,8 @@ const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cors());
-app.use('/anime', animeRoute);
-app.use('/thread', threadRoute);
+app.use('/api/anime', animeRoute);
+app.use('/api/thread', threadRoute);
 
 if (ENV.NOV_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '/frontend/dist')));
