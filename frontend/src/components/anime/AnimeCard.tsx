@@ -2,12 +2,14 @@ import { JikanAnimeData } from '@/common/interfaces';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CirclePlay, CircleCheck, CircleHelp, Star } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 interface AnimeCardProp {
     animeData: JikanAnimeData;
 }
 
 function AnimeCard({ animeData }: AnimeCardProp) {
+    const navigate = useNavigate();
     return (
         <>
             <HoverCard>
@@ -15,7 +17,10 @@ function AnimeCard({ animeData }: AnimeCardProp) {
                     <img
                         src={animeData.images.jpg.large_image_url}
                         alt={animeData.title_english}
-                        className='h-48 w-32 rounded-sm shadow-md transition-all hover:scale-105'
+                        onClick={() => {
+                            navigate(`/anime/${animeData.mal_id}`);
+                        }}
+                        className='h-48 w-32 cursor-pointer rounded-sm shadow-md transition-all hover:scale-105'
                     />
                 </HoverCardTrigger>
                 <HoverCardContent className='flex w-full flex-col gap-3'>

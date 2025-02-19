@@ -28,7 +28,7 @@ function TodayAnimeDisplay() {
 
     return (
         <>
-            <div className='flex w-full flex-row p-3 px-4'>
+            <div className='flex w-full flex-row'>
                 <div className='mb-2 mr-auto text-xl font-bold'>Today Anime</div>
                 <Button
                     variant={'link'}
@@ -59,9 +59,8 @@ function TrendingAnimeDisplay() {
 
     return (
         <>
-            <div className='flex w-full flex-row p-3 px-4'>
+            <div className='flex w-full flex-row'>
                 <div className='mb-2 mr-auto text-xl font-bold'>Trending Anime</div>
-
                 <Button
                     variant={'link'}
                     className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
