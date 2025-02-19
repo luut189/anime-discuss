@@ -52,15 +52,12 @@ async function fetchAnimeById(id: string) {
 
 async function searchAnimeByText(text: string) {
     try {
-        const response = await fetch(
-            `${JIKAN_URI}/anime?limit=5&q=${encodeURIComponent(text)}`,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+        const response = await fetch(`${JIKAN_URI}/anime?limit=5&q=${encodeURIComponent(text)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
             },
-        );
+        });
         if (!response.ok) {
             throw new Error();
         }

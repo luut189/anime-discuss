@@ -2,8 +2,8 @@ import { Route, Routes } from 'react-router';
 import Homepage from '@/pages/Homepage';
 import TrendingAnimePage from '@/pages/TrendingAnimePage';
 import AnimeThreadPage from '@/pages/AnimeThreadPage';
-import Footer from '@/components/layout/footer';
-import Navbar from '@/components/layout/navbar';
+import Footer from '@/components/layout/Footer';
+import Navbar from '@/components/layout/Navbar';
 
 export default function App() {
     return (
