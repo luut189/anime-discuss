@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import SearchBar from '@/components/SearchBar';
+import SearchBar from '@/components/search/SearchBar';
 import { MessagesSquare } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
