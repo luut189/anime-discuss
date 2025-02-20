@@ -28,7 +28,7 @@ function AnimeCard({ animeData }: AnimeCardProp) {
                         <div className='ml-auto w-72'>
                             <div className='font-bold'>{animeData.title || 'Untitled'}</div>
                             <div className='text-sm'>
-                                {animeData.title_english || 'Unknown English Title'}
+                                {animeData.title_japanese || 'Unknown Japanese Title'}
                             </div>
                         </div>
                         <div className='mr-auto flex flex-row items-start justify-end gap-2 font-bold'>
@@ -49,7 +49,7 @@ function AnimeCard({ animeData }: AnimeCardProp) {
                         {animeData.genres.map((genre) => (
                             <div
                                 key={genre.name}
-                                className='flex gap-1 rounded-md border bg-blue-200 p-1 text-xs font-bold'>
+                                className='flex gap-1 rounded-md border bg-primary/10 p-1 text-xs font-bold'>
                                 {genre.name}
                             </div>
                         ))}
