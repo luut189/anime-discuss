@@ -7,7 +7,7 @@ import Navbar from '@/components/layout/Navbar';
 
 export default function App() {
     return (
-        <div className='flex min-h-screen flex-col'>
+        <div className='flex min-h-screen flex-col transition-colors'>
             <Navbar />
             <main className='mx-auto flex w-full flex-1 flex-col gap-1 px-4'>
                 <Routes>
