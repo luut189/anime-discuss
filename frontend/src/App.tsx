@@ -1,9 +1,10 @@
-import { Route, Routes } from 'react-router';
+import Footer from '@/components/layout/Footer';
+import Navbar from '@/components/layout/Navbar';
 import Homepage from '@/pages/Homepage';
 import TrendingAnimePage from '@/pages/TrendingAnimePage';
 import AnimeThreadPage from '@/pages/AnimeThreadPage';
-import Footer from '@/components/layout/Footer';
-import Navbar from '@/components/layout/Navbar';
+import NotFoundPage from '@/pages/NotFoundPage';
+import { Route, Routes } from 'react-router';
 
 export default function App() {
     return (
@@ -14,6 +15,7 @@ export default function App() {
                     <Route path='/' element={<Homepage />} />
                     <Route path='/anime/trending' element={<TrendingAnimePage />} />
                     <Route path='/anime/:id' element={<AnimeThreadPage />} />
+                    <Route path='/*' element={<NotFoundPage />} />
                 </Routes>
             </main>
             <Footer />
