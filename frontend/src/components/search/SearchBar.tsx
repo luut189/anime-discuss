@@ -57,7 +57,7 @@ export default function SearchBar() {
                     value={searchQuery}
                     onChange={handleChange}
                     onBlur={() => {
-                        setShowResult(true);
+                        setShowResult(false);
                     }}
                     onFocus={() => {
                         setShowResult(true);
