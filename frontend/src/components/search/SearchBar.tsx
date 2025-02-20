@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ export default function SearchBar() {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
     const [showResult, setShowResult] = useState(true);
+    const blurTimeoutRef = useRef<NodeJS.Timeout>();
 
     const { isError, isPending, data } = useQuery({
         queryKey: ['search-result', debouncedQuery],
@@ -48,6 +49,23 @@ export default function SearchBar() {
         console.log(searchQuery);
     }
 
+    function handleBlur() {
+        if (blurTimeoutRef.current) {
+            clearTimeout(blurTimeoutRef.current);
+        }
+
+        blurTimeoutRef.current = setTimeout(() => {
+            setShowResult(false);
+        }, 100);
+    }
+
+    function handleFocus() {
+        if (blurTimeoutRef.current) {
+            clearTimeout(blurTimeoutRef.current);
+        }
+        setShowResult(true);
+    }
+
     return (
         <div className='flex w-1/2 flex-col gap-2'>
             <form className='flex items-center justify-center' onSubmit={handleSubmit}>
@@ -56,12 +74,8 @@ export default function SearchBar() {
                     placeholder='Search...'
                     value={searchQuery}
                     onChange={handleChange}
-                    onBlur={() => {
-                        setShowResult(false);
-                    }}
-                    onFocus={() => {
-                        setShowResult(true);
-                    }}
+                    onBlur={handleBlur}
+                    onFocus={handleFocus}
                     className='flex-grow'
                 />
             </form>
