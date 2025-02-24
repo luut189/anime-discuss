@@ -122,20 +122,25 @@ export interface JikanPaginationData {
 }
 
 export interface IThread {
+    __v: number;
+    _id: string;
     mal_id: number;
     title: string;
     author: string;
     content: string;
-    comments: string;
-    createdAt: Date;
-    updatedAt: Date;
+    comments: IComment[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface IComment {
+    __v: number;
+    _id: string;
+    mal_id: number;
     thread: string;
     author: string;
     content: string;
-    parentComment?: string | null;
-    replies: string[];
-    createdAt: Date;
+    parentComment?: string;
+    replies: IComment[];
+    createdAt: string;
 }
