@@ -3,6 +3,7 @@ import Navbar from '@/components/layout/Navbar';
 import Homepage from '@/pages/Homepage';
 import TrendingAnimePage from '@/pages/TrendingAnimePage';
 import AnimeThreadPage from '@/pages/AnimeThreadPage';
+import SearchResultPage from '@/pages/SearchResultPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 
 import { Route, Routes } from 'react-router';
@@ -16,6 +17,7 @@ export default function App() {
                     <Route path='/' element={<Homepage />} />
                     <Route path='/anime/trending' element={<TrendingAnimePage />} />
                     <Route path='/anime/:id' element={<AnimeThreadPage />} />
+                    <Route path='/anime/search/:query' element={<SearchResultPage />} />
                     <Route path='/*' element={<NotFoundPage />} />
                 </Routes>
             </main>

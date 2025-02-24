@@ -6,10 +6,11 @@ import SearchResult from '@/components/search/SearchResult';
 
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 export default function SearchBar() {
+    const navigate = useNavigate();
     const location = useLocation();
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
@@ -17,8 +18,8 @@ export default function SearchBar() {
     const blurTimeoutRef = useRef<NodeJS.Timeout>();
 
     const { isError, isPending, data } = useQuery({
-        queryKey: ['search-result', debouncedQuery],
-        queryFn: () => searchAnimeByText(debouncedQuery),
+        queryKey: ['search-result', debouncedQuery, 1],
+        queryFn: () => searchAnimeByText(debouncedQuery, 5, 1),
         refetchInterval: REFRESH_INTERVAL,
         retry: 5,
         enabled: debouncedQuery.length > 0,
@@ -45,7 +46,7 @@ export default function SearchBar() {
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        console.log(searchQuery);
+        navigate(`/anime/search/${searchQuery}`);
     }
 
     function handleBlur() {
@@ -55,7 +56,7 @@ export default function SearchBar() {
 
         blurTimeoutRef.current = setTimeout(() => {
             setShowResult(false);
-        }, 100);
+        }, 300);
     }
 
     function handleFocus() {
@@ -84,7 +85,7 @@ export default function SearchBar() {
                         <SearchResult
                             isError={isError}
                             isPending={isPending}
-                            data={data as JikanAnimeData[]}
+                            data={data?.data as JikanAnimeData[]}
                         />
                     </div>
                 )}
