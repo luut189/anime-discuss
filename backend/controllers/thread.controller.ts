@@ -19,7 +19,7 @@ async function getThreads(req: Request, res: Response) {
     try {
         const { mal_id } = req.params;
 
-        const threads = await Thread.find({ mal_id }).populate({
+        const threads = await Thread.find({ mal_id }).sort({ createdAt: -1 }).populate({
             path: 'comments',
         });
         res.json(threads);
