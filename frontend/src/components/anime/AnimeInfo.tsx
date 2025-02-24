@@ -37,7 +37,7 @@ export default function AnimeInfo({ data }: AnimeInfoProps) {
                                     {data.aired.from
                                         ? `From ${formatDate(data.aired.from)}`
                                         : 'Unknown'}
-                                    {data.aired.to && ` to ${formatDate(data.aired.from)}`}
+                                    {data.aired.to && ` to ${formatDate(data.aired.to)}`}
                                 </span>
                             </p>
                         </div>
