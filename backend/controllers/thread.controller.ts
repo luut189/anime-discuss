@@ -1,5 +1,5 @@
 import Thread from '@/models/thread.model';
-import Comment from '@/models/thread.model';
+import Comment from '@/models/comment.model';
 import { Request, Response } from 'express';
 
 async function createThread(req: Request, res: Response) {
@@ -17,8 +17,12 @@ async function createThread(req: Request, res: Response) {
 
 async function getThreads(req: Request, res: Response) {
     try {
-        const { mal_id } = req.body;
-        const threads = await Thread.findOne({ mal_id: mal_id }).populate('comments');
+        const { mal_id } = req.params;
+
+        const threads = await Thread.find({ mal_id }).populate({
+            path: 'comments',
+            populate: { path: 'replies' },
+        });
         res.json(threads);
     } catch (error) {
         res.status(500).json({
@@ -34,14 +38,22 @@ async function getThread(req: Request, res: Response) {
             populate: { path: 'replies' },
         });
 
-        if (!thread) {
-            res.status(404).json({ error: 'Thread not found' });
-            return;
-        }
         res.json(thread);
     } catch (error) {
         res.status(500).json({
             error: `Failed to fetch thread: ${error}`,
+        });
+    }
+}
+
+async function deleteThread(req: Request, res: Response) {
+    try {
+        const thread = await Thread.findByIdAndDelete(req.params.id);
+
+        res.json(thread);
+    } catch (error) {
+        res.status(500).json({
+            error: `Failed to delete thread: ${error}`,
         });
     }
 }
@@ -73,4 +85,4 @@ async function createComment(req: Request, res: Response) {
     }
 }
 
-export { createThread, getThreads, getThread, createComment };
+export { createThread, getThreads, getThread, deleteThread, createComment };
