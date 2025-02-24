@@ -15,11 +15,14 @@ const ThreadSchema = new Schema<IThread>(
         mal_id: {
             type: Number,
             required: true,
-            unique: true,
         },
         author: {
             type: String,
             default: 'Anonymous',
+        },
+        title: {
+            type: String,
+            required: true,
         },
         content: {
             type: String,
