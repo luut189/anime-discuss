@@ -69,7 +69,7 @@ export default function Thread({
                 <p>{content}</p>
             </CardContent>
             <CardFooter className='flex flex-col gap-2'>
-                <div className='flex w-full flex-col gap-1'>
+                <div className='flex w-full flex-col gap-2'>
                     {comments
                         ? comments.map((comment) => (
                               <Comment
