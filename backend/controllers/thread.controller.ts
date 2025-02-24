@@ -21,7 +21,6 @@ async function getThreads(req: Request, res: Response) {
 
         const threads = await Thread.find({ mal_id }).populate({
             path: 'comments',
-            populate: { path: 'replies' },
         });
         res.json(threads);
     } catch (error) {
@@ -35,7 +34,6 @@ async function getThread(req: Request, res: Response) {
     try {
         const thread = await Thread.findById(req.params.id).populate({
             path: 'comments',
-            populate: { path: 'replies' },
         });
 
         res.json(thread);
@@ -48,7 +46,9 @@ async function getThread(req: Request, res: Response) {
 
 async function deleteThread(req: Request, res: Response) {
     try {
-        const thread = await Thread.findByIdAndDelete(req.params.id);
+        const { id } = req.params;
+        await Comment.deleteMany({ thread: id });
+        const thread = await Thread.findByIdAndDelete(id);
 
         res.json(thread);
     } catch (error) {
@@ -60,22 +60,15 @@ async function deleteThread(req: Request, res: Response) {
 
 async function createComment(req: Request, res: Response) {
     try {
-        const { threadId, author, content, parentCommentId } = req.body;
+        const { threadId, author, content } = req.body;
 
         const newComment = await Comment.create({
             thread: threadId,
             author,
             content,
-            parentComment: parentCommentId || null,
         });
 
-        if (parentCommentId) {
-            await Comment.findByIdAndUpdate(parentCommentId, {
-                $push: { replies: newComment._id },
-            });
-        } else {
-            await Thread.findByIdAndUpdate(threadId, { $push: { comments: newComment._id } });
-        }
+        await Thread.findByIdAndUpdate(threadId, { $push: { comments: newComment._id } });
 
         res.status(201).json(newComment);
     } catch (error) {

@@ -140,7 +140,5 @@ export interface IComment {
     thread: string;
     author: string;
     content: string;
-    parentComment?: string;
-    replies: IComment[];
     createdAt: string;
 }

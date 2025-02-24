@@ -33,8 +33,8 @@ export default function Threads({ id }: ThreadsProp) {
     if (isPending) {
         return (
             <>
-                {Array.from({ length: 2 }).map(() => (
-                    <Card>
+                {Array.from({ length: 2 }).map((_, idx) => (
+                    <Card key={idx}>
                         <CardHeader>
                             <div className=''>
                                 <Skeleton className='h-7 w-1/3' />

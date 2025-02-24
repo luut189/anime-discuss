@@ -70,19 +70,20 @@ export default function Thread({
             </CardContent>
             <CardFooter className='flex flex-col gap-2'>
                 <div className='flex w-full flex-col gap-1'>
-                    {comments.map((comment) => (
-                        <Comment
-                            key={comment._id}
-                            _id={comment._id}
-                            __v={comment.__v}
-                            mal_id={mal_id}
-                            thread={comment.thread}
-                            author={comment.author}
-                            content={comment.content}
-                            replies={comment.replies}
-                            createdAt={comment.createdAt}
-                        />
-                    ))}
+                    {comments
+                        ? comments.map((comment) => (
+                              <Comment
+                                  key={comment._id}
+                                  _id={comment._id}
+                                  __v={comment.__v}
+                                  mal_id={mal_id}
+                                  thread={comment.thread}
+                                  author={comment.author}
+                                  content={comment.content}
+                                  createdAt={comment.createdAt}
+                              />
+                          ))
+                        : null}
                 </div>
                 {isReply && (
                     <ReplyThread
@@ -97,9 +98,7 @@ export default function Thread({
     );
 }
 
-function Comment({ _id, mal_id, author, content, createdAt, replies, thread }: IComment) {
-    const [isReply, setIsReply] = useState(false);
-
+function Comment({ author, content, createdAt }: IComment) {
     return (
         <Card>
             <CardHeader>
@@ -109,33 +108,6 @@ function Comment({ _id, mal_id, author, content, createdAt, replies, thread }: I
             <CardContent className='flex flex-col gap-2'>
                 <p>{content}</p>
             </CardContent>
-            <CardFooter className='flex flex-col gap-2'>
-                <div className='flex flex-col gap-1'>
-                    {replies.map((reply) => (
-                        <Comment
-                            key={reply._id}
-                            _id={reply._id}
-                            __v={reply.__v}
-                            mal_id={mal_id}
-                            thread={reply.thread}
-                            author={reply.author}
-                            content={reply.content}
-                            replies={reply.replies}
-                            createdAt={reply.createdAt}
-                            parentComment={reply.parentComment}
-                        />
-                    ))}
-                </div>
-                {isReply && (
-                    <ReplyThread
-                        mal_id={mal_id}
-                        threadId={thread}
-                        parentCommentId={_id}
-                        onReplySubmit={() => setIsReply(false)}
-                    />
-                )}
-                <ReplyButton isReply={isReply} setIsReply={setIsReply} />
-            </CardFooter>
         </Card>
     );
 }
