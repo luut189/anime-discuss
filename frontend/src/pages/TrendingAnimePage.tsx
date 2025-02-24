@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
 import { fetchTrendingAnimeData } from '@/common/query';
 import { REFRESH_INTERVAL } from '@/common/constants';
+import { Button } from '@/components/ui/button';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import ErrorFallback from '@/components/ErrorFallback';
+
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function TrendingAnimePage() {

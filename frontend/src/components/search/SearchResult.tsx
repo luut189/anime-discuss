@@ -2,6 +2,7 @@ import { JikanAnimeData } from '@/common/interfaces';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
 import { useNavigate } from 'react-router';
 
 interface SearchResultProp {

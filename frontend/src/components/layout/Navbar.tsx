@@ -1,7 +1,8 @@
-import { useNavigate } from 'react-router';
 import SearchBar from '@/components/search/SearchBar';
-import { MessagesSquare } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+
+import { useNavigate } from 'react-router';
+import { MessagesSquare } from 'lucide-react';
 
 export default function Navbar() {
     const navigate = useNavigate();

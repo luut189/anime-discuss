@@ -1,14 +1,13 @@
-import type React from 'react';
-
-import { useEffect, useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-
 import { Input } from '@/components/ui/input';
 import { searchAnimeByText } from '@/common/query';
 import { REFRESH_INTERVAL } from '@/common/constants';
 import { JikanAnimeData } from '@/common/interfaces';
-import { useLocation } from 'react-router';
 import SearchResult from '@/components/search/SearchResult';
+
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 
 export default function SearchBar() {
     const location = useLocation();

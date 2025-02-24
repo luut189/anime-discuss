@@ -4,6 +4,7 @@ import Homepage from '@/pages/Homepage';
 import TrendingAnimePage from '@/pages/TrendingAnimePage';
 import AnimeThreadPage from '@/pages/AnimeThreadPage';
 import NotFoundPage from '@/pages/NotFoundPage';
+
 import { Route, Routes } from 'react-router';
 
 export default function App() {
