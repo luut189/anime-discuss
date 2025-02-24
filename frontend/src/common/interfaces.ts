@@ -121,6 +121,15 @@ export interface JikanPaginationData {
     };
 }
 
+export interface JikanData {
+    data: JikanAnimeData[];
+    pagination: JikanPaginationData;
+}
+
+export interface AnimeDataResponse {
+    data: JikanAnimeData;
+}
+
 export interface IThread {
     __v: number;
     _id: string;

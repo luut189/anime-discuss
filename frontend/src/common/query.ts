@@ -1,13 +1,4 @@
-import { IThread, JikanAnimeData, JikanPaginationData } from '@/common/interfaces';
-
-interface JikanData {
-    data: JikanAnimeData[];
-    pagination: JikanPaginationData;
-}
-
-interface AnimeDataResponse {
-    data: JikanAnimeData;
-}
+import { AnimeDataResponse, IThread, JikanData } from '@/common/interfaces';
 
 const JIKAN_URI = 'https://api.jikan.moe/v4';
 
@@ -50,20 +41,23 @@ async function fetchAnimeById(id: string) {
     }
 }
 
-async function searchAnimeByText(text: string) {
+async function searchAnimeByText(text: string, limit = 25, page = 1) {
     try {
-        const response = await fetch(`${JIKAN_URI}/anime?limit=5&q=${encodeURIComponent(text)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
+        const response = await fetch(
+            `${JIKAN_URI}/anime?limit=${limit}&q=${encodeURIComponent(text)}&page=${page}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             },
-        });
+        );
         if (!response.ok) {
             throw new Error();
         }
         const data: JikanData = await response.json();
 
-        return data.data;
+        return data;
     } catch (error) {
         console.error(error);
     }
