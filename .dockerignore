@@ -1,0 +1,10 @@
+node_modules
+**/node_modules
+.git
+.gitignore
+.env
+.dockerignore
+.vscode
+*.md
+**/dist
+**/.DS_Store
