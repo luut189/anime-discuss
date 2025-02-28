@@ -46,7 +46,7 @@ export default function SearchBar() {
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        navigate(`/anime/search/${searchQuery}`);
+        navigate(`/anime/search?q=${searchQuery}`);
     }
 
     function handleBlur() {

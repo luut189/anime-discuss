@@ -17,7 +17,7 @@ export default function App() {
                     <Route path='/' element={<Homepage />} />
                     <Route path='/anime/trending' element={<TrendingAnimePage />} />
                     <Route path='/anime/:id' element={<AnimeThreadPage />} />
-                    <Route path='/anime/search/:query' element={<SearchResultPage />} />
+                    <Route path='/anime/search' element={<SearchResultPage />} />
                     <Route path='/*' element={<NotFoundPage />} />
                 </Routes>
             </main>

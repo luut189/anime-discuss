@@ -30,14 +30,16 @@ function TodayAnimeDisplay() {
         <>
             <div className='flex w-full flex-row'>
                 <div className='mb-2 mr-auto text-xl font-bold'>Today Anime</div>
-                <Button
-                    variant={'link'}
-                    className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
-                    onClick={() => {
-                        setShowAll(!showAll);
-                    }}>
-                    {showAll ? 'Show Less' : 'Show All'}
-                </Button>
+                {data && data.data.length > MAX_ITEMS ? (
+                    <Button
+                        variant={'link'}
+                        className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
+                        onClick={() => {
+                            setShowAll(!showAll);
+                        }}>
+                        {showAll ? 'Show Less' : 'Show All'}
+                    </Button>
+                ) : null}
             </div>
             {isError ? (
                 <ErrorFallback errorMessage='Error Fetching Today Anime' />

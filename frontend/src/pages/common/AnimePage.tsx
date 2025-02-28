@@ -4,6 +4,7 @@ import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import ErrorFallback from '@/components/ErrorFallback';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { SetURLSearchParams } from 'react-router';
 
 interface AnimePageProps {
     title: string;
@@ -12,6 +13,7 @@ interface AnimePageProps {
     data: JikanData | undefined;
     page: number;
     setPage: (arg: number) => void;
+    setSearchParams: SetURLSearchParams;
 }
 
 export default function AnimePage({
@@ -21,14 +23,23 @@ export default function AnimePage({
     data,
     page,
     setPage,
+    setSearchParams,
 }: AnimePageProps) {
     function handleNext() {
         if (!data) return;
+        setSearchParams((prev) => {
+            prev.set('page', `${page + 1}`);
+            return prev;
+        });
         setPage(page < data.pagination.last_visible_page ? page + 1 : page);
     }
 
     function handlePrevious() {
         if (!data) return;
+        setSearchParams((prev) => {
+            prev.set('page', `${page - 1}`);
+            return prev;
+        });
         setPage(page > 1 ? page - 1 : page);
     }
 
@@ -46,13 +57,13 @@ export default function AnimePage({
                         items={data ? data.data : Array.from({ length: 25 }).map(() => null)}
                     />
                     <div className='flex items-center justify-center gap-5'>
-                        <Button size={'icon'} onClick={handlePrevious}>
+                        <Button size={'icon'} onClick={handlePrevious} disabled={page == 1}>
                             <ChevronLeft />
                         </Button>
-                        <Button variant={'outline'} className='disabled:opacity-100' disabled>
-                            {page} / {data?.pagination.last_visible_page}
-                        </Button>
-                        <Button size={'icon'} onClick={handleNext}>
+                        <Button
+                            size={'icon'}
+                            onClick={handleNext}
+                            disabled={page == data?.pagination.last_visible_page}>
                             <ChevronRight />
                         </Button>
                     </div>

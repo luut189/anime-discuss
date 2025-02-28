@@ -4,9 +4,11 @@ import AnimePage from '@/pages/common/AnimePage';
 
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useSearchParams } from 'react-router';
 
 export default function TrendingAnimePage() {
-    const [page, setPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [page, setPage] = useState(Number(searchParams.get('page') || '1'));
 
     const { isError, isPending, data } = useQuery({
         queryKey: [`trending-anime-${page}`],
@@ -23,6 +25,7 @@ export default function TrendingAnimePage() {
             data={data}
             page={page}
             setPage={setPage}
+            setSearchParams={setSearchParams}
         />
     );
 }

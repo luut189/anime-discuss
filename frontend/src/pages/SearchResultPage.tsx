@@ -4,12 +4,13 @@ import AnimePage from '@/pages/common/AnimePage';
 
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 
 export default function SearchResultPage() {
-    const { query } = useParams();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const query = searchParams.get('q');
     const decodedQuery = query ? decodeURIComponent(query) : '';
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(Number(searchParams.get('page') || '1'));
 
     const { isError, isPending, data } = useQuery({
         queryKey: ['search-result', decodedQuery, page],
@@ -27,6 +28,7 @@ export default function SearchResultPage() {
             data={data}
             page={page}
             setPage={setPage}
+            setSearchParams={setSearchParams}
         />
     );
 }
