@@ -10,7 +10,7 @@ export default function AnimeCardGrid({ isPendingData, items }: AnimeCardGridPro
     return (
         <div className='mb-3 grid w-full grid-cols-2 gap-4 px-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7'>
             {items.map((anime, idx) => (
-                <div key={anime?.title || idx} className='flex flex-col gap-2 justify-self-center'>
+                <div key={idx * 25} className='flex flex-col gap-2 justify-self-center'>
                     {isPendingData ? (
                         <AnimeCardSkeleton />
                     ) : (

@@ -11,7 +11,7 @@ const MAX_ITEMS = 6;
 
 function TodayAnimeDisplay() {
     const { isError, isPending, data } = useQuery({
-        queryKey: [`today-anime`],
+        queryKey: ['today-anime'],
         queryFn: fetchTodayAnimeData,
         refetchInterval: REFRESH_INTERVAL,
         retry: 5,
@@ -52,7 +52,7 @@ function TodayAnimeDisplay() {
 
 function TrendingAnimeDisplay() {
     const { isError, isPending, data } = useQuery({
-        queryKey: [`trending-anime`],
+        queryKey: ['trending-anime', 1],
         queryFn: () => fetchTrendingAnimeData(1, MAX_ITEMS),
         refetchInterval: REFRESH_INTERVAL,
         retry: 5,

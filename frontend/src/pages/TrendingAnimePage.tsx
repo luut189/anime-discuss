@@ -11,7 +11,7 @@ export default function TrendingAnimePage() {
     const [page, setPage] = useState(Number(searchParams.get('page') || '1'));
 
     const { isError, isPending, data } = useQuery({
-        queryKey: [`trending-anime-${page}`],
+        queryKey: ['trending-anime', page],
         queryFn: () => fetchTrendingAnimeData(page),
         refetchInterval: REFRESH_INTERVAL,
         retry: 5,
