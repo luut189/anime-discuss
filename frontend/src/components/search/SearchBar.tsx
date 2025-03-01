@@ -67,7 +67,7 @@ export default function SearchBar() {
     }
 
     return (
-        <div className='flex w-1/2 flex-col gap-2'>
+        <div className='flex w-1/2 flex-col'>
             <form className='flex items-center justify-center' onSubmit={handleSubmit}>
                 <Input
                     type='text'
@@ -81,7 +81,7 @@ export default function SearchBar() {
             </form>
             <div className='relative'>
                 {showResult && debouncedQuery.length > 0 && (
-                    <div className='absolute z-10 w-full'>
+                    <div className='absolute z-10 mt-2 w-full'>
                         <SearchResult
                             isError={isError}
                             isPending={isPending}

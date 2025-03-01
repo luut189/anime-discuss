@@ -130,6 +130,15 @@ export interface AnimeDataResponse {
     data: JikanAnimeData;
 }
 
+export interface IUser {
+    __v: number;
+    _id: string;
+    username: string;
+    password: string;
+    image: string;
+    pinnedAnime: string[];
+}
+
 export interface IThread {
     __v: number;
     _id: string;
