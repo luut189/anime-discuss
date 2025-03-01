@@ -15,5 +15,6 @@ export const WEEKDAYS = [
 export const ENV = {
     PORT: process.env.PORT,
     MONGO_URI: process.env.MONGO_URI!,
-    NOV_ENV: process.env.NODE_ENV,
+    JWT_SECRET: process.env.JWT_SECRET!,
+    NODE_ENV: process.env.NODE_ENV,
 };
