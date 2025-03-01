@@ -6,6 +6,11 @@ async function createThread(req: Request, res: Response) {
     try {
         const { mal_id, title, author, content } = req.body;
 
+        if (!mal_id || !title || !author || !content) {
+            res.status(400).json({ success: false, message: 'All fields are required' });
+            return;
+        }
+
         const newThread = await Thread.create({ mal_id, title, author, content });
         res.status(201).json(newThread);
     } catch (error) {
@@ -61,6 +66,11 @@ async function deleteThread(req: Request, res: Response) {
 async function createComment(req: Request, res: Response) {
     try {
         const { threadId, author, content } = req.body;
+
+        if (!threadId || !author || !content) {
+            res.status(400).json({ success: false, message: 'All fields are required' });
+            return;
+        }
 
         const newComment = await Comment.create({
             thread: threadId,
