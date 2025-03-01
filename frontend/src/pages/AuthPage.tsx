@@ -33,7 +33,7 @@ const formItemList: IFormItem[] = [
 ];
 
 export function SignupPage() {
-    const { signup } = useAuth();
+    const { user, signup } = useAuth();
     const navigate = useNavigate();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -45,7 +45,7 @@ export function SignupPage() {
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         signup(values);
-        navigate('/');
+        if (user) navigate('/');
     }
 
     return (
@@ -94,7 +94,7 @@ export function SignupPage() {
 }
 
 export function LoginPage() {
-    const { login } = useAuth();
+    const { user, login } = useAuth();
     const navigate = useNavigate();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -106,7 +106,7 @@ export function LoginPage() {
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         login(values);
-        navigate('/');
+        if (user) navigate('/');
     }
 
     return (
