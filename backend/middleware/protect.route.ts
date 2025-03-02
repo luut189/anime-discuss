@@ -24,8 +24,10 @@ export async function protectRoute(req: AuthRequest, res: Response, next: NextFu
             req.user = user;
             next();
         } catch (jwtError) {
-            console.error('JWT verification failed:', jwtError);
-            res.status(401).json({ success: false, message: 'Invalid token' });
+            res.status(401).json({
+                success: false,
+                message: 'JWT verification failed: ' + jwtError,
+            });
         }
     } catch (error) {
         console.error('Unexpected error in auth middleware:', error);

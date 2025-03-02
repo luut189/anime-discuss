@@ -12,7 +12,7 @@ export default function AnimeThreadPage() {
     const { id } = useParams();
 
     const { isError, isPending, data } = useQuery({
-        queryKey: [`data-${id}`],
+        queryKey: ['data', id],
         queryFn: () => fetchAnimeById(id || '0'),
         enabled: !!id,
         retry: 5,

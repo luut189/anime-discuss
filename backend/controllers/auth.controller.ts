@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import User from '@/models/user.model';
 import { generateJWTAndSetCookie } from '@/utils/generateJWT';
 import { AuthRequest } from '@/middleware/protect.route';
+import { ENV } from '@/common/constants';
 
 export async function signup(req: Request, res: Response) {
     try {
@@ -73,7 +74,7 @@ export async function login(req: Request, res: Response) {
             user: { ...user.toObject(), password: undefined },
         });
     } catch (error) {
-        console.error(`Error in signin controller: ${error}`);
+        console.error(`Error in login controller: ${error}`);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
@@ -82,13 +83,13 @@ export async function logout(req: Request, res: Response) {
     try {
         res.clearCookie('jwt-anime-discussion', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: ENV.NODE_ENV === 'production',
             sameSite: 'strict',
         });
 
         res.status(200).json({ success: true, message: 'Signed out successfully' });
     } catch (error) {
-        console.error(`Error in signout controller: ${error}`);
+        console.error(`Error in logout controller: ${error}`);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
