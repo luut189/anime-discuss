@@ -2,12 +2,11 @@ import { JikanAnimeData } from '@/common/interfaces';
 import { Button } from '@/components/ui/button';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuth } from '@/store/useAuth';
+import usePinAnime from '@/hooks/usePinAnime';
+import useAuthStore from '@/store/useAuthStore';
 
 import { CirclePlay, CircleCheck, CircleHelp, Star, Pin, PinOff } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { toast } from 'sonner';
 
 function AnimeCard({
     mal_id,
@@ -20,41 +19,8 @@ function AnimeCard({
     genres,
 }: JikanAnimeData) {
     const navigate = useNavigate();
-    const { user } = useAuth();
-    const [isPinned, setIsPinned] = useState(false);
-
-    useEffect(() => {
-        if (user && user.pinnedAnime) setIsPinned(user.pinnedAnime.includes(`${mal_id}`));
-    }, [user, mal_id]);
-
-    async function handlePin() {
-        if (!user) return;
-        try {
-            if (isPinned) {
-                const response = await fetch('/api/user/pinnedAnime', {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mal_id }),
-                });
-                if (response.ok) {
-                    toast.success(`Unpinned ${title}`);
-                    setIsPinned(false);
-                }
-                return;
-            }
-            const response = await fetch('/api/user/pinnedAnime', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mal_id }),
-            });
-            if (response.ok) {
-                toast.success(`Pinned ${title}`);
-                setIsPinned(true);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    const { user } = useAuthStore();
+    const { isPinned, handlePin } = usePinAnime(user, mal_id, title);
 
     return (
         <>

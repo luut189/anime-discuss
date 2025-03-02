@@ -10,14 +10,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/store/useAuth';
+import useAuthStore from '@/store/useAuthStore';
 
 import { useNavigate } from 'react-router';
 import { LogIn, LogOut, MessagesSquare, User } from 'lucide-react';
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const { user, authCheck, logout } = useAuth();
+    const { user, authCheck, logout } = useAuthStore();
     return (
         <nav className='flex p-4'>
             <div

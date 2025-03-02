@@ -19,7 +19,7 @@ type AuthState = {
     authCheck: () => void;
 };
 
-export const useAuth = create<AuthState>((set) => ({
+const useAuthStore = create<AuthState>((set) => ({
     user: null,
     isSigningUp: false,
     isLoggingIn: false,
@@ -95,3 +95,5 @@ export const useAuth = create<AuthState>((set) => ({
         }
     },
 }));
+
+export default useAuthStore;

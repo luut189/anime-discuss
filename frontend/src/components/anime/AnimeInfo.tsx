@@ -1,11 +1,10 @@
 import { JikanAnimeData } from '@/common/interfaces';
 import { Button } from '@/components/ui/button';
+import usePinAnime from '@/hooks/usePinAnime';
 import { formatDate } from '@/lib/utils';
-import { useAuth } from '@/store/useAuth';
+import useAuthStore from '@/store/useAuthStore';
 
 import { Heart, Pin, PinOff, Star } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
 
 export default function AnimeInfo({
     mal_id,
@@ -22,41 +21,8 @@ export default function AnimeInfo({
     genres,
     favorites,
 }: JikanAnimeData) {
-    const { user } = useAuth();
-    const [isPinned, setIsPinned] = useState(false);
-
-    useEffect(() => {
-        if (user && user.pinnedAnime) setIsPinned(user.pinnedAnime.includes(`${mal_id}`));
-    }, [user, mal_id]);
-
-    async function handlePin() {
-        if (!user) return;
-        try {
-            if (isPinned) {
-                const response = await fetch('/api/user/pinnedAnime', {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mal_id }),
-                });
-                if (response.ok) {
-                    toast.success(`Unpinned ${title}`);
-                    setIsPinned(false);
-                }
-                return;
-            }
-            const response = await fetch('/api/user/pinnedAnime', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mal_id }),
-            });
-            if (response.ok) {
-                toast.success(`Pinned ${title}`);
-                setIsPinned(true);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    const { user } = useAuthStore();
+    const { isPinned, handlePin } = usePinAnime(user, mal_id, title);
 
     return (
         <div className='rounded-lg bg-muted/50 p-6'>

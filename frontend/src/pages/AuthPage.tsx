@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@/store/useAuth';
+import useAuthStore from '@/store/useAuthStore';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -33,7 +33,7 @@ const formItemList: IFormItem[] = [
 ];
 
 export function SignupPage() {
-    const { user, signup } = useAuth();
+    const { user, signup } = useAuthStore();
     const navigate = useNavigate();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -94,7 +94,7 @@ export function SignupPage() {
 }
 
 export function LoginPage() {
-    const { user, login } = useAuth();
+    const { user, login } = useAuthStore();
     const navigate = useNavigate();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

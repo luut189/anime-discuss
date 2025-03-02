@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
-import { useAuth } from '@/store/useAuth';
+import useAuthStore from '@/store/useAuthStore';
 
 import { useQuery } from '@tanstack/react-query';
 import { WEEKDAYS } from '@/common/constants';
@@ -12,7 +12,7 @@ import { Navigate } from 'react-router';
 import { delay } from '@/lib/utils';
 
 export default function ProfilePage() {
-    const { user } = useAuth();
+    const { user } = useAuthStore();
     if (!user) return <Navigate to='/auth/login' />;
     return (
         <div className='flex flex-col items-center justify-center gap-4'>
@@ -46,7 +46,7 @@ export default function ProfilePage() {
 }
 
 function ThreadsContainer() {
-    const { user } = useAuth();
+    const { user } = useAuthStore();
     const { data, isPending } = useQuery({
         queryKey: ['threads', user?._id],
         queryFn: async () => {
@@ -92,7 +92,7 @@ interface AnimeContainerProps {
     type: 'today' | 'pinned';
 }
 function AnimeContainer({ type }: AnimeContainerProps) {
-    const { user } = useAuth();
+    const { user } = useAuthStore();
     const { data, isPending } = useQuery({
         queryKey: ['pinned-anime', user?._id],
         queryFn: async () => {

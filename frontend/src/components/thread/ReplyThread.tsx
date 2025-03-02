@@ -10,7 +10,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/store/useAuth';
+import useAuthStore from '@/store/useAuthStore';
 import { toast } from 'sonner';
 
 import { useForm } from 'react-hook-form';
@@ -40,7 +40,7 @@ export default function ReplyThread({
     onReplySubmit,
 }: ReplyThreadProps) {
     const queryClient = useQueryClient();
-    const { user } = useAuth();
+    const { user } = useAuthStore();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

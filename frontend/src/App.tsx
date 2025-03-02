@@ -8,14 +8,14 @@ import SearchResultPage from '@/pages/SearchResultPage';
 import ProfilePage from '@/pages/ProfilePage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import { Toaster } from '@/components/ui/sonner';
-import { useAuth } from '@/store/useAuth';
+import useAuthStore from '@/store/useAuthStore';
 
 import { Navigate, Route, Routes } from 'react-router';
 import { useEffect } from 'react';
 import { LoaderCircle } from 'lucide-react';
 
 export default function App() {
-    const { user, authCheck, isCheckingAuth } = useAuth();
+    const { user, authCheck, isCheckingAuth } = useAuthStore();
 
     useEffect(() => {
         authCheck();

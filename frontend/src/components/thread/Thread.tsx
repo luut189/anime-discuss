@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReplyThread from '@/components/thread/ReplyThread';
-import { useAuth } from '@/store/useAuth';
+import useAuthStore from '@/store/useAuthStore';
 import { timeAgo } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -34,7 +34,7 @@ export function Thread({
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const location = useLocation();
-    const { user } = useAuth();
+    const { user } = useAuthStore();
 
     async function handleDelete() {
         try {
