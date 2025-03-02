@@ -1,9 +1,12 @@
-import { IUser } from '@/common/interfaces';
+import useAuthStore from '@/store/useAuthStore';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
-function usePinAnime(user: IUser | null, mal_id: number, title: string) {
+function usePinAnime(mal_id: number, title: string) {
+    const { user, setUser } = useAuthStore();
+    const queryClient = useQueryClient();
     const [isPinned, setIsPinned] = useState(false);
 
     useEffect(() => {
@@ -14,6 +17,12 @@ function usePinAnime(user: IUser | null, mal_id: number, title: string) {
 
     async function handlePin() {
         if (!user) return;
+
+        const newPinnedAnime = isPinned
+            ? user.pinnedAnime.filter((id) => id !== `${mal_id}`)
+            : [...user.pinnedAnime, `${mal_id}`];
+
+        setUser({ ...user, pinnedAnime: newPinnedAnime });
 
         try {
             const method = isPinned ? 'DELETE' : 'POST';
@@ -26,9 +35,12 @@ function usePinAnime(user: IUser | null, mal_id: number, title: string) {
             if (response.ok) {
                 toast.success(`${isPinned ? 'Unpinned' : 'Pinned'} ${title}`);
                 setIsPinned(!isPinned);
+                queryClient.invalidateQueries({ queryKey: ['pinned-anime', user._id] });
             }
         } catch (error) {
             console.error(error);
+            setUser(user);
+            setIsPinned(isPinned);
         }
     }
 

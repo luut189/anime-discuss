@@ -17,6 +17,7 @@ type AuthState = {
     login: (arg: Credential) => void;
     logout: () => void;
     authCheck: () => void;
+    setUser: (arg: IUser) => void;
 };
 
 const useAuthStore = create<AuthState>((set) => ({
@@ -93,6 +94,9 @@ const useAuthStore = create<AuthState>((set) => ({
             console.error(error);
             set({ isCheckingAuth: false });
         }
+    },
+    setUser: (newUser: IUser) => {
+        set({ user: newUser });
     },
 }));
 
