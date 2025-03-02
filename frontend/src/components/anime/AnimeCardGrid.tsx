@@ -14,7 +14,7 @@ export default function AnimeCardGrid({ isPendingData, items }: AnimeCardGridPro
                     {isPendingData ? (
                         <AnimeCardSkeleton />
                     ) : (
-                        <AnimeCard animeData={anime as JikanAnimeData} />
+                        <AnimeCard {...(anime as JikanAnimeData)} />
                     )}
                 </div>
             ))}

@@ -1,7 +1,5 @@
 import { IThread } from '@/common/interfaces';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import Thread from '@/components/thread/Thread';
+import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -34,29 +32,7 @@ export default function Threads({ id }: ThreadsProp) {
         return (
             <>
                 {Array.from({ length: 2 }).map((_, idx) => (
-                    <Card key={idx}>
-                        <CardHeader>
-                            <div className=''>
-                                <Skeleton className='h-7 w-1/3' />
-                            </div>
-                            <div className='flex flex-col gap-2'>
-                                <Skeleton className='h-4 w-48' />
-                                <Skeleton className='h-4 w-40' />
-                            </div>
-                        </CardHeader>
-
-                        <CardContent>
-                            <div className='space-y-2'>
-                                <Skeleton className='h-4 w-full' />
-                                <Skeleton className='h-4 w-3/4' />
-                                <Skeleton className='h-4 w-1/2' />
-                            </div>
-                        </CardContent>
-
-                        <CardFooter>
-                            <Skeleton className='h-10 w-20' />
-                        </CardFooter>
-                    </Card>
+                    <ThreadSkeleton key={idx} />
                 ))}
             </>
         );
@@ -73,19 +49,7 @@ export default function Threads({ id }: ThreadsProp) {
     return (
         <>
             {data.map((thread) => (
-                <Thread
-                    key={thread._id}
-                    __v={thread.__v}
-                    _id={thread._id}
-                    mal_id={thread.mal_id}
-                    title={thread.title}
-                    author={thread.author}
-                    authorId={thread.authorId}
-                    content={thread.content}
-                    comments={thread.comments}
-                    createdAt={thread.createdAt}
-                    updatedAt={thread.updatedAt}
-                />
+                <Thread key={thread._id} {...thread} />
             ))}
         </>
     );

@@ -5,19 +5,29 @@ import { LoginPage, SignupPage } from '@/pages/AuthPage';
 import TrendingAnimePage from '@/pages/TrendingAnimePage';
 import AnimeThreadPage from '@/pages/AnimeThreadPage';
 import SearchResultPage from '@/pages/SearchResultPage';
+import ProfilePage from '@/pages/ProfilePage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import { Toaster } from '@/components/ui/sonner';
 import { useAuth } from '@/store/useAuth';
 
 import { Navigate, Route, Routes } from 'react-router';
 import { useEffect } from 'react';
+import { LoaderCircle } from 'lucide-react';
 
 export default function App() {
-    const { user, authCheck } = useAuth();
+    const { user, authCheck, isCheckingAuth } = useAuth();
 
     useEffect(() => {
         authCheck();
     }, [authCheck]);
+
+    if (isCheckingAuth) {
+        return (
+            <div className='flex min-h-screen flex-grow items-center justify-center'>
+                <LoaderCircle className='animate-spin text-muted-foreground' size={64} />
+            </div>
+        );
+    }
 
     return (
         <div className='flex min-h-screen flex-col transition-colors'>
@@ -37,6 +47,7 @@ export default function App() {
                         <Route path=':id' element={<AnimeThreadPage />} />
                         <Route path='search' element={<SearchResultPage />} />
                     </Route>
+                    <Route path='/profile' element={user ? <ProfilePage /> : <Navigate to='/' />} />
                     <Route path='/*' element={<NotFoundPage />} />
                 </Routes>
             </main>

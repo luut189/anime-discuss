@@ -37,10 +37,10 @@ export default function Navbar() {
                                 <AvatarFallback>{user.username}</AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent>
+                        <DropdownMenuContent className='mt-1'>
                             <DropdownMenuLabel>{user.username}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate('/profile')}>
                                 <User />
                                 Profile
                             </DropdownMenuItem>

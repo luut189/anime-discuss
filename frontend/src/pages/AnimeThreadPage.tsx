@@ -24,7 +24,7 @@ export default function AnimeThreadPage() {
 
     if (!data || isPending) {
         return (
-            <div className='flex min-h-screen items-center justify-center'>
+            <div className='flex flex-grow items-center justify-center'>
                 <LoaderCircle className='animate-spin text-muted-foreground' size={64} />
             </div>
         );
@@ -32,7 +32,7 @@ export default function AnimeThreadPage() {
 
     return (
         <div className='flex flex-col gap-4'>
-            <AnimeInfo data={data} />
+            <AnimeInfo {...data} />
             <CreateThread id={id as string} />
             <Threads id={id as string} />
         </div>

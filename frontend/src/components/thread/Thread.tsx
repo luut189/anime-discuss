@@ -8,16 +8,18 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import ReplyThread from '@/components/thread/ReplyThread';
 import { useAuth } from '@/store/useAuth';
 import { timeAgo } from '@/lib/utils';
 import { toast } from 'sonner';
 
 import { useState } from 'react';
-import { MessageSquare, X } from 'lucide-react';
+import { ArrowUpRight, MessageSquare, X } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useLocation, useNavigate } from 'react-router';
 
-export default function Thread({
+export function Thread({
     _id,
     author,
     authorId,
@@ -30,6 +32,8 @@ export default function Thread({
 }: IThread) {
     const [isReply, setIsReply] = useState(false);
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useAuth();
 
     async function handleDelete() {
@@ -52,8 +56,8 @@ export default function Thread({
             console.error('Error deleting thread:', error);
         }
         queryClient.invalidateQueries({ queryKey: [`threads-${mal_id}`] });
+        if (user) queryClient.invalidateQueries({ queryKey: ['threads', user.username] });
     }
-
     return (
         <Card>
             <CardHeader>
@@ -100,7 +104,46 @@ export default function Thread({
                         onReplySubmit={() => setIsReply(false)}
                     />
                 )}
-                <ReplyButton isReply={isReply} setIsReply={setIsReply} />
+                <div className='flex w-full justify-between'>
+                    {location.pathname !== `/anime/${mal_id}` ? (
+                        <Button
+                            onClick={() => {
+                                navigate(`/anime/${mal_id}`);
+                            }}>
+                            <ArrowUpRight />
+                            Jump to anime page
+                        </Button>
+                    ) : null}
+                    <ReplyButton isReply={isReply} setIsReply={setIsReply} />
+                </div>
+            </CardFooter>
+        </Card>
+    );
+}
+
+export function ThreadSkeleton() {
+    return (
+        <Card>
+            <CardHeader>
+                <div className=''>
+                    <Skeleton className='h-7 w-1/3' />
+                </div>
+                <div className='flex flex-col gap-2'>
+                    <Skeleton className='h-4 w-48' />
+                    <Skeleton className='h-4 w-40' />
+                </div>
+            </CardHeader>
+
+            <CardContent>
+                <div className='space-y-2'>
+                    <Skeleton className='h-4 w-full' />
+                    <Skeleton className='h-4 w-3/4' />
+                    <Skeleton className='h-4 w-1/2' />
+                </div>
+            </CardContent>
+
+            <CardFooter>
+                <Skeleton className='h-10 w-20' />
             </CardFooter>
         </Card>
     );
