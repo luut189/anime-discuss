@@ -3,6 +3,7 @@ import connectMongoDB from '@/config/db';
 import animeRoute from '@/routes/anime.route';
 import threadRoute from '@/routes/thread.route';
 import authRoute from '@/routes/auth.route';
+import userRoute from '@/routes/user.route';
 
 import express from 'express';
 import cors from 'cors';
@@ -15,9 +16,10 @@ const __dirname = path.resolve();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+app.use('/api/auth', authRoute);
+app.use('/api/user', userRoute);
 app.use('/api/anime', animeRoute);
 app.use('/api/thread', threadRoute);
-app.use('/api/auth', authRoute);
 
 if (ENV.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '/frontend/dist')));
