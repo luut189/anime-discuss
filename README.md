@@ -2,13 +2,13 @@
 
 ## About
 
-AniDis is a MERN stack-based platform where anime fans can engage in threaded discussions about their favorite series.
+AniDis is a MERN stack platform designed for anime enthusiasts to connect and engage in community-driven discussions.
 
-It offers daily updates on the latest episodes, highlights trending anime, and provides dedicated threads for specific shows, allowing users to discuss, share opinions, and stay connected to the anime community.
+Users can pin their favorite anime, follow daily episode updates, and explore trending anime. The platform features dedicated threads for each anime, where users can share their thoughts and opinions on individual shows, creating a vibrant, interactive anime community.
 
 ## Setup development environment
 
-Please ensure you have `Node` installed
+Please ensure you have `Node >= 22.11` installed
 
 1. Navigate to both directories and run `npm install` to install all necessary dependencies
 
@@ -26,7 +26,9 @@ Please ensure you have `Node` installed
     npm run dev
     ```
 
-4. Open the app at `http://localhost:5173`
+4. Open the backend at `http://localhost:PORT` with `PORT` being what you put in your `.env` file
+
+5. Open the app at `http://localhost:5173`
 
 ## Instruction for Production
 
@@ -43,3 +45,5 @@ Please ensure you have `Node` installed
     ```
 
 3. Open the app at `http://localhost:5000`
+
+    > Assuming you put `PORT=5000` in your `.env`
