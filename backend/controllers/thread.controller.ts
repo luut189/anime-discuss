@@ -1,21 +1,39 @@
-import Thread from '@/models/thread.model';
+import Thread, { IThread } from '@/models/thread.model';
 import Comment from '@/models/comment.model';
 import { Request, Response } from 'express';
+import User from '@/models/user.model';
+import { AuthRequest } from '@/middleware/protect.route';
 
-async function createThread(req: Request, res: Response) {
+async function createThread(req: AuthRequest, res: Response) {
     try {
-        const { mal_id, title, author, content } = req.body;
+        const { mal_id, title, content } = req.body;
+        const user = req.user;
 
-        if (!mal_id || !title || !author || !content) {
+        if (!mal_id || !title || !content) {
             res.status(400).json({ success: false, message: 'All fields are required' });
             return;
         }
 
-        const newThread = await Thread.create({ mal_id, title, author, content });
+        const threadData: Partial<IThread> = {
+            mal_id,
+            title,
+            content,
+            author: user ? user.username : 'Anonymous',
+            authorId: user ? user.id : undefined,
+        };
+
+        const newThread = await Thread.create(threadData);
+
+        if (user) {
+            await User.findByIdAndUpdate(user.id, { $push: { threads: newThread._id } });
+        }
+
         res.status(201).json(newThread);
     } catch (error) {
+        console.error('Error creating thread:', error);
         res.status(500).json({
-            error: `Failed to create thread: ${error}`,
+            success: false,
+            error: 'Failed to create thread',
         });
     }
 }
@@ -49,17 +67,37 @@ async function getThread(req: Request, res: Response) {
     }
 }
 
-async function deleteThread(req: Request, res: Response) {
+async function deleteThread(req: AuthRequest, res: Response) {
     try {
         const { id } = req.params;
-        await Comment.deleteMany({ thread: id });
-        const thread = await Thread.findByIdAndDelete(id);
+        const user = req.user;
+        const thread = await Thread.findById(id);
 
-        res.json(thread);
+        if (!thread) {
+            res.status(404).json({ error: 'Thread not found' });
+            return;
+        }
+
+        if (thread.authorId) {
+            if (!user || thread.authorId.toString() !== user.id) {
+                res.status(403).json({ error: 'Unauthorized to delete this thread' });
+                return;
+            }
+
+            await User.findByIdAndUpdate(user.id, { $pull: { threads: id } });
+        } else {
+            if (user) {
+                res.status(403).json({ error: 'Logged-in users cannot delete anonymous threads' });
+                return;
+            }
+        }
+        await Comment.deleteMany({ thread: id });
+        await thread.deleteOne();
+
+        res.json({ message: 'Thread deleted successfully' });
     } catch (error) {
-        res.status(500).json({
-            error: `Failed to delete thread: ${error}`,
-        });
+        console.error('Error deleting thread:', error);
+        res.status(500).json({ error: 'Failed to delete thread' });
     }
 }
 

@@ -10,11 +10,14 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/store/useAuth';
+import { toast } from 'sonner';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 interface ReplyThreadProps {
     mal_id: number;
@@ -37,6 +40,7 @@ export default function ReplyThread({
     onReplySubmit,
 }: ReplyThreadProps) {
     const queryClient = useQueryClient();
+    const { user } = useAuth();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -45,6 +49,10 @@ export default function ReplyThread({
             author: 'Anonymous',
             content: '',
         },
+    });
+
+    useEffect(() => {
+        if (user) form.setValue('author', user?.username);
     });
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
@@ -61,8 +69,10 @@ export default function ReplyThread({
             }
 
             const newComment = await response.json();
-            console.log('Thread created:', newComment);
+            toast.success('Replied successfully!');
+            console.log('Comment created:', newComment);
         } catch (error) {
+            toast.error('Error creating comment.');
             console.error('Error creating comment:', error);
         }
         onReplySubmit();
@@ -88,7 +98,11 @@ export default function ReplyThread({
                                     <FormItem className='w-1/3'>
                                         <FormLabel>Author</FormLabel>
                                         <FormControl>
-                                            <Input placeholder='Anonymous' {...field} />
+                                            <Input
+                                                placeholder='Anonymous'
+                                                {...field}
+                                                disabled={!!user}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

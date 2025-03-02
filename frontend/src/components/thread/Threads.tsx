@@ -80,6 +80,7 @@ export default function Threads({ id }: ThreadsProp) {
                     mal_id={thread.mal_id}
                     title={thread.title}
                     author={thread.author}
+                    authorId={thread.authorId}
                     content={thread.content}
                     comments={thread.comments}
                     createdAt={thread.createdAt}

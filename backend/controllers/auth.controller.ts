@@ -5,7 +5,7 @@ import { generateJWTAndSetCookie } from '@/utils/generateJWT';
 import { AuthRequest } from '@/middleware/protect.route';
 import { ENV } from '@/common/constants';
 
-export async function signup(req: Request, res: Response) {
+async function signup(req: Request, res: Response) {
     try {
         const { username, password } = req.body;
 
@@ -46,7 +46,7 @@ export async function signup(req: Request, res: Response) {
     }
 }
 
-export async function login(req: Request, res: Response) {
+async function login(req: Request, res: Response) {
     try {
         const { username, password } = req.body;
 
@@ -79,7 +79,7 @@ export async function login(req: Request, res: Response) {
     }
 }
 
-export async function logout(req: Request, res: Response) {
+async function logout(req: Request, res: Response) {
     try {
         res.clearCookie('jwt-anime-discussion', {
             httpOnly: true,
@@ -94,7 +94,7 @@ export async function logout(req: Request, res: Response) {
     }
 }
 
-export async function authCheck(req: AuthRequest, res: Response) {
+async function authCheck(req: AuthRequest, res: Response) {
     try {
         res.status(200).json({ success: true, user: req.user });
     } catch (error) {
@@ -102,3 +102,5 @@ export async function authCheck(req: AuthRequest, res: Response) {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
+
+export { signup, login, logout, authCheck };

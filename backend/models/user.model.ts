@@ -5,6 +5,7 @@ interface IUser extends Document {
     password: string;
     image: string;
     pinnedAnime: string[];
+    threads: mongoose.Types.ObjectId[];
 }
 
 const UserSchema = new Schema<IUser>({
@@ -21,10 +22,19 @@ const UserSchema = new Schema<IUser>({
         type: String,
         default: '',
     },
-    pinnedAnime: {
-        type: [String],
-        default: [],
-    },
+    pinnedAnime: [
+        {
+            type: String,
+            default: [],
+        },
+    ],
+    threads: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Thread',
+            default: [],
+        },
+    ],
 });
 
 const User = mongoose.model<IUser>('User', UserSchema);

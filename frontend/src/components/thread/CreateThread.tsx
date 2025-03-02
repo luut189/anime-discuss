@@ -10,11 +10,14 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/store/useAuth';
+import { toast } from 'sonner';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 interface CreateThreadProps {
     id: string;
@@ -29,6 +32,8 @@ const formSchema = z.object({
 
 export default function CreateThread({ id }: CreateThreadProps) {
     const queryClient = useQueryClient();
+    const { user } = useAuth();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -39,9 +44,13 @@ export default function CreateThread({ id }: CreateThreadProps) {
         },
     });
 
+    useEffect(() => {
+        if (user) form.setValue('author', user?.username);
+    });
+
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
-            const response = await fetch('/api/thread', {
+            const response = await fetch(`/api/thread/${user ? 'auth' : 'public'}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,8 +62,10 @@ export default function CreateThread({ id }: CreateThreadProps) {
             }
 
             const newThread = await response.json();
+            toast.success('Thread created!');
             console.log('Thread created:', newThread);
         } catch (error) {
+            toast.error('Error creating thread.');
             console.error('Error creating thread:', error);
         }
 
@@ -81,7 +92,11 @@ export default function CreateThread({ id }: CreateThreadProps) {
                                     <FormItem className='w-1/3'>
                                         <FormLabel>Author</FormLabel>
                                         <FormControl>
-                                            <Input placeholder='Anonymous' {...field} />
+                                            <Input
+                                                placeholder='Anonymous'
+                                                {...field}
+                                                disabled={!!user}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

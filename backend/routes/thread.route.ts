@@ -5,15 +5,20 @@ import {
     createComment,
     deleteThread,
 } from '@/controllers/thread.controller';
+import { protectRoute } from '@/middleware/protect.route';
 import { Router } from 'express';
 
 const router = Router();
 const commentRouter = Router();
 
-router.post('/', createThread);
+router.post('/public', createThread);
+router.post('/auth', protectRoute, createThread);
+
 router.get('/:mal_id', getThreads);
 router.get('/:id', getThread);
-router.delete('/:id', deleteThread);
+
+router.delete('/public/:id', deleteThread);
+router.delete('/auth/:id', protectRoute, deleteThread);
 
 commentRouter.post('/', createComment);
 

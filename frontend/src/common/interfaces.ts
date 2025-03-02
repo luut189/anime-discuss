@@ -145,6 +145,7 @@ export interface IThread {
     mal_id: number;
     title: string;
     author: string;
+    authorId?: string;
     content: string;
     comments: IComment[];
     createdAt: string;

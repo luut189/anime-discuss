@@ -9,7 +9,9 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import ReplyThread from '@/components/thread/ReplyThread';
+import { useAuth } from '@/store/useAuth';
 import { timeAgo } from '@/lib/utils';
+import { toast } from 'sonner';
 
 import { useState } from 'react';
 import { MessageSquare, X } from 'lucide-react';
@@ -18,6 +20,7 @@ import { useQueryClient } from '@tanstack/react-query';
 export default function Thread({
     _id,
     author,
+    authorId,
     comments,
     content,
     title,
@@ -27,10 +30,11 @@ export default function Thread({
 }: IThread) {
     const [isReply, setIsReply] = useState(false);
     const queryClient = useQueryClient();
+    const { user } = useAuth();
 
     async function handleDelete() {
         try {
-            const response = await fetch(`/api/thread/${_id}`, {
+            const response = await fetch(`/api/thread/${user ? 'auth' : 'public'}/${_id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,8 +45,10 @@ export default function Thread({
             }
 
             const deleted = await response.json();
+            toast.success('Thread deleted!');
             console.log('Thread deleted:', deleted);
         } catch (error) {
+            toast.error('Error deleting thread.');
             console.error('Error deleting thread:', error);
         }
         queryClient.invalidateQueries({ queryKey: [`threads-${mal_id}`] });
@@ -59,10 +65,12 @@ export default function Thread({
                         </CardDescription>
                         <CardDescription>Last updated {timeAgo(updatedAt)}</CardDescription>
                     </div>
-                    <Button variant='destructive' className='ml-auto' onClick={handleDelete}>
-                        <X />
-                        Delete Thread
-                    </Button>
+                    {(user && user._id === authorId) || (!authorId && !user) ? (
+                        <Button variant='destructive' className='ml-auto' onClick={handleDelete}>
+                            <X />
+                            Delete Thread
+                        </Button>
+                    ) : null}
                 </div>
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>

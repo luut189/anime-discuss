@@ -4,6 +4,7 @@ interface IThread extends Document {
     mal_id: number;
     title: string;
     author: string;
+    authorId?: string;
     content: string;
     comments: mongoose.Types.ObjectId[];
     createdAt: Date;
@@ -19,6 +20,10 @@ const ThreadSchema = new Schema<IThread>(
         author: {
             type: String,
             default: 'Anonymous',
+        },
+        authorId: {
+            type: String,
+            required: false,
         },
         title: {
             type: String,
