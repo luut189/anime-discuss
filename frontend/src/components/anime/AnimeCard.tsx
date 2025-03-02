@@ -1,11 +1,10 @@
 import { JikanAnimeData } from '@/common/interfaces';
-import { Button } from '@/components/ui/button';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import usePinAnime from '@/hooks/usePinAnime';
+import { PinAnimeButton } from '@/components/anime/PinAnimeButton';
 import useAuthStore from '@/store/useAuthStore';
 
-import { CirclePlay, CircleCheck, CircleHelp, Star, Pin, PinOff } from 'lucide-react';
+import { CirclePlay, CircleCheck, CircleHelp, Star } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 function AnimeCard({
@@ -18,9 +17,8 @@ function AnimeCard({
     status,
     genres,
 }: JikanAnimeData) {
-    const navigate = useNavigate();
     const { user } = useAuthStore();
-    const { isPinned, handlePin } = usePinAnime(user, mal_id, title);
+    const navigate = useNavigate();
 
     return (
         <>
@@ -67,14 +65,7 @@ function AnimeCard({
                                 </div>
                             ))}
                         </div>
-                        {user ? (
-                            <Button
-                                size='icon'
-                                variant={isPinned ? 'destructive' : 'default'}
-                                onClick={handlePin}>
-                                {isPinned ? <PinOff /> : <Pin />}
-                            </Button>
-                        ) : null}
+                        {user ? <PinAnimeButton mal_id={mal_id} title={title} /> : null}
                     </div>
                 </HoverCardContent>
             </HoverCard>

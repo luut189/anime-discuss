@@ -1,10 +1,9 @@
 import { JikanAnimeData } from '@/common/interfaces';
-import { Button } from '@/components/ui/button';
-import usePinAnime from '@/hooks/usePinAnime';
+import { PinAnimeButton } from '@/components/anime/PinAnimeButton';
 import { formatDate } from '@/lib/utils';
 import useAuthStore from '@/store/useAuthStore';
 
-import { Heart, Pin, PinOff, Star } from 'lucide-react';
+import { Heart, Star } from 'lucide-react';
 
 export default function AnimeInfo({
     mal_id,
@@ -22,7 +21,6 @@ export default function AnimeInfo({
     favorites,
 }: JikanAnimeData) {
     const { user } = useAuthStore();
-    const { isPinned, handlePin } = usePinAnime(user, mal_id, title);
 
     return (
         <div className='rounded-lg bg-muted/50 p-6'>
@@ -36,19 +34,7 @@ export default function AnimeInfo({
                             <h2 className='mb-2 text-2xl font-bold'>{title}</h2>
                             <p className='mb-4 text-sm text-muted-foreground'>{title_japanese}</p>
                         </div>
-                        <Button variant={isPinned ? 'destructive' : 'default'} onClick={handlePin}>
-                            {user ? (
-                                isPinned ? (
-                                    <>
-                                        <PinOff /> Unpin
-                                    </>
-                                ) : (
-                                    <>
-                                        <Pin /> Pin
-                                    </>
-                                )
-                            ) : null}
-                        </Button>
+                        {user ? <PinAnimeButton mal_id={mal_id} title={title} /> : null}
                     </div>
                     <div className='mb-4 grid grid-cols-2 gap-4'>
                         <div>
