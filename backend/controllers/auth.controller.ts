@@ -1,7 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import { Request, Response } from 'express';
 import User from '@/models/user.model';
-import { generateJWTAndSetCookie } from '@/utils/generateJWT';
+import { generateJWTAndSetCookie } from '@/common/utils';
 import { AuthRequest } from '@/middleware/protect.route';
 import { ENV } from '@/common/constants';
 
