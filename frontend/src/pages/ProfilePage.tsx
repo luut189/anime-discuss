@@ -93,7 +93,7 @@ interface AnimeContainerProps {
 }
 function AnimeContainer({ type }: AnimeContainerProps) {
     const { user } = useAuthStore();
-    const { data, isPending } = useQuery({
+    const { data: pinnedAnime, isPending } = useQuery({
         queryKey: ['pinned-anime', user?._id],
         queryFn: async () => {
             try {
@@ -121,38 +121,25 @@ function AnimeContainer({ type }: AnimeContainerProps) {
         },
         enabled: !!user,
         retry: 5,
+        staleTime: 1000 * 60 * 5,
     });
 
-    if (!data || data.length === 0) {
+    const todayAnime = pinnedAnime?.filter(
+        (anime) =>
+            anime.broadcast.day.slice(0, -1) === WEEKDAYS[new Date().getDay()] && anime.airing,
+    );
+
+    const animeList = type === 'today' ? todayAnime : pinnedAnime;
+
+    if (!isPending && (!animeList || animeList.length === 0)) {
         return (
             <div className='flex items-center justify-center rounded-lg border p-4'>
-                There is nothing here but loneliness...
+                {type === 'today'
+                    ? 'There is nothing broadcast today that you like :('
+                    : 'There is nothing here but loneliness...'}
             </div>
         );
     }
 
-    const todayData = data.filter(
-        (anime) => anime.broadcast.day.slice(0, -1) === WEEKDAYS[new Date().getDay()],
-    );
-
-    if (type === 'today' && (!todayData || todayData.length === 0)) {
-        return (
-            <div className='flex items-center justify-center rounded-lg border p-4'>
-                There is nothing broadcast today that you like :(
-            </div>
-        );
-    }
-
-    return (
-        <AnimeCardGrid
-            isPendingData={isPending}
-            items={
-                data
-                    ? type === 'pinned'
-                        ? data
-                        : todayData
-                    : Array.from({ length: 5 }).map(() => null)
-            }
-        />
-    );
+    return <AnimeCardGrid isPendingData={isPending} items={animeList || Array(5).fill(null)} />;
 }
