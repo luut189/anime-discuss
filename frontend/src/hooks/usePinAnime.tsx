@@ -1,3 +1,4 @@
+import { pinAnime, unpinAnime } from '@/api/user';
 import useAuthStore from '@/store/useAuthStore';
 
 import { useQueryClient } from '@tanstack/react-query';
@@ -24,19 +25,14 @@ function usePinAnime(mal_id: number, title: string) {
 
         setUser({ ...user, pinnedAnime: newPinnedAnime });
 
-        try {
-            const method = isPinned ? 'DELETE' : 'POST';
-            const response = await fetch('/api/user/pinnedAnime', {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mal_id }),
-            });
+        setIsPinned(!isPinned);
 
-            if (response.ok) {
-                toast.success(`${isPinned ? 'Unpinned' : 'Pinned'} ${title}`);
-                setIsPinned(!isPinned);
-                queryClient.invalidateQueries({ queryKey: ['pinned-anime', user._id] });
-            }
+        try {
+            await (isPinned ? unpinAnime(mal_id) : pinAnime(mal_id));
+
+            toast.success(`${isPinned ? 'Unpinned' : 'Pinned'} ${title}`);
+
+            queryClient.invalidateQueries({ queryKey: ['pinned-anime', user._id] });
         } catch (error) {
             console.error(error);
             setUser(user);

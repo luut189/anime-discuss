@@ -1,5 +1,4 @@
-import { fetchAnimeById } from '@/common/query';
-import { IThread, JikanAnimeData } from '@/common/interfaces';
+import { getPinnedAnime, getUserThreads } from '@/api/user';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
@@ -9,7 +8,6 @@ import useAuthStore from '@/store/useAuthStore';
 import { useQuery } from '@tanstack/react-query';
 import { WEEKDAYS } from '@/common/constants';
 import { Navigate } from 'react-router';
-import { delay } from '@/lib/utils';
 
 export default function ProfilePage() {
     const { user } = useAuthStore();
@@ -49,20 +47,7 @@ function ThreadsContainer() {
     const { user } = useAuthStore();
     const { data, isPending } = useQuery({
         queryKey: ['threads', user?._id],
-        queryFn: async () => {
-            try {
-                const response = await fetch('/api/user/threads');
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch threads: ${response.statusText}`);
-                }
-
-                const data: IThread[] = await response.json();
-                return data;
-            } catch (error) {
-                console.log(error);
-            }
-        },
+        queryFn: getUserThreads,
         enabled: !!user,
         retry: 5,
     });
@@ -95,30 +80,7 @@ function AnimeContainer({ type }: AnimeContainerProps) {
     const { user } = useAuthStore();
     const { data: pinnedAnime, isPending } = useQuery({
         queryKey: ['pinned-anime', user?._id],
-        queryFn: async () => {
-            try {
-                const response = await fetch('/api/user/pinnedAnime');
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch threads: ${response.statusText}`);
-                }
-
-                const list: string[] = (await response.json()).pinnedAnime;
-
-                const animeData: JikanAnimeData[] = (
-                    await Promise.all(
-                        list.map(async (mal_id) => {
-                            await delay(100);
-                            return await fetchAnimeById(mal_id);
-                        }),
-                    )
-                ).filter((anime) => anime !== undefined);
-
-                return animeData;
-            } catch (error) {
-                console.log(error);
-            }
-        },
+        queryFn: getPinnedAnime,
         enabled: !!user,
         retry: 5,
         staleTime: 1000 * 60 * 5,
