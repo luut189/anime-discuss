@@ -11,13 +11,14 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReplyThread from '@/components/thread/ReplyThread';
 import useAuthStore from '@/store/useAuthStore';
+import { deleteThread } from '@/api/thread';
 import { timeAgo } from '@/lib/utils';
-import { toast } from 'sonner';
 
 import { useState } from 'react';
 import { ArrowUpRight, MessageSquare, X } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
 export function Thread({
     _id,
@@ -38,19 +39,9 @@ export function Thread({
 
     async function handleDelete() {
         try {
-            const response = await fetch(`/api/thread/${user ? 'auth' : 'public'}/${_id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                throw new Error(`Failed to delete thread: ${response.statusText}`);
-            }
-
-            const deleted = await response.json();
+            await deleteThread(_id, !!user);
             toast.success('Thread deleted!');
-            console.log('Thread deleted:', deleted);
+            console.log('Thread deleted.');
         } catch (error) {
             toast.error('Error deleting thread.');
             console.error('Error deleting thread:', error);
@@ -83,18 +74,7 @@ export function Thread({
             <CardFooter className='flex flex-col gap-2'>
                 <div className='flex w-full flex-col gap-2'>
                     {comments
-                        ? comments.map((comment) => (
-                              <Comment
-                                  key={comment._id}
-                                  _id={comment._id}
-                                  __v={comment.__v}
-                                  mal_id={mal_id}
-                                  thread={comment.thread}
-                                  author={comment.author}
-                                  content={comment.content}
-                                  createdAt={comment.createdAt}
-                              />
-                          ))
+                        ? comments.map((comment) => <Comment key={comment._id} {...comment} />)
                         : null}
                 </div>
                 {isReply && (

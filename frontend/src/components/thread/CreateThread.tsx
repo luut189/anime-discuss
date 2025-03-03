@@ -11,13 +11,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useAuthStore from '@/store/useAuthStore';
-import { toast } from 'sonner';
+import { createThread } from '@/api/thread';
 
+import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 interface CreateThreadProps {
     id: string;
@@ -50,28 +51,15 @@ export default function CreateThread({ id }: CreateThreadProps) {
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
-            const response = await fetch(`/api/thread/${user ? 'auth' : 'public'}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            if (!response.ok) {
-                throw new Error(`Failed to create thread: ${response.statusText}`);
-            }
-
-            const newThread = await response.json();
+            await createThread(data, !!user);
+            queryClient.invalidateQueries({ queryKey: [`threads-${id}`] });
+            form.reset();
             toast.success('Thread created!');
-            console.log('Thread created:', newThread);
+            console.log('Thread created.');
         } catch (error) {
             toast.error('Error creating thread.');
             console.error('Error creating thread:', error);
         }
-
-        queryClient.invalidateQueries({ queryKey: [`threads-${id}`] });
-
-        form.reset();
     }
 
     return (

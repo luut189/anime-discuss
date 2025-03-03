@@ -11,13 +11,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useAuthStore from '@/store/useAuthStore';
-import { toast } from 'sonner';
+import { createComment } from '@/api/thread';
 
+import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 interface ReplyThreadProps {
     mal_id: number;
@@ -57,27 +58,16 @@ export default function ReplyThread({
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
-            const response = await fetch('/api/thread/comment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            if (!response.ok) {
-                throw new Error(`Failed to create comment: ${response.statusText}`);
-            }
-
-            const newComment = await response.json();
+            await createComment(data);
+            onReplySubmit();
+            queryClient.invalidateQueries({ queryKey: [`threads-${mal_id}`] });
+            form.reset();
             toast.success('Replied successfully!');
-            console.log('Comment created:', newComment);
+            console.log('Comment created.');
         } catch (error) {
             toast.error('Error creating comment.');
             console.error('Error creating comment:', error);
         }
-        onReplySubmit();
-        queryClient.invalidateQueries({ queryKey: [`threads-${mal_id}`] });
-        form.reset();
     }
 
     return (

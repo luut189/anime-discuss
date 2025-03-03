@@ -1,4 +1,4 @@
-import { IThread } from '@/common/interfaces';
+import { fetchThreads } from '@/api/thread';
 import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
 
 import { useQuery } from '@tanstack/react-query';
@@ -10,20 +10,7 @@ interface ThreadsProp {
 export default function Threads({ id }: ThreadsProp) {
     const { data, isPending } = useQuery({
         queryKey: [`threads-${id}`],
-        queryFn: async () => {
-            try {
-                const response = await fetch(`/api/thread/${id}`);
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch threads: ${response.statusText}`);
-                }
-
-                const data: IThread[] = await response.json();
-                return data;
-            } catch (error) {
-                console.log(error);
-            }
-        },
+        queryFn: () => fetchThreads(id),
         enabled: !!id,
         retry: 5,
     });
