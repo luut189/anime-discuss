@@ -19,24 +19,23 @@ function usePinAnime(mal_id: number, title: string) {
     async function handlePin() {
         if (!user) return;
 
-        const newPinnedAnime = isPinned
-            ? user.pinnedAnime.filter((id) => id !== `${mal_id}`)
-            : [...user.pinnedAnime, `${mal_id}`];
-
-        setUser({ ...user, pinnedAnime: newPinnedAnime });
-
-        setIsPinned(!isPinned);
-
         try {
             await (isPinned ? unpinAnime(mal_id) : pinAnime(mal_id));
+
+            const newPinnedAnime = isPinned
+                ? user.pinnedAnime.filter((id) => id !== `${mal_id}`)
+                : [...user.pinnedAnime, `${mal_id}`];
+
+            setUser({ ...user, pinnedAnime: newPinnedAnime });
+
+            setIsPinned(!isPinned);
 
             toast.success(`${isPinned ? 'Unpinned' : 'Pinned'} ${title}`);
 
             queryClient.invalidateQueries({ queryKey: ['pinned-anime', user._id] });
         } catch (error) {
             console.error(error);
-            setUser(user);
-            setIsPinned(isPinned);
+            toast.error(`Failed to ${isPinned ? 'unpin' : 'pin'} ${title}`);
         }
     }
 
