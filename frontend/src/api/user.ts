@@ -38,26 +38,35 @@ export async function getUserThreads() {
 }
 
 export async function getPinnedAnime() {
+    const RATE_LIMIT = 3;
     try {
         const response = await fetch('/api/user/pinnedAnime');
+        if (!response.ok) throw new Error('Failed to fetch pinned anime');
 
-        if (!response.ok) {
-            throw new Error(`Failed to fetch threads: ${response.statusText}`);
+        const pinnedAnime = (await response.json()).pinnedAnime as string[];
+        if (!pinnedAnime.length) return [];
+
+        const animeData: JikanAnimeData[] = [];
+
+        for (let i = 0; i < pinnedAnime.length; i += RATE_LIMIT) {
+            const batch = pinnedAnime.slice(i, i + RATE_LIMIT);
+
+            const results = await Promise.allSettled(batch.map((mal_id) => fetchAnimeById(mal_id)));
+
+            animeData.push(
+                ...results
+                    .filter((res) => res.status === 'fulfilled' && res.value)
+                    .map((res) => (res as PromiseFulfilledResult<JikanAnimeData>).value),
+            );
+
+            if (i + RATE_LIMIT < pinnedAnime.length) {
+                await delay(500);
+            }
         }
-
-        const list: string[] = (await response.json()).pinnedAnime;
-
-        const animeData: JikanAnimeData[] = (
-            await Promise.all(
-                list.map(async (mal_id) => {
-                    await delay(100);
-                    return await fetchAnimeById(mal_id);
-                }),
-            )
-        ).filter((anime) => anime !== undefined);
 
         return animeData;
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        return [];
     }
 }
