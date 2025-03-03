@@ -1,4 +1,4 @@
-import { fetchAnimeById } from '@/common/query';
+import { fetchAnimeById } from '@/api/anime';
 import ErrorFallback from '@/components/ErrorFallback';
 import AnimeInfo from '@/components/anime/AnimeInfo';
 import Threads from '@/components/thread/Threads';

@@ -1,4 +1,4 @@
-import { fetchTrendingAnimeData } from '@/common/query';
+import { fetchTrendingAnimeData } from '@/api/anime';
 import { REFRESH_INTERVAL } from '@/common/constants';
 import AnimePage from '@/pages/common/AnimePage';
 

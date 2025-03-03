@@ -1,4 +1,4 @@
-import { searchAnimeByText } from '@/common/query';
+import { searchAnimeByText } from '@/api/anime';
 import { REFRESH_INTERVAL } from '@/common/constants';
 import AnimePage from '@/pages/common/AnimePage';
 
