@@ -50,6 +50,7 @@ function ThreadsContainer() {
         queryFn: getUserThreads,
         enabled: !!user,
         retry: 5,
+        staleTime: 1000 * 60 * 5,
     });
 
     if (isPending) {

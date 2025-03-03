@@ -15,6 +15,7 @@ function TodayAnimeDisplay() {
         queryFn: fetchTodayAnimeData,
         refetchInterval: REFRESH_INTERVAL,
         retry: 5,
+        staleTime: 1000 * 60 * 5,
     });
     const [showAll, setShowAll] = useState(false);
 
@@ -56,6 +57,7 @@ function TrendingAnimeDisplay() {
         queryFn: () => fetchTrendingAnimeData(1, MAX_ITEMS),
         refetchInterval: REFRESH_INTERVAL,
         retry: 5,
+        staleTime: 1000 * 60 * 5,
     });
     const navigate = useNavigate();
 
