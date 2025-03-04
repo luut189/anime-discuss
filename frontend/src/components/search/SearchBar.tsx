@@ -6,11 +6,12 @@ import SearchResult from '@/components/search/SearchResult';
 
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 export default function SearchBar() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
     const [showResult, setShowResult] = useState(true);
@@ -30,6 +31,10 @@ export default function SearchBar() {
 
         return () => clearTimeout(timer);
     }, [searchQuery]);
+
+    useEffect(() => {
+        setShowResult(false);
+    }, [location]);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         e.preventDefault();
