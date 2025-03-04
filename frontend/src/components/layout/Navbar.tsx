@@ -14,10 +14,11 @@ import useAuthStore from '@/store/useAuthStore';
 
 import { useNavigate } from 'react-router';
 import { LogIn, LogOut, MessagesSquare, User } from 'lucide-react';
+import { IUser } from '@/common/interfaces';
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const { user, authCheck, logout } = useAuthStore();
+    const { user } = useAuthStore();
     return (
         <nav className='flex p-4'>
             <div
@@ -26,40 +27,52 @@ export default function Navbar() {
                 <MessagesSquare />
                 AniDis
             </div>
-            <div className='flex w-full flex-row items-center justify-end gap-2'>
+            <div className='flex w-full items-center justify-end gap-4'>
                 <SearchBar />
                 <ThemeToggle />
-                {user ? (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            <Avatar>
-                                <AvatarImage src={user.image} />
-                                <AvatarFallback>{user.username}</AvatarFallback>
-                            </Avatar>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className='mt-1'>
-                            <DropdownMenuLabel>{user.username}</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => navigate('/profile')}>
-                                <User />
-                                Profile
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={logout}>
-                                <LogOut />
-                                Logout
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                ) : (
-                    <Button
-                        onClick={() => {
-                            authCheck();
-                            navigate('/auth/login');
-                        }}>
-                        <LogIn /> Login
-                    </Button>
-                )}
+                {user ? <UserAvatarButton {...user} /> : <LoginButton />}
             </div>
         </nav>
+    );
+}
+
+function UserAvatarButton({ image, username }: IUser) {
+    const navigate = useNavigate();
+    const { logout } = useAuthStore();
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger>
+                <Avatar>
+                    <AvatarImage src={image} />
+                    <AvatarFallback>{username}</AvatarFallback>
+                </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='mt-2 flex flex-col gap-2 p-2'>
+                <DropdownMenuLabel>{username}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User />
+                    Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>
+                    <LogOut />
+                    Logout
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}
+
+function LoginButton() {
+    const { authCheck } = useAuthStore();
+    const navigate = useNavigate();
+    return (
+        <Button
+            onClick={() => {
+                authCheck();
+                navigate('/auth/login');
+            }}>
+            <LogIn /> Login
+        </Button>
     );
 }
