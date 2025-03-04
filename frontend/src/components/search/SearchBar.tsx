@@ -69,10 +69,10 @@ export default function SearchBar() {
                     className='flex-grow'
                 />
             </form>
-            <div className='relative'>
+            <div className='md:relative'>
                 {showResult && debouncedQuery.length > 0 && (
                     <div
-                        className='absolute z-10 mt-2 w-full'
+                        className='absolute left-0 z-10 mt-2 w-full px-2 md:left-auto md:w-auto md:px-0'
                         onMouseDown={(e) => e.preventDefault()}>
                         <SearchResult
                             isError={isError}
