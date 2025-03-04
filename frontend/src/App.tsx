@@ -1,7 +1,8 @@
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
 import Homepage from '@/pages/Homepage';
-import { LoginPage, SignupPage } from '@/pages/AuthPage';
+import LoginPage from '@/pages/auth/LoginPage';
+import SignupPage from '@/pages/auth/SignupPage';
 import TrendingAnimePage from '@/pages/TrendingAnimePage';
 import AnimeThreadPage from '@/pages/AnimeThreadPage';
 import SearchResultPage from '@/pages/SearchResultPage';

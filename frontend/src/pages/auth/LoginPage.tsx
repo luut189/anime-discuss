@@ -19,6 +19,12 @@ const formSchema = z.object({
         .min(8, { message: 'Password must be at least 8 characters.' })
         .refine((password) => /[0-9]/.test(password), {
             message: 'Password must contain at least a number.',
+        })
+        .refine((password) => /[a-z]/.test(password), {
+            message: 'Password must contain at least an alphabet character.',
+        })
+        .refine((password) => /[A-Z]/.test(password), {
+            message: 'Password must contain at least an uppercase character.',
         }),
 });
 
@@ -32,68 +38,7 @@ const formItemList: IFormItem[] = [
     { type: 'password', placeholder: 'Password' },
 ];
 
-export function SignupPage() {
-    const { user, signup } = useAuthStore();
-    const navigate = useNavigate();
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            username: '',
-            password: '',
-        },
-    });
-
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        signup(values);
-        if (user) navigate('/');
-    }
-
-    return (
-        <div className='flex flex-grow items-center justify-center'>
-            <Card className='w-1/3'>
-                <CardHeader>
-                    <CardTitle>Signup</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Form {...form}>
-                        <form
-                            className='flex flex-col items-center justify-center gap-2'
-                            onSubmit={form.handleSubmit(onSubmit)}>
-                            {formItemList.map((item, idx) => (
-                                <FormField
-                                    key={idx}
-                                    control={form.control}
-                                    name={item.type}
-                                    render={({ field }) => (
-                                        <FormItem className='w-full'>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder={item.placeholder}
-                                                    type={
-                                                        item.type === 'password'
-                                                            ? 'password'
-                                                            : 'text'
-                                                    }
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            ))}
-                            <Button className='w-full' type='submit'>
-                                Signup
-                            </Button>
-                        </form>
-                    </Form>
-                </CardContent>
-            </Card>
-        </div>
-    );
-}
-
-export function LoginPage() {
+export default function LoginPage() {
     const { user, login } = useAuthStore();
     const navigate = useNavigate();
     const form = useForm<z.infer<typeof formSchema>>({
