@@ -30,22 +30,25 @@ export default function AnimeInfo({
                 </div>
                 <div className='flex-grow'>
                     <div className='flex justify-between'>
-                        <div>
-                            <h2 className='mb-2 text-2xl font-bold'>{title}</h2>
-                            <p className='mb-4 text-sm text-muted-foreground'>{title_japanese}</p>
+                        <div className='w-2/3'>
+                            <h2 className='mb-2 text-2xl font-bold'>{title || 'Unknown Title'}</h2>
+                            <p className='mb-4 text-sm text-muted-foreground'>
+                                {title_japanese || 'Unknown Japanese Title'}
+                            </p>
                         </div>
                         {user ? <PinAnimeButton mal_id={mal_id} title={title} /> : null}
                     </div>
                     <div className='mb-4 grid grid-cols-2 gap-4'>
                         <div>
                             <p className='text-sm font-semibold'>
-                                Type: <span className='font-normal'>{type}</span>
+                                Type: <span className='font-normal'>{type || 'Unknown'}</span>
                             </p>
                             <p className='text-sm font-semibold'>
-                                Episodes: <span className='font-normal'>{episodes}</span>
+                                Episodes:{' '}
+                                <span className='font-normal'>{episodes || 'Unknown'}</span>
                             </p>
                             <p className='text-sm font-semibold'>
-                                Status: <span className='font-normal'>{status}</span>
+                                Status: <span className='font-normal'>{status || 'Unknown'}</span>
                             </p>
                             <p className='text-sm font-semibold'>
                                 Aired:{' '}
@@ -60,14 +63,14 @@ export default function AnimeInfo({
                                 <Star className='mr-1 h-4 w-4 text-yellow-400' />
                                 Score:{' '}
                                 <span className='ml-1 font-normal'>
-                                    {score} ({scored_by} votes)
+                                    {score || '?'} ({scored_by || '?'} votes)
                                 </span>
                             </p>
                             <p className='flex items-center text-sm font-semibold'>
                                 <Heart className='mr-1 h-4 w-4 text-red-400' />
                                 Favorites:{' '}
                                 <span className='ml-1 font-normal'>
-                                    {favorites.toLocaleString()}
+                                    {favorites ? favorites.toLocaleString() : '?'}
                                 </span>
                             </p>
                         </div>
