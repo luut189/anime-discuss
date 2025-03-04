@@ -89,7 +89,7 @@ function AnimeContainer({ type }: AnimeContainerProps) {
 
     const todayAnime = pinnedAnime?.filter(
         (anime) =>
-            anime.broadcast.day.slice(0, -1) === WEEKDAYS[new Date().getDay()] && anime.airing,
+            anime.broadcast.day?.slice(0, -1) === WEEKDAYS[new Date().getDay()] && anime.airing,
     );
 
     const animeList = type === 'today' ? todayAnime : pinnedAnime;
