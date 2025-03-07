@@ -48,7 +48,10 @@ export default function App() {
                         <Route path=':id' element={<AnimeThreadPage />} />
                         <Route path='search' element={<SearchResultPage />} />
                     </Route>
-                    <Route path='/profile' element={user ? <ProfilePage /> : <Navigate to='/' />} />
+                    <Route
+                        path='/profile'
+                        element={user ? <ProfilePage /> : <Navigate to='/auth/login' />}
+                    />
                     <Route path='/*' element={<NotFoundPage />} />
                 </Routes>
             </main>
