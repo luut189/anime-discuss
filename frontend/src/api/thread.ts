@@ -58,6 +58,19 @@ export async function createComment(data: CommentData) {
     }
 }
 
+export async function getAllThreads() {
+    try {
+        const response = await fetch(`${BASE_URL}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch all threads: ${response.statusText}`);
+        }
+        return (await response.json()) as IThread[];
+    } catch (error) {
+        console.error('Error fetching all threads:', error);
+        throw error;
+    }
+}
+
 export async function fetchThreads(id: string) {
     try {
         const response = await fetch(`${BASE_URL}/${id}`);

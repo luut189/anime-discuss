@@ -38,6 +38,21 @@ async function createThread(req: AuthRequest, res: Response) {
     }
 }
 
+async function getAllThreads(req: Request, res: Response) {
+    try {
+        const threads = await Thread.find().sort({ createdAt: -1 }).populate({
+            path: 'comments',
+        });
+        res.status(201).json(threads);
+    } catch (error) {
+        console.error('Error getting all threads', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to get all threads',
+        });
+    }
+}
+
 async function getThreads(req: Request, res: Response) {
     try {
         const { mal_id } = req.params;
@@ -126,4 +141,4 @@ async function createComment(req: Request, res: Response) {
     }
 }
 
-export { createThread, getThreads, getThread, deleteThread, createComment };
+export { createThread, getAllThreads, getThreads, getThread, deleteThread, createComment };

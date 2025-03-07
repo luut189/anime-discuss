@@ -1,5 +1,6 @@
 import {
     createThread,
+    getAllThreads,
     getThreads,
     getThread,
     createComment,
@@ -14,6 +15,7 @@ const commentRouter = Router();
 router.post('/public', createThread);
 router.post('/auth', protectRoute, createThread);
 
+router.get('/', getAllThreads);
 router.get('/:mal_id', getThreads);
 router.get('/:id', getThread);
 
