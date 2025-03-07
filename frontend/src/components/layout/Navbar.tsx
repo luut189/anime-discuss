@@ -1,6 +1,6 @@
 import SearchBar from '@/components/search/SearchBar';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
-import { Button } from '@/components/ui/button';
+import { IconButton } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
@@ -27,7 +27,7 @@ export default function Navbar() {
                 <MessagesSquare />
                 AniDis
             </div>
-            <div className='flex w-full items-center justify-end gap-4'>
+            <div className='flex w-full items-center justify-end gap-2 sm:gap-4'>
                 <SearchBar />
                 <ThemeToggle />
                 {user ? <UserAvatarButton {...user} /> : <LoginButton />}
@@ -66,13 +66,15 @@ function UserAvatarButton({ image, username }: IUser) {
 function LoginButton() {
     const { authCheck } = useAuthStore();
     const navigate = useNavigate();
+
     return (
-        <Button
+        <IconButton
+            icon={<LogIn />}
             onClick={() => {
                 authCheck();
                 navigate('/auth/login');
             }}>
-            <LogIn /> Login
-        </Button>
+            Login
+        </IconButton>
     );
 }

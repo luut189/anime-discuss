@@ -51,4 +51,31 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = 'Button';
 
-export { Button, buttonVariants };
+interface IconButtonProps extends ButtonProps {
+    icon: React.ReactNode;
+}
+
+const IconButton = ({ className, variant, size, icon, children, ...props }: IconButtonProps) => {
+    const [isSmallScreen, setIsSmallScreen] = React.useState(false);
+    React.useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 640);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    });
+
+    return (
+        <Button
+            size={isSmallScreen ? 'icon' : size}
+            className={cn(buttonVariants({ variant, size, className }))}
+            {...props}>
+            {icon}
+            <span className='hidden sm:inline'>{children}</span>
+        </Button>
+    );
+};
+
+export { Button, IconButton, buttonVariants };

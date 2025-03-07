@@ -7,7 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button, IconButton } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReplyThread from '@/components/thread/ReplyThread';
 import useAuthStore from '@/store/useAuthStore';
@@ -53,7 +53,7 @@ export function Thread({
         <Card>
             <CardHeader>
                 <div className='flex'>
-                    <div className='flex flex-col gap-2'>
+                    <div className='flex w-2/3 flex-col gap-2'>
                         <CardTitle>{title}</CardTitle>
                         <CardDescription>
                             Created {timeAgo(createdAt)} by {author}
@@ -61,10 +61,13 @@ export function Thread({
                         <CardDescription>Last updated {timeAgo(updatedAt)}</CardDescription>
                     </div>
                     {(user && user._id === authorId) || (!authorId && !user) ? (
-                        <Button variant='destructive' className='ml-auto' onClick={handleDelete}>
-                            <X />
+                        <IconButton
+                            variant='destructive'
+                            className='ml-auto'
+                            onClick={handleDelete}
+                            icon={<X />}>
                             Delete Thread
-                        </Button>
+                        </IconButton>
                     ) : null}
                 </div>
             </CardHeader>
