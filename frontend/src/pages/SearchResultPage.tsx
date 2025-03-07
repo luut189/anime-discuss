@@ -1,5 +1,6 @@
 import { searchAnimeByText } from '@/api/anime';
 import { REFRESH_INTERVAL } from '@/common/constants';
+import ErrorFallback from '@/components/ErrorFallback';
 import AnimePage from '@/pages/common/AnimePage';
 
 import { useQuery } from '@tanstack/react-query';
@@ -19,6 +20,10 @@ export default function SearchResultPage() {
         refetchInterval: REFRESH_INTERVAL,
         retry: 5,
     });
+
+    if (!query) {
+        return <ErrorFallback errorMessage='There is nothing to search for...' />;
+    }
 
     return (
         <AnimePage
