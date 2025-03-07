@@ -62,7 +62,7 @@ export default function SignupPage() {
 
     return (
         <div className='flex flex-grow items-center justify-center'>
-            <Card className='w-1/3'>
+            <Card className='w-2/3 sm:w-1/2 md:w-1/3'>
                 <CardHeader>
                     <CardTitle>Signup</CardTitle>
                 </CardHeader>
