@@ -1,16 +1,28 @@
 import { AnimeDataResponse, JikanData } from '@/common/interfaces';
+import { delay } from '@/lib/utils';
 
 const JIKAN_URI = 'https://api.jikan.moe/v4';
 
-async function fetchFromAPI<T>(endpoint: string): Promise<T | undefined> {
-    try {
-        const response = await fetch(endpoint);
-        if (!response.ok) {
-            throw new Error(`API Error: ${response.status} ${response.statusText}`);
+async function fetchFromAPI<T>(
+    endpoint: string,
+    retries = 3,
+    delayMs = 500,
+): Promise<T | undefined> {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            const response = await fetch(endpoint);
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status} ${response.statusText}`);
+            }
+            return (await response.json()) as T;
+        } catch (error) {
+            console.error(`Attempt ${attempt} failed:`, error);
+            if (attempt < retries) {
+                await delay(delayMs);
+            } else {
+                console.error(`All ${retries} attempts failed.`);
+            }
         }
-        return (await response.json()) as T;
-    } catch (error) {
-        console.error('Fetch error:', error);
     }
 }
 
