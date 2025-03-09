@@ -72,7 +72,7 @@ export default function SearchBar() {
             <div className='md:relative'>
                 {showResult && debouncedQuery.length > 0 && (
                     <div
-                        className='absolute left-0 z-10 mt-2 w-full px-2 md:left-auto md:w-auto md:px-0'
+                        className='absolute left-0 z-10 mt-2 w-full px-2 md:left-auto md:px-0'
                         onMouseDown={(e) => e.preventDefault()}>
                         <SearchResult
                             isError={isError}
