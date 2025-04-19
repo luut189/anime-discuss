@@ -1,6 +1,7 @@
 import { getCurrentSeasonAnime } from '@/service/jikan';
 import connectMongoDB from '@/config/db';
 import Anime from './models/anime.model';
+import mongoose from 'mongoose';
 
 async function runTask() {
     await connectMongoDB();
@@ -11,10 +12,21 @@ async function runTask() {
 
     await Anime.deleteMany({});
 
-    animes.forEach(async (anime) => {
+    for (const anime of animes) {
         await Anime.create(anime);
         console.log(`Adding ${anime.title}`);
-    });
+    }
 }
 
-runTask().catch(console.error);
+runTask()
+    .then(() => {
+        return mongoose.disconnect();
+    })
+    .then(() => {
+        console.log('Finished');
+        process.exit(0);
+    })
+    .catch((err) => {
+        console.error(err);
+        process.exit(1);
+    });
