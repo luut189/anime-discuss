@@ -1,8 +1,8 @@
-name: Seasonal Anime Update
+name: Anime Data Update
 
 on:
   schedule:
-    - cron: '0 0 1 */3 *'
+    - cron: '0 0 * * *'
   workflow_dispatch: 
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run seasonal anime update script
+      - name: Run anime update script
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: npx tsx backend/cron.ts

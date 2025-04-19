@@ -1,7 +1,8 @@
-import { getCurrentSeasonAnime } from '@/service/jikan';
+import { getAnimeById, getCurrentSeasonAnime } from '@/service/jikan';
 import connectMongoDB from '@/config/db';
-import Anime from './models/anime.model';
+import { Anime, SeasonalAnime } from '@/models/anime.model';
 import mongoose from 'mongoose';
+import User from './models/user.model';
 
 async function runTask() {
     await connectMongoDB();
@@ -10,11 +11,25 @@ async function runTask() {
         new Map((await getCurrentSeasonAnime()).map((anime) => [anime.mal_id, anime])).values(),
     );
 
-    await Anime.deleteMany({});
+    await SeasonalAnime.deleteMany({});
 
     for (const anime of animes) {
-        await Anime.create(anime);
+        await SeasonalAnime.create(anime);
+        await Anime.findOneAndUpdate({ mal_id: anime.mal_id }, anime, { upsert: true });
         console.log(`Adding ${anime.title}`);
+    }
+
+    const users = await User.find({});
+    const animeIdToUpdate = new Set<string>();
+    for (const user of users) {
+        const animeIds = user.pinnedAnime;
+        animeIds.forEach((id) => animeIdToUpdate.add(id));
+    }
+
+    for (const id of animeIdToUpdate) {
+        const anime = await getAnimeById(id);
+        console.log(`Updating ${id}`);
+        await Anime.findOneAndUpdate({ mal_id: id }, anime, { upsert: true });
     }
 }
 
