@@ -22,4 +22,6 @@ jobs:
         run: npm install
 
       - name: Run seasonal anime update script
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
         run: npx tsx backend/cron.ts
