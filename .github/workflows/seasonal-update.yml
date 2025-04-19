@@ -22,4 +22,4 @@ jobs:
         run: npm install
 
       - name: Run seasonal anime update script
-        run: tsx backend/cron.ts
+        run: npx tsx backend/cron.ts
