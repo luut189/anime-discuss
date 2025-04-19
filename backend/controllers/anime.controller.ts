@@ -1,20 +1,18 @@
-import { getTodayAnimeData } from '@/service/jikan';
+import { WEEKDAYS } from '@/common/constants';
 import { Request, Response } from 'express';
+import Anime from '@/models/anime.model';
 
 async function getTodayAnime(req: Request, res: Response) {
+    const date = new Date();
+    const today = WEEKDAYS[date.getDay()];
+
     try {
-        const data = await getTodayAnimeData();
+        const data = await Anime.find({ 'broadcast.day': new RegExp(`${today}`, 'i') });
         if (data) {
-            res.status(200).json({
-                success: true,
-                ...data,
-            });
+            res.status(200).json(data);
         }
     } catch (error) {
-        res.status(400).json({
-            success: false,
-            error: error,
-        });
+        res.status(400).json(error);
         console.error(error);
     }
 }

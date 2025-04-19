@@ -1,4 +1,3 @@
-import { WEEKDAYS } from '@/common/constants';
 import { JikanAnimeData, JikanPaginationData } from '@/common/interfaces';
 import { delay } from '@/common/utils';
 
@@ -58,6 +57,9 @@ async function getCurrentSeasonAnime(): Promise<JikanAnimeData[]> {
             )) as JikanSeasonResponse;
 
             results.push(...data);
+            console.log(`Fetching page ${page}`);
+            
+
             if (!pagination.has_next_page) break;
             page++;
         } catch (error) {
@@ -69,56 +71,4 @@ async function getCurrentSeasonAnime(): Promise<JikanAnimeData[]> {
     return results;
 }
 
-function filterAnimeData(data: JikanAnimeData[], today: string): JikanSeasonResponse {
-    const perPage = 5;
-
-    const filteredAnimeData: JikanAnimeData[] = [];
-    const seenId = new Set<number>();
-    let itemCount = 0;
-    let totalCount = 0;
-
-    data.forEach((anime) => {
-        const broadcastDay = anime.broadcast.day;
-
-        // since the response is plural, we slice the 's' away
-        if (broadcastDay && broadcastDay.slice(0, -1) === today) {
-            if (!seenId.has(anime.mal_id)) {
-                seenId.add(anime.mal_id);
-                filteredAnimeData.push(anime);
-                if (itemCount < perPage) itemCount++;
-                totalCount++;
-            }
-        }
-    });
-
-    const lastVisiblePage = Math.ceil(totalCount / perPage);
-
-    return {
-        data: filteredAnimeData,
-        pagination: {
-            last_visible_page: lastVisiblePage,
-            has_next_page: lastVisiblePage > 1,
-            items: {
-                count: itemCount,
-                total: totalCount,
-                per_page: perPage,
-            },
-        },
-    };
-}
-
-async function getTodayAnimeData() {
-    const date = new Date();
-    const today = WEEKDAYS[date.getDay()];
-
-    try {
-        const currentSeasonAnime = await getCurrentSeasonAnime();
-        if (currentSeasonAnime) {
-            return filterAnimeData(currentSeasonAnime, today);
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-export { getTodayAnimeData };
+export { getCurrentSeasonAnime };

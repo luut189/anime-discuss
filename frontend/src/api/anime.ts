@@ -1,4 +1,4 @@
-import { AnimeDataResponse, JikanData } from '@/common/interfaces';
+import { AnimeDataResponse, JikanAnimeData, JikanData } from '@/common/interfaces';
 import { delay } from '@/lib/utils';
 
 const JIKAN_URI = 'https://api.jikan.moe/v4';
@@ -26,7 +26,7 @@ async function fetchFromAPI<T>(
     }
 }
 
-export const fetchTodayAnimeData = () => fetchFromAPI<JikanData>('/api/anime/today');
+export const fetchTodayAnimeData = () => fetchFromAPI<JikanAnimeData[]>('/api/anime/today');
 
 export const fetchTrendingAnimeData = (page = 1, limit = 25) =>
     fetchFromAPI<JikanData>(`${JIKAN_URI}/top/anime?page=${page}&limit=${limit}`);

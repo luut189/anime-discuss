@@ -22,16 +22,16 @@ function TodayAnimeDisplay() {
     function getItems() {
         if (isPending || !data) return Array.from({ length: MAX_ITEMS }).map(() => null);
 
-        if (data?.data.length > MAX_ITEMS && !showAll) return data.data.slice(0, MAX_ITEMS);
+        if (data.length > MAX_ITEMS && !showAll) return data.slice(0, MAX_ITEMS);
 
-        return data.data;
+        return data;
     }
 
     return (
         <>
             <div className='flex w-full flex-row'>
                 <div className='mb-2 mr-auto text-xl font-bold'>Today Anime</div>
-                {data && data.data.length > MAX_ITEMS ? (
+                {data && data.length > MAX_ITEMS ? (
                     <Button
                         variant={'link'}
                         className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
