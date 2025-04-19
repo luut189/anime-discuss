@@ -77,6 +77,7 @@ function ThreadsContainer() {
 interface AnimeContainerProps {
     type: 'today' | 'pinned';
 }
+
 function AnimeContainer({ type }: AnimeContainerProps) {
     const { user } = useAuthStore();
     const { data: pinnedAnime, isPending } = useQuery({

@@ -1,6 +1,8 @@
 import { AuthRequest } from '@/middleware/protect.route';
+import { Anime } from '@/models/anime.model';
 import Thread from '@/models/thread.model';
 import User from '@/models/user.model';
+import { getAnimeById } from '@/service/jikan';
 import { Response } from 'express';
 
 async function getThreads(req: AuthRequest, res: Response) {
@@ -27,8 +29,24 @@ async function getPinnedAnime(req: AuthRequest, res: Response) {
             res.status(401).json({ error: 'Unauthorized' });
             return;
         }
-        const data = await User.findById(user.id).select('pinnedAnime');
-        res.status(200).json(data);
+
+        const userData = await User.findById(user.id).select('pinnedAnime');
+        if (!userData) {
+            res.status(401).json({ error: 'User not found' });
+            return;
+        }
+
+        const animeIds = userData.pinnedAnime;
+        if (animeIds.length === 0) {
+            res.status(201).json([]);
+            return;
+        }
+
+        const data = await Anime.find({ mal_id: { $in: animeIds.map((id) => Number(id)) } });
+
+        const sortedData = animeIds.map((id) => data.find((anime) => anime.mal_id === Number(id)));
+
+        res.status(200).json(sortedData);
     } catch (error) {
         console.error('Error fetching pinned anime:', error);
         res.status(500).json({ error: 'Failed to fetch pinned anime' });
@@ -54,6 +72,10 @@ async function addPinnedAnime(req: AuthRequest, res: Response) {
             { $addToSet: { pinnedAnime: mal_id } },
             { new: true, select: 'pinnedAnime' },
         );
+
+        const anime = await getAnimeById(mal_id);
+
+        await Anime.findOneAndUpdate({ mal_id }, anime, { upsert: true });
 
         if (!updatedUser) {
             res.status(404).json({ error: 'User not found' });

@@ -58,7 +58,6 @@ async function getCurrentSeasonAnime(): Promise<JikanAnimeData[]> {
 
             results.push(...data);
             console.log(`Fetching page ${page}`);
-            
 
             if (!pagination.has_next_page) break;
             page++;
@@ -71,4 +70,12 @@ async function getCurrentSeasonAnime(): Promise<JikanAnimeData[]> {
     return results;
 }
 
-export { getCurrentSeasonAnime };
+async function getAnimeById(id: string) {
+    try {
+        return (await fetchWithRetry(`${JIKAN_URI}/anime/${id}/full`)).data;
+    } catch (error) {
+        console.error('Failed to fetch anime: ', error);
+    }
+}
+
+export { getCurrentSeasonAnime, getAnimeById };

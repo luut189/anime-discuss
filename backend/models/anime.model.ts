@@ -94,6 +94,9 @@ const AnimeSchema = new Schema({
     cachedAt: { type: Date, default: Date.now },
 });
 
-const Anime = mongoose.model<typeof AnimeSchema>('Anime', AnimeSchema);
+const SeasonalAnimeSchema = new Schema({ ...AnimeSchema.obj });
 
-export default Anime;
+const Anime = mongoose.model<typeof AnimeSchema>('Anime', AnimeSchema);
+const SeasonalAnime = mongoose.model<typeof AnimeSchema>('SeasonalAnime', SeasonalAnimeSchema);
+
+export { SeasonalAnime, Anime };
