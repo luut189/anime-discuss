@@ -2,6 +2,7 @@ import { JikanData } from '@/common/interfaces';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import ErrorFallback from '@/components/ErrorFallback';
 import Pagination from '@/components/ui/pagination';
+import { useEffect } from 'react';
 
 interface AnimePageProps {
     title: string;
@@ -9,8 +10,8 @@ interface AnimePageProps {
     isPending: boolean;
     data: JikanData | undefined;
     page: number;
-    move: (arg: 'next' | 'prev') => void;
-    moveToPage: (arg: number) => void;
+    move: (_: 'next' | 'prev') => void;
+    moveToPage: (_: number) => void;
 }
 
 export default function AnimePage({
@@ -22,6 +23,10 @@ export default function AnimePage({
     move,
     moveToPage,
 }: AnimePageProps) {
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [page]);
+
     return (
         <>
             <div className='flex w-full flex-row p-3 px-4'>

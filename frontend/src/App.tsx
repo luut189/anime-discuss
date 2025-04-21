@@ -1,5 +1,7 @@
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
+import ScrollToTop from '@/components/common/ScrollToTop';
+
 import Homepage from '@/pages/Homepage';
 import LoginPage from '@/pages/auth/LoginPage';
 import SignupPage from '@/pages/auth/SignupPage';
@@ -8,6 +10,7 @@ import AnimeThreadPage from '@/pages/AnimeThreadPage';
 import SearchResultPage from '@/pages/SearchResultPage';
 import ProfilePage from '@/pages/ProfilePage';
 import NotFoundPage from '@/pages/NotFoundPage';
+
 import { Toaster } from '@/components/ui/sonner';
 import useAuthStore from '@/store/useAuthStore';
 
@@ -56,6 +59,7 @@ export default function App() {
                 </Routes>
             </main>
             <Footer />
+            <ScrollToTop />
             <Toaster />
         </div>
     );
