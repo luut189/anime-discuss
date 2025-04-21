@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { fetchTodayAnimeData, fetchTrendingAnimeData } from '@/api/anime';
 import { REFRESH_INTERVAL } from '@/common/constants';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
-import ErrorFallback from '@/components/ErrorFallback';
+import ErrorFallback from '@/components/common/ErrorFallback';
 import { useNavigate } from 'react-router';
 
 const MAX_ITEMS = 6;

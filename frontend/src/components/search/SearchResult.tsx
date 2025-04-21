@@ -47,7 +47,7 @@ export default function SearchResult({ isError, isPending, data }: SearchResultP
                 {data.map((anime) => (
                     <li
                         key={anime.mal_id}
-                        className='flex w-full cursor-pointer flex-col rounded border-b p-2 transition-all last:border-b-0 last:pb-0 hover:border'>
+                        className='flex w-full cursor-pointer flex-col rounded-lg border-b p-2 transition-all last:border-b-0 hover:border'>
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger className='flex items-center justify-between'>

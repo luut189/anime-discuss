@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import ErrorFallback from '@/components/ErrorFallback';
+import ErrorFallback from '@/components/common/ErrorFallback';
 import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
 import { getAllThreads } from '@/api/thread';
 

@@ -1,5 +1,5 @@
 import { fetchAnimeById } from '@/api/anime';
-import ErrorFallback from '@/components/ErrorFallback';
+import ErrorFallback from '@/components/common/ErrorFallback';
 import AnimeInfo from '@/components/anime/AnimeInfo';
 import Threads from '@/components/thread/Threads';
 import CreateThread from '@/components/thread/CreateThread';

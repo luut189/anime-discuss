@@ -1,6 +1,6 @@
 import { JikanData } from '@/common/interfaces';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
-import ErrorFallback from '@/components/ErrorFallback';
+import ErrorFallback from '@/components/common/ErrorFallback';
 import Pagination from '@/components/ui/pagination';
 import { useEffect } from 'react';
 

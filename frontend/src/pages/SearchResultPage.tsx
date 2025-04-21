@@ -1,6 +1,6 @@
 import { searchAnimeByText } from '@/api/anime';
 import { REFRESH_INTERVAL } from '@/common/constants';
-import ErrorFallback from '@/components/ErrorFallback';
+import ErrorFallback from '@/components/common/ErrorFallback';
 import usePagination from '@/hooks/usePagination';
 import AnimePage from '@/pages/common/AnimePage';
 
