@@ -11,7 +11,7 @@ export default function SearchResultPage() {
     const [searchParams] = useSearchParams();
     const query = searchParams.get('q');
     const decodedQuery = query ? decodeURIComponent(query) : '';
-    const { page, move } = usePagination();
+    const { page, move, moveToPage } = usePagination();
 
     const { isError, isPending, data } = useQuery({
         queryKey: ['search-result', decodedQuery, page],
@@ -33,6 +33,7 @@ export default function SearchResultPage() {
             data={data}
             page={page}
             move={move}
+            moveToPage={moveToPage}
         />
     );
 }
