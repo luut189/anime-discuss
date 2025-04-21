@@ -1,8 +1,8 @@
-import { getAnimeById, getCurrentSeasonAnime } from '@/service/jikan';
 import connectMongoDB from '@/config/db';
+import { getAnimeById, getCurrentSeasonAnime } from '@/service/jikan';
 import { Anime, SeasonalAnime } from '@/models/anime.model';
+import User from '@/models/user.model';
 import mongoose from 'mongoose';
-import User from './models/user.model';
 
 async function runTask() {
     await connectMongoDB();
@@ -16,7 +16,7 @@ async function runTask() {
     for (const anime of animes) {
         await SeasonalAnime.create(anime);
         await Anime.findOneAndUpdate({ mal_id: anime.mal_id }, anime, { upsert: true });
-        console.log(`Adding ${anime.title}`);
+        console.log(`Updating ${anime.title}`);
     }
 
     const users = await User.find({});

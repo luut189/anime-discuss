@@ -24,4 +24,4 @@ jobs:
       - name: Run anime update script
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
-        run: npx tsx backend/cron.ts
+        run: npm run cron
