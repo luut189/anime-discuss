@@ -4,8 +4,8 @@ import { ChevronLeft, Ellipsis, ChevronRight } from 'lucide-react';
 interface PaginationProps {
     page: number;
     lastVisiblePage: number;
-    move: (arg: 'next' | 'prev') => void;
-    moveToPage: (arg: number) => void;
+    move: (_: 'next' | 'prev') => void;
+    moveToPage: (_: number) => void;
 }
 
 export default function Pagination({ page, lastVisiblePage, move, moveToPage }: PaginationProps) {
@@ -16,8 +16,12 @@ export default function Pagination({ page, lastVisiblePage, move, moveToPage }: 
 
     return (
         <>
-            <Button onClick={() => move('prev')} disabled={page == 1}>
-                <ChevronLeft /> Previous
+            <Button
+                size={'icon'}
+                variant={'ghost'}
+                onClick={() => move('prev')}
+                disabled={page == 1}>
+                <ChevronLeft />
             </Button>
             <div className='flex gap-2'>
                 {page > pageRange + 1 && (
@@ -31,14 +35,20 @@ export default function Pagination({ page, lastVisiblePage, move, moveToPage }: 
                 {pages.map((val) => (
                     <Button
                         key={val}
+                        size={'icon'}
                         onClick={() => moveToPage(val)}
+                        className={page === val ? 'hover:cursor-default hover:bg-background' : ''}
                         variant={page === val ? 'outline' : 'default'}>
                         {val}
                     </Button>
                 ))}
             </div>
-            <Button onClick={() => move('next')} disabled={page === lastVisiblePage}>
-                <ChevronRight /> Next
+            <Button
+                size={'icon'}
+                variant={'ghost'}
+                onClick={() => move('next')}
+                disabled={page === lastVisiblePage}>
+                <ChevronRight />
             </Button>
         </>
     );
