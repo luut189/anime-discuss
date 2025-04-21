@@ -25,7 +25,7 @@ function AnimeCard({
             <HoverCard>
                 <HoverCardTrigger>
                     <img
-                        src={images.jpg.large_image_url}
+                        src={images.jpg.image_url}
                         alt={title}
                         onClick={() => {
                             navigate(`/anime/${mal_id}`);

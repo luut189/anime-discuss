@@ -39,7 +39,9 @@ export default function LatestThreads() {
                 ) : isError || !data ? (
                     <ErrorFallback errorMessage='Error Fetching Recent Threads' />
                 ) : (
-                    data.slice(0, MAX_ITEMS).map((thread) => <Thread {...thread} />)
+                    data
+                        .slice(0, MAX_ITEMS)
+                        .map((thread) => <Thread key={thread._id} {...thread} />)
                 )}
             </div>
         </>
