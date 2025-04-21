@@ -5,7 +5,7 @@ import User from '@/models/user.model';
 import { getAnimeById } from '@/service/jikan';
 import { Response } from 'express';
 
-async function getThreads(req: AuthRequest, res: Response) {
+async function getUserThreads(req: AuthRequest, res: Response) {
     try {
         const user = req.user;
         if (!user) {
@@ -122,4 +122,4 @@ async function removePinnedAnime(req: AuthRequest, res: Response) {
     }
 }
 
-export { getThreads, getPinnedAnime, addPinnedAnime, removePinnedAnime };
+export { getUserThreads, getPinnedAnime, addPinnedAnime, removePinnedAnime };
