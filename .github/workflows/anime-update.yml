@@ -1,27 +1,27 @@
 name: Anime Data Update
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch: 
+    schedule:
+        - cron: '0 0 * * *'
+    workflow_dispatch:
 
 jobs:
-  run-seasonal-task:
-    runs-on: ubuntu-latest
+    run-seasonal-task:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
+        steps:
+            - name: Checkout the code
+              uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '23'
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '23'
 
-      - name: Install dependencies
-        run: npm install
+            - name: Install dependencies
+              run: npm install
 
-      - name: Run anime update script
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
-        run: npm run cron
+            - name: Run anime update script
+              env:
+                  MONGO_URI: ${{ secrets.MONGO_URI }}
+              run: npm run cron
