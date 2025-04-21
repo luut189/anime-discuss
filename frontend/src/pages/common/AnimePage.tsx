@@ -1,10 +1,7 @@
-import { Button } from '@/components/ui/button';
 import { JikanData } from '@/common/interfaces';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import ErrorFallback from '@/components/ErrorFallback';
-
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { SetURLSearchParams } from 'react-router';
+import Pagination from '@/components/ui/pagination';
 
 interface AnimePageProps {
     title: string;
@@ -12,8 +9,8 @@ interface AnimePageProps {
     isPending: boolean;
     data: JikanData | undefined;
     page: number;
-    setPage: (arg: number) => void;
-    setSearchParams: SetURLSearchParams;
+    move: (arg: 'next' | 'prev') => void;
+    moveToPage: (arg: number) => void;
 }
 
 export default function AnimePage({
@@ -22,27 +19,9 @@ export default function AnimePage({
     isPending,
     data,
     page,
-    setPage,
-    setSearchParams,
+    move,
+    moveToPage,
 }: AnimePageProps) {
-    function handleNext() {
-        if (!data) return;
-        setSearchParams((prev) => {
-            prev.set('page', `${page + 1}`);
-            return prev;
-        });
-        setPage(page < data.pagination.last_visible_page ? page + 1 : page);
-    }
-
-    function handlePrevious() {
-        if (!data) return;
-        setSearchParams((prev) => {
-            prev.set('page', `${page - 1}`);
-            return prev;
-        });
-        setPage(page > 1 ? page - 1 : page);
-    }
-
     return (
         <>
             <div className='flex w-full flex-row p-3 px-4'>
@@ -53,19 +32,19 @@ export default function AnimePage({
             ) : (
                 <div className='flex w-full flex-col'>
                     <AnimeCardGrid
+                        page={page}
                         isPendingData={isPending}
                         items={data ? data.data : Array.from({ length: 25 }).map(() => null)}
                     />
                     <div className='flex items-center justify-center gap-5'>
-                        <Button size={'icon'} onClick={handlePrevious} disabled={page == 1}>
-                            <ChevronLeft />
-                        </Button>
-                        <Button
-                            size={'icon'}
-                            onClick={handleNext}
-                            disabled={page == data?.pagination.last_visible_page}>
-                            <ChevronRight />
-                        </Button>
+                        <Pagination
+                            page={page}
+                            lastVisiblePage={
+                                data?.pagination.last_visible_page || Number.MAX_SAFE_INTEGER
+                            }
+                            move={move}
+                            moveToPage={moveToPage}
+                        />
                     </div>
                 </div>
             )}
