@@ -50,20 +50,22 @@ export default function SearchResult({ isError, isPending, data }: SearchResultP
                         className='flex w-full cursor-pointer flex-col rounded-lg border-b p-2 transition-all last:border-b-0 hover:border'>
                         <TooltipProvider>
                             <Tooltip>
-                                <TooltipTrigger className='flex items-center justify-between'>
-                                    <div
-                                        onClick={() => {
-                                            navigate(`/anime/${anime.mal_id}`);
-                                        }}
-                                        className='w-2/3'>
-                                        <div className='line-clamp-2 break-words text-start font-bold'>
-                                            {anime.title || 'Untitled'}
+                                <TooltipTrigger asChild>
+                                    <div className='flex items-center justify-between'>
+                                        <div
+                                            onClick={() => {
+                                                navigate(`/anime/${anime.mal_id}`);
+                                            }}
+                                            className='w-2/3'>
+                                            <div className='line-clamp-2 break-words text-start font-bold'>
+                                                {anime.title || 'Untitled'}
+                                            </div>
+                                            <div className='line-clamp-2 break-words text-start text-sm'>
+                                                {anime.title_japanese || 'Unknown Japanese Title'}
+                                            </div>
                                         </div>
-                                        <div className='line-clamp-2 break-words text-start text-sm'>
-                                            {anime.title_japanese || 'Unknown Japanese Title'}
-                                        </div>
+                                        <PinAnimeButton {...anime} />
                                     </div>
-                                    <PinAnimeButton {...anime} />
                                 </TooltipTrigger>
                                 <TooltipContent className='flex flex-col items-center justify-center gap-2'>
                                     <img

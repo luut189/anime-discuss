@@ -27,7 +27,7 @@ export default function SearchResultPage() {
 
     return (
         <AnimePage
-            title={`Search Results for ${decodedQuery}`}
+            title={`Search Results for "${decodedQuery}"`}
             isError={isError}
             isPending={isPending}
             data={data}
