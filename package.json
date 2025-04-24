@@ -8,7 +8,8 @@
         "lint": "eslint .",
         "start": "NODE_ENV=production tsx backend/index.ts",
         "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
-        "cron": "tsx backend/cron.ts"
+        "cron": "tsx backend/tasks/cron.ts",
+        "sync": "tsx backend/tasks/sync.ts"
     },
     "type": "module",
     "keywords": [],
