@@ -4,12 +4,21 @@ import { AnimeRoute, AuthRoute, ThreadRoute, UserRoute } from '@/routes';
 
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 
 const app = express();
 const __dirname = path.resolve();
+const limiter = rateLimit({
+    windowMs: 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: 'Too many requests, please try again in 1 second',
+});
 
+app.use(limiter);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
