@@ -7,6 +7,7 @@ import LoginPage from '@/pages/auth/LoginPage';
 import SignupPage from '@/pages/auth/SignupPage';
 import TrendingAnimePage from '@/pages/TrendingAnimePage';
 import AnimeThreadPage from '@/pages/AnimeThreadPage';
+import ThreadPage from '@/pages/ThreadPage';
 import SearchResultPage from '@/pages/SearchResultPage';
 import ProfilePage from '@/pages/ProfilePage';
 import NotFoundPage from '@/pages/NotFoundPage';
@@ -51,6 +52,7 @@ export default function App() {
                         <Route path=':id' element={<AnimeThreadPage />} />
                         <Route path='search' element={<SearchResultPage />} />
                     </Route>
+                    <Route path='/thread/:id' element={<ThreadPage />} />
                     <Route
                         path='/profile'
                         element={user ? <ProfilePage /> : <Navigate to='/auth/login' />}

@@ -61,6 +61,8 @@ export default function ReplyThread({
             await createComment(data);
             onReplySubmit();
             queryClient.invalidateQueries({ queryKey: [`threads-${mal_id}`] });
+            queryClient.invalidateQueries({ queryKey: [`thread-${threadId}`] });
+            queryClient.invalidateQueries({ queryKey: [`comments-${threadId}`] });
             form.reset();
             toast.success('Replied successfully!');
             console.log('Comment created.');
