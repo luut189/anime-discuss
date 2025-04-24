@@ -1,4 +1,4 @@
-import { IThread } from '@/common/interfaces';
+import { IComment, IThread } from '@/common/interfaces';
 
 const BASE_URL = '/api/thread';
 
@@ -71,9 +71,9 @@ export async function getAllThreads() {
     }
 }
 
-export async function fetchThreads(id: string) {
+export async function getThreadsByMalId(mal_id: string) {
     try {
-        const response = await fetch(`${BASE_URL}/${id}`);
+        const response = await fetch(`${BASE_URL}/anime/${mal_id}`);
 
         if (!response.ok) {
             throw new Error(`Failed to fetch threads: ${response.statusText}`);
@@ -82,6 +82,36 @@ export async function fetchThreads(id: string) {
         return (await response.json()) as IThread[];
     } catch (error) {
         console.error('Error fetching threads:', error);
+        throw error;
+    }
+}
+
+export async function getThreadById(id: string) {
+    try {
+        const response = await fetch(`${BASE_URL}/${id}`);
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch threads ${response.statusText}`);
+        }
+
+        return (await response.json()) as IThread;
+    } catch (error) {
+        console.error('Error fetching threads:', error);
+        throw error;
+    }
+}
+
+export async function getCommentsByThreadId(id: string) {
+    try {
+        const response = await fetch(`${BASE_URL}/comment/${id}`);
+
+        if (!response.ok) {
+            throw new Error(`Failed to comment of thread ${id} ${response.statusText}`);
+        }
+
+        return (await response.json()) as IComment[];
+    } catch (error) {
+        console.error(`Error fetching comments of thread ${id}:`, error);
         throw error;
     }
 }

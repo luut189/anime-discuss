@@ -147,7 +147,7 @@ export interface IThread {
     author: string;
     authorId?: string;
     content: string;
-    comments: IComment[];
+    commentCount: number;
     createdAt: string;
     updatedAt: string;
 }
@@ -160,4 +160,8 @@ export interface IComment {
     author: string;
     content: string;
     createdAt: string;
+    updatedAt: string;
+    parentComment?: string | null;
+    children: IComment[];
+    path: string[];
 }
