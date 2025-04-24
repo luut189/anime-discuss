@@ -71,6 +71,7 @@ const IconButton = ({ className, variant, size, icon, children, ...props }: Icon
         <Button
             size={isSmallScreen ? 'icon' : size}
             className={cn(buttonVariants({ variant, size, className }))}
+            variant={variant}
             {...props}>
             {icon}
             <span className='hidden sm:inline'>{children}</span>

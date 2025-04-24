@@ -15,7 +15,7 @@ import { deleteThread } from '@/api/thread';
 import { timeAgo } from '@/lib/utils';
 
 import { useState } from 'react';
-import { ArrowUpRight, ChevronDown, ChevronUp, MessageSquare, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Film, MessageCircle, MessageSquare, X } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -78,21 +78,22 @@ export function Thread({
                 <div className='flex w-full justify-between'>
                     <div className='flex items-center justify-center gap-2'>
                         {location.pathname !== `/anime/${mal_id}` ? (
-                            <Button
+                            <IconButton
+                                icon={<Film />}
                                 onClick={() => {
                                     navigate(`/anime/${mal_id}`);
                                 }}>
-                                <ArrowUpRight />
                                 Jump to anime page
-                            </Button>
+                            </IconButton>
                         ) : null}
                         {location.pathname !== `/thread/${_id}` ? (
-                            <Button
+                            <IconButton
+                                icon={<MessageCircle />}
                                 onClick={() => {
                                     navigate(`/thread/${_id}`);
                                 }}>
-                                <ArrowUpRight /> Jump to thread
-                            </Button>
+                                Jump to thread
+                            </IconButton>
                         ) : null}
                     </div>
                     <ReplyButton
