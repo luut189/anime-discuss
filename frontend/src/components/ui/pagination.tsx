@@ -11,7 +11,8 @@ interface PaginationProps {
 export default function Pagination({ page, lastVisiblePage, move, moveToPage }: PaginationProps) {
     const pageRange = 2;
     const startPage = Math.max(1, page - pageRange);
-    const endPage = Math.min(lastVisiblePage, page + pageRange);
+    const endPage =
+        page < 5 ? Math.min(lastVisiblePage, 5) : Math.min(lastVisiblePage, page + pageRange);
     const pages = Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
 
     return (
