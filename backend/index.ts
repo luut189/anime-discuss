@@ -9,6 +9,8 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 
 const app = express();
+app.set('trust proxy', 1);
+
 const __dirname = path.resolve();
 const limiter = rateLimit({
     windowMs: 1000,
