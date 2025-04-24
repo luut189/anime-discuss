@@ -1,4 +1,4 @@
-import { fetchThreads } from '@/api/thread';
+import { getThreadsByMalId } from '@/api/thread';
 import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
 
 import { useQuery } from '@tanstack/react-query';
@@ -10,7 +10,7 @@ interface ThreadsProp {
 export default function Threads({ id }: ThreadsProp) {
     const { data, isPending } = useQuery({
         queryKey: [`threads-${id}`],
-        queryFn: () => fetchThreads(id),
+        queryFn: () => getThreadsByMalId(id),
         enabled: !!id,
         retry: 5,
     });
