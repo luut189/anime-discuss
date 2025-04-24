@@ -1,8 +1,9 @@
 import Thread, { IThread } from '@/models/thread.model';
-import Comment from '@/models/comment.model';
+import Comment, { IComment } from '@/models/comment.model';
 import { Request, Response } from 'express';
 import User from '@/models/user.model';
 import { AuthRequest } from '@/middleware/protect.route';
+import mongoose from 'mongoose';
 
 async function createThread(req: AuthRequest, res: Response) {
     try {
@@ -40,9 +41,7 @@ async function createThread(req: AuthRequest, res: Response) {
 
 async function getAllThreads(req: Request, res: Response) {
     try {
-        const threads = await Thread.find().sort({ createdAt: -1 }).populate({
-            path: 'comments',
-        });
+        const threads = await Thread.find().sort({ createdAt: -1 });
         res.status(201).json(threads);
     } catch (error) {
         console.error('Error getting all threads', error);
@@ -57,9 +56,7 @@ async function getThreads(req: Request, res: Response) {
     try {
         const { mal_id } = req.params;
 
-        const threads = await Thread.find({ mal_id }).sort({ createdAt: -1 }).populate({
-            path: 'comments',
-        });
+        const threads = await Thread.find({ mal_id }).sort({ createdAt: -1 });
         res.json(threads);
     } catch (error) {
         res.status(500).json({
@@ -70,9 +67,7 @@ async function getThreads(req: Request, res: Response) {
 
 async function getThread(req: Request, res: Response) {
     try {
-        const thread = await Thread.findById(req.params.id).populate({
-            path: 'comments',
-        });
+        const thread = await Thread.findById(req.params.id);
 
         res.json(thread);
     } catch (error) {
@@ -116,29 +111,85 @@ async function deleteThread(req: AuthRequest, res: Response) {
     }
 }
 
-async function createComment(req: Request, res: Response) {
+async function createComment(req: AuthRequest, res: Response) {
     try {
-        const { threadId, author, content } = req.body;
+        const { threadId, content, parentCommentId } = req.body;
+        const user = req.user;
 
-        if (!threadId || !author || !content) {
-            res.status(400).json({ success: false, message: 'All fields are required' });
+        if (!threadId || !content) {
+            res.status(400).json({ success: false, message: 'Thread ID and content are required' });
             return;
         }
 
+        let path: mongoose.Types.ObjectId[] = [];
+
+        if (parentCommentId) {
+            const parent = await Comment.findById(parentCommentId);
+            if (!parent) {
+                res.status(404).json({ success: false, message: 'Parent comment not found' });
+                return;
+            }
+            path = [...parent.path, parent._id as mongoose.Types.ObjectId];
+        }
+
+        await Thread.findByIdAndUpdate(threadId, { $inc: { commentCount: 1 } });
+
         const newComment = await Comment.create({
             thread: threadId,
-            author,
             content,
+            author: user ? user.username : 'Anonymous',
+            parentComment: parentCommentId || null,
+            path,
         });
-
-        await Thread.findByIdAndUpdate(threadId, { $push: { comments: newComment._id } });
 
         res.status(201).json(newComment);
     } catch (error) {
-        res.status(500).json({
-            error: `Failed to create comment: ${error}`,
-        });
+        console.error('Error creating comment:', error);
+        res.status(500).json({ error: 'Failed to create comment' });
     }
 }
 
-export { createThread, getAllThreads, getThreads, getThread, deleteThread, createComment };
+interface NestedComment extends Omit<IComment, ''> {
+    children: NestedComment[];
+}
+
+async function getComments(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+
+        const comments = await Comment.find({ thread: id }).lean().sort({ path: 1, updatedAt: 1 });
+
+        const commentMap = new Map<string, NestedComment>();
+        const rootComments: NestedComment[] = [];
+
+        for (const comment of comments) {
+            const withChildren: NestedComment = { ...comment, children: [] };
+            commentMap.set(comment._id.toString(), withChildren);
+        }
+
+        for (const comment of comments) {
+            const current = commentMap.get(comment._id.toString())!;
+            if (comment.parentComment) {
+                const parent = commentMap.get(comment.parentComment.toString());
+                parent?.children.push(current);
+            } else {
+                rootComments.push(current);
+            }
+        }
+
+        res.status(200).json(rootComments);
+    } catch (error) {
+        console.error('Failed to fetch comments:', error);
+        res.status(500).json({ error: 'Failed to fetch comments' });
+    }
+}
+
+export {
+    createThread,
+    getAllThreads,
+    getThreads,
+    getThread,
+    deleteThread,
+    createComment,
+    getComments,
+};

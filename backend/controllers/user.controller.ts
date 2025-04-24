@@ -12,9 +12,7 @@ async function getUserThreads(req: AuthRequest, res: Response) {
             res.status(401).json({ error: 'Unauthorized' });
             return;
         }
-        const threads = await Thread.find({ authorId: user.id }).sort({ createdAt: -1 }).populate({
-            path: 'comments',
-        });
+        const threads = await Thread.find({ authorId: user.id }).sort({ path: 1, createdAt: -1 });
         res.status(200).json(threads);
     } catch (error) {
         console.error('Error fetching threads:', error);

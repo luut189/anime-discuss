@@ -6,7 +6,7 @@ interface IThread extends Document {
     author: string;
     authorId?: string;
     content: string;
-    comments: mongoose.Types.ObjectId[];
+    commentCount: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -33,13 +33,10 @@ const ThreadSchema = new Schema<IThread>(
             type: String,
             required: true,
         },
-        comments: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Comment',
-                default: [],
-            },
-        ],
+        commentCount: {
+            type: Number,
+            default: 0,
+        },
     },
     { timestamps: true },
 );

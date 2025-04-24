@@ -5,8 +5,9 @@ interface IComment extends Document {
     author: string;
     content: string;
     parentComment?: mongoose.Types.ObjectId | null;
-    replies: mongoose.Types.ObjectId[];
+    path: mongoose.Types.ObjectId[];
     createdAt: Date;
+    updatedAt: Date;
 }
 
 const CommentSchema = new Schema<IComment>(
@@ -24,9 +25,21 @@ const CommentSchema = new Schema<IComment>(
             type: String,
             required: true,
         },
+        parentComment: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Comment',
+            default: null,
+        },
+        path: {
+            type: [mongoose.Schema.Types.ObjectId],
+            ref: 'Comment',
+            default: [],
+        },
     },
     { timestamps: true },
 );
+
+CommentSchema.index({ path: 1 });
 
 const Comment = mongoose.model<IComment>('Comment', CommentSchema);
 
