@@ -29,7 +29,7 @@ export default function LatestThreads() {
                     </Button>
                 ) : null}
             </div>
-            <div className='flex flex-col gap-2'>
+            <div className='flex flex-col gap-4'>
                 {isPending ? (
                     <>
                         {Array.from({ length: 2 }).map((_, idx) => (

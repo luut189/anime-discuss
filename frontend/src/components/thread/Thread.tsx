@@ -15,10 +15,22 @@ import { deleteThread } from '@/api/thread';
 import { timeAgo } from '@/lib/utils';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Film, MessageCircle, MessageSquare, X } from 'lucide-react';
+import { ChevronUp, Film, MessageSquare, X } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
+
+function ReplyText({ commentCount }: { commentCount: number }) {
+    return (
+        <>
+            {commentCount
+                ? commentCount > 1
+                    ? `${commentCount} replies`
+                    : `${commentCount} reply`
+                : 'Reply'}
+        </>
+    );
+}
 
 export function Thread({
     _id,
@@ -49,8 +61,15 @@ export function Thread({
         queryClient.invalidateQueries({ queryKey: [`threads-${mal_id}`] });
         if (user) queryClient.invalidateQueries({ queryKey: ['threads', user.username] });
     }
+
+    const isAtThreadPage = location.pathname === `/thread/${_id}`;
+    const isAtAnimePage = location.pathname === `/anime/${mal_id}`;
+
     return (
-        <Card>
+        <Card
+            title={!isAtThreadPage ? 'Go to thread page' : ''}
+            className={!isAtThreadPage ? 'group cursor-pointer hover:bg-secondary' : ''}
+            onClick={isAtThreadPage ? () => {} : () => navigate(`/thread/${_id}`)}>
             <CardHeader>
                 <div className='flex'>
                     <div className='flex w-2/3 flex-col gap-2'>
@@ -72,32 +91,21 @@ export function Thread({
                 </div>
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>
-                <p>{content}</p>
-            </CardContent>
-            <CardFooter className='flex flex-col gap-2'>
-                <div className='flex w-full justify-between'>
-                    <div className='flex items-center justify-center gap-2'>
-                        {location.pathname !== `/anime/${mal_id}` ? (
-                            <IconButton
-                                icon={<Film />}
-                                onClick={() => {
-                                    navigate(`/anime/${mal_id}`);
-                                }}>
-                                Jump to anime page
-                            </IconButton>
-                        ) : null}
-                        {location.pathname !== `/thread/${_id}` ? (
-                            <IconButton
-                                icon={<MessageCircle />}
-                                onClick={() => {
-                                    navigate(`/thread/${_id}`);
-                                }}>
-                                Jump to thread
-                            </IconButton>
-                        ) : null}
-                    </div>
+                <p className='mb-3'>{content}</p>
+                <div className='flex items-center justify-between gap-2'>
+                    {!isAtAnimePage ? (
+                        <IconButton
+                            icon={<Film />}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/anime/${mal_id}`);
+                            }}>
+                            Jump to anime page
+                        </IconButton>
+                    ) : null}
                     <ReplyButton
                         commentCount={commentCount}
+                        id={_id}
                         isReply={isReply}
                         setIsReply={setIsReply}
                     />
@@ -109,7 +117,7 @@ export function Thread({
                         onReplySubmit={() => setIsReply(false)}
                     />
                 )}
-            </CardFooter>
+            </CardContent>
         </Card>
     );
 }
@@ -142,7 +150,20 @@ export function ThreadSkeleton() {
     );
 }
 
-export function Comment({ _id, mal_id, thread, author, content, children, createdAt }: IComment) {
+interface CommentProps extends IComment {
+    depth: number;
+}
+
+export function Comment({
+    _id,
+    mal_id,
+    thread,
+    author,
+    content,
+    children,
+    createdAt,
+    depth,
+}: CommentProps) {
     const [isReply, setIsReply] = useState(false);
     const [viewReply, setViewReply] = useState(false);
 
@@ -157,23 +178,40 @@ export function Comment({ _id, mal_id, thread, author, content, children, create
         return count;
     }
 
+    const commentCount = countChildren(children);
+
     return (
-        <Card>
+        <Card
+            className={
+                depth > 0
+                    ? 'ml-2 rounded-none border-0 border-l-2 py-1 pl-4 shadow-none dark:shadow-none'
+                    : ''
+            }>
             <CardHeader>
                 <CardTitle className='text-xl'>{author}</CardTitle>
                 <CardDescription>Created {timeAgo(createdAt)}</CardDescription>
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>
-                <p>{content}</p>
-                <div className='flex items-end justify-center'>
+                <p className='mb-3'>{content}</p>
+                <div className='mr-auto flex w-fit'>
                     <ReplyButton
-                        commentCount={countChildren(children)}
+                        commentCount={commentCount}
+                        id={thread}
                         isReply={isReply}
                         setIsReply={setIsReply}
                     />
-                    <Button onClick={() => setViewReply(!viewReply)} variant={'ghost'}>
-                        {viewReply ? <ChevronUp /> : <ChevronDown />}
-                    </Button>
+                    {commentCount ? (
+                        <Button onClick={() => setViewReply(!viewReply)} variant={'ghost'}>
+                            <MessageSquare />
+                            <ReplyText commentCount={commentCount} />
+                            <ChevronUp
+                                className={
+                                    'transition-transform ' +
+                                    (viewReply ? 'rotate-0' : 'rotate-180')
+                                }
+                            />
+                        </Button>
+                    ) : null}
                 </div>
                 {isReply && (
                     <ReplyThread
@@ -184,9 +222,9 @@ export function Comment({ _id, mal_id, thread, author, content, children, create
                     />
                 )}
                 {viewReply ? (
-                    <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col gap-4'>
                         {children.map((comment) => (
-                            <Comment key={comment._id} {...comment} />
+                            <Comment key={comment._id} {...comment} depth={depth + 1} />
                         ))}
                     </div>
                 ) : null}
@@ -196,15 +234,22 @@ export function Comment({ _id, mal_id, thread, author, content, children, create
 }
 
 interface ReplyButtonProps {
-    commentCount?: number;
+    id: string;
+    commentCount: number;
     isReply: boolean;
     setIsReply: (_: boolean) => void;
 }
 
-function ReplyButton({ commentCount, isReply, setIsReply }: ReplyButtonProps) {
+function ReplyButton({ id, commentCount, isReply, setIsReply }: ReplyButtonProps) {
+    const location = useLocation();
+    const navigate = useNavigate();
     return (
         <Button
-            onClick={() => setIsReply(!isReply)}
+            onClick={
+                location.pathname !== `/thread/${id}`
+                    ? () => navigate(`/thread/${id}`)
+                    : () => setIsReply(!isReply)
+            }
             className='ml-auto flex items-center justify-center'
             variant='ghost'>
             {isReply ? (
@@ -215,7 +260,11 @@ function ReplyButton({ commentCount, isReply, setIsReply }: ReplyButtonProps) {
             ) : (
                 <>
                     <MessageSquare />
-                    {commentCount ? `${commentCount} comments` : 'Comment'}
+                    {location.pathname !== `/thread/${id}` ? (
+                        <ReplyText commentCount={commentCount} />
+                    ) : (
+                        'Reply'
+                    )}
                 </>
             )}
         </Button>

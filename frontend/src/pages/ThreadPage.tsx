@@ -40,10 +40,12 @@ export default function ThreadPage() {
     return (
         <>
             <Thread key={threadData._id} {...threadData} />
-            <div className='flex flex-col gap-2'>
+            <div className='flex flex-col gap-4'>
                 <h1 className='mt-2 text-2xl font-semibold'>Comments</h1>
                 {commentData && commentData.length > 0 ? (
-                    commentData.map((comment) => <Comment key={comment._id} {...comment} />)
+                    commentData.map((comment) => (
+                        <Comment key={comment._id} {...comment} depth={0} />
+                    ))
                 ) : (
                     <>
                         <p>There is no comment. Wanna make some noise?</p>
