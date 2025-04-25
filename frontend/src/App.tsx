@@ -5,7 +5,7 @@ import ScrollToTop from '@/components/common/ScrollToTop';
 import Homepage from '@/pages/Homepage';
 import LoginPage from '@/pages/auth/LoginPage';
 import SignupPage from '@/pages/auth/SignupPage';
-import TrendingAnimePage from '@/pages/TrendingAnimePage';
+import TopAnimePage from '@/pages/TopAnimePage';
 import AnimeThreadPage from '@/pages/AnimeThreadPage';
 import ThreadPage from '@/pages/ThreadPage';
 import SearchResultPage from '@/pages/SearchResultPage';
@@ -48,7 +48,7 @@ export default function App() {
                         />
                     </Route>
                     <Route path='/anime'>
-                        <Route path='trending' element={<TrendingAnimePage />} />
+                        <Route path='top' element={<TopAnimePage />} />
                         <Route path=':id' element={<AnimeThreadPage />} />
                         <Route path='search' element={<SearchResultPage />} />
                     </Route>
@@ -62,7 +62,7 @@ export default function App() {
             </main>
             <Footer />
             <ScrollToTop />
-            <Toaster />
+            <Toaster richColors />
         </div>
     );
 }

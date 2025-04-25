@@ -1,15 +1,36 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { fetchTodayAnimeData, fetchTrendingAnimeData } from '@/api/anime';
+import { fetchTodayAnimeData, fetchTopAnimeData } from '@/api/anime';
 import { REFRESH_INTERVAL } from '@/common/constants';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import ErrorFallback from '@/components/common/ErrorFallback';
 import { useNavigate } from 'react-router';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 
-const MAX_ITEMS = 6;
+function getMaxItems(breakpoint: string) {
+    switch (breakpoint) {
+        case '2xl':
+            return 7;
+        case 'xl':
+            return 6;
+        case 'lg':
+            return 6;
+        case 'md':
+            return 4;
+        case 'sm':
+            return 3;
+        case 'base':
+            return 2;
+        default:
+            return 2;
+    }
+}
 
 function TodayAnimeDisplay() {
+    const breakpoint = useBreakpoint();
+    const maxItems = getMaxItems(breakpoint);
+
     const { isError, isPending, data } = useQuery({
         queryKey: ['today-anime'],
         queryFn: fetchTodayAnimeData,
@@ -20,9 +41,9 @@ function TodayAnimeDisplay() {
     const [showAll, setShowAll] = useState(false);
 
     function getItems() {
-        if (isPending || !data) return Array.from({ length: MAX_ITEMS }).map(() => null);
+        if (isPending || !data) return Array.from({ length: maxItems }).map(() => null);
 
-        if (data.length > MAX_ITEMS && !showAll) return data.slice(0, MAX_ITEMS);
+        if (data.length > maxItems && !showAll) return data.slice(0, maxItems);
 
         return data;
     }
@@ -31,7 +52,7 @@ function TodayAnimeDisplay() {
         <>
             <div className='flex w-full flex-row'>
                 <div className='mb-2 mr-auto text-xl font-bold'>Today Anime</div>
-                {data && data.length > MAX_ITEMS ? (
+                {data && data.length > maxItems ? (
                     <Button
                         variant={'link'}
                         className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
@@ -51,10 +72,12 @@ function TodayAnimeDisplay() {
     );
 }
 
-function TrendingAnimeDisplay() {
+function TopAnimeDisplay() {
+    const breakpoint = useBreakpoint();
+    const maxItems = getMaxItems(breakpoint);
     const { isError, isPending, data } = useQuery({
-        queryKey: ['trending-anime', 1],
-        queryFn: () => fetchTrendingAnimeData(1, MAX_ITEMS),
+        queryKey: ['trending-anime', 0],
+        queryFn: () => fetchTopAnimeData(1, maxItems),
         refetchInterval: REFRESH_INTERVAL,
         retry: 5,
         staleTime: 1000 * 60 * 5,
@@ -64,11 +87,11 @@ function TrendingAnimeDisplay() {
     return (
         <>
             <div className='flex w-full flex-row'>
-                <div className='mb-2 mr-auto text-xl font-bold'>Trending Anime</div>
+                <div className='mb-2 mr-auto text-xl font-bold'>Top Anime</div>
                 <Button
                     variant={'link'}
                     className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
-                    onClick={() => navigate('/anime/trending')}>
+                    onClick={() => navigate('/anime/top')}>
                     Show All
                 </Button>
             </div>
@@ -79,8 +102,8 @@ function TrendingAnimeDisplay() {
                     isPendingData={isPending}
                     items={
                         data
-                            ? data.data.slice(0, MAX_ITEMS)
-                            : Array.from({ length: MAX_ITEMS }).map(() => null)
+                            ? data.data.slice(0, maxItems)
+                            : Array.from({ length: maxItems }).map(() => null)
                     }
                 />
             )}
@@ -88,4 +111,4 @@ function TrendingAnimeDisplay() {
     );
 }
 
-export { TodayAnimeDisplay, TrendingAnimeDisplay };
+export { TodayAnimeDisplay, TopAnimeDisplay };

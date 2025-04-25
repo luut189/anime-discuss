@@ -28,7 +28,7 @@ async function fetchFromAPI<T>(
 
 export const fetchTodayAnimeData = () => fetchFromAPI<JikanAnimeData[]>('/api/anime/today');
 
-export const fetchTrendingAnimeData = (page = 1, limit = 25) =>
+export const fetchTopAnimeData = (page = 1, limit = 25) =>
     fetchFromAPI<JikanData>(`${JIKAN_URI}/top/anime?page=${page}&limit=${limit}`);
 
 export const fetchAnimeById = (id: string) =>
