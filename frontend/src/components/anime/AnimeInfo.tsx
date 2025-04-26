@@ -1,9 +1,16 @@
 import { JikanAnimeData } from '@/common/interfaces';
 import { PinAnimeButton } from '@/components/anime/PinAnimeButton';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { formatDate } from '@/lib/utils';
 import useAuthStore from '@/store/useAuthStore';
 
-import { Heart, Star } from 'lucide-react';
+import { ChevronUp, Heart, SquareUser, Star } from 'lucide-react';
+
+interface AnimeInfoProps extends JikanAnimeData {
+    showVoice: boolean;
+    setShowVoice: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 export default function AnimeInfo({
     mal_id,
@@ -19,7 +26,9 @@ export default function AnimeInfo({
     synopsis,
     genres,
     favorites,
-}: JikanAnimeData) {
+    showVoice,
+    setShowVoice,
+}: AnimeInfoProps) {
     const { user } = useAuthStore();
 
     return (
@@ -28,7 +37,7 @@ export default function AnimeInfo({
                 <div className='flex-shrink-0'>
                     <img src={images.jpg.image_url} alt={title} className='rounded-lg' />
                 </div>
-                <div className='flex-grow'>
+                <div className='flex flex-grow flex-col'>
                     <div className='flex justify-between'>
                         <div className='w-2/3'>
                             <h2 className='mb-2 text-2xl font-bold'>{title || 'Unknown Title'}</h2>
@@ -75,15 +84,28 @@ export default function AnimeInfo({
                             </p>
                         </div>
                     </div>
-                    <p className='mb-4 text-sm'>{synopsis}</p>
-                    <div className='flex flex-wrap gap-2'>
-                        {genres.map((genre) => (
-                            <span
-                                key={genre.mal_id}
-                                className='rounded-full bg-primary/10 px-2 py-1 text-xs text-primary'>
-                                {genre.name}
-                            </span>
-                        ))}
+                    <Separator />
+                    <p className='my-4 flex-grow text-sm'>{synopsis}</p>
+                    <Separator className='mb-2' />
+                    <div className='flex items-center justify-between'>
+                        <div className='flex flex-wrap gap-2'>
+                            {genres.map((genre) => (
+                                <span
+                                    key={genre.mal_id}
+                                    className='rounded-full bg-primary/10 px-2 py-1 text-xs text-primary'>
+                                    {genre.name}
+                                </span>
+                            ))}
+                        </div>
+                        <Button variant={'ghost'} onClick={() => setShowVoice(!showVoice)}>
+                            <SquareUser />
+                            Seiyuu Info
+                            <ChevronUp
+                                className={
+                                    'transition-transform' + (showVoice ? '' : ' rotate-180')
+                                }
+                            />
+                        </Button>
                     </div>
                 </div>
             </div>

@@ -7,8 +7,11 @@ import CreateThread from '@/components/thread/CreateThread';
 import { LoaderCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
+import { useState } from 'react';
+import AnimeCharacterInfo from '@/components/anime/AnimeCharacterInfor';
 
 export default function AnimeThreadPage() {
+    const [showVoice, setShowVoice] = useState(false);
     const { id } = useParams();
 
     const { isError, isPending, data } = useQuery({
@@ -32,7 +35,8 @@ export default function AnimeThreadPage() {
 
     return (
         <div className='flex flex-col gap-4'>
-            <AnimeInfo {...data} />
+            <AnimeInfo {...data} showVoice={showVoice} setShowVoice={setShowVoice} />
+            {showVoice ? <AnimeCharacterInfo id={id || '0'} /> : null}
             <CreateThread id={id as string} />
             <Threads id={id as string} />
         </div>

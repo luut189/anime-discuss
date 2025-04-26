@@ -1,4 +1,9 @@
-import { AnimeDataResponse, JikanAnimeData, JikanData } from '@/common/interfaces';
+import {
+    AnimeDataResponse,
+    JikanAnimeData,
+    JikanCharacterData,
+    JikanData,
+} from '@/common/interfaces';
 import { delay } from '@/lib/utils';
 
 const JIKAN_URI = 'https://api.jikan.moe/v4';
@@ -38,3 +43,6 @@ export const searchAnimeByText = (text: string, limit = 25, page = 1) =>
     fetchFromAPI<JikanData>(
         `${JIKAN_URI}/anime?limit=${limit}&q=${encodeURIComponent(text)}&page=${page}`,
     );
+
+export const fetchAnimeCharacters = (id: string) =>
+    fetchFromAPI<JikanCharacterData>(`${JIKAN_URI}/anime/${id}/characters`);
