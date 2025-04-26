@@ -8,7 +8,7 @@ import { LoaderCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 import { useState } from 'react';
-import AnimeCharacterInfo from '@/components/anime/AnimeCharacterInfor';
+import AnimeCharacterInfo from '@/components/anime/AnimeCharacterInfo';
 
 export default function AnimeThreadPage() {
     const [showVoice, setShowVoice] = useState(false);
