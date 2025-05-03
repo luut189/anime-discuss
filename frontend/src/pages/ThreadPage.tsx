@@ -1,5 +1,5 @@
 import { getCommentsByThreadId, getThreadById } from '@/api/thread';
-import { Comment, Thread, ThreadSkeleton } from '@/components/thread/Thread';
+import { Comment, CommentSkeleton, Thread, ThreadSkeleton } from '@/components/thread/Thread';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 
@@ -20,7 +20,17 @@ export default function ThreadPage() {
     });
 
     if (isThreadPending || isCommentPending) {
-        return <ThreadSkeleton />;
+        return (
+            <>
+                <ThreadSkeleton />
+                <div className='flex flex-col gap-4'>
+                    <h1 className='mt-2 text-2xl font-semibold'>Comments</h1>
+                    {Array.from({ length: Math.random() * 5 + 1 }).map((_, idx) => (
+                        <CommentSkeleton key={idx} />
+                    ))}
+                </div>
+            </>
+        );
     }
 
     if (!threadData) {

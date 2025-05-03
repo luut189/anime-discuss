@@ -228,6 +228,33 @@ export function Comment({
     );
 }
 
+export function CommentSkeleton({ depth = 0 }: { depth?: number }) {
+    return (
+        <Card
+            className={
+                depth > 0
+                    ? 'ml-2 rounded-none border-0 border-l-2 py-1 pl-4 shadow-none dark:shadow-none'
+                    : ''
+            }>
+            <CardHeader>
+                <Skeleton className='mb-1 h-6 w-32' />
+                <Skeleton className='h-4 w-24' />
+            </CardHeader>
+            <CardContent className='flex flex-col gap-2'>
+                <div className='mb-3 space-y-2'>
+                    <Skeleton className='h-4 w-full' />
+                    <Skeleton className='h-4 w-3/4' />
+                    <Skeleton className='h-4 w-1/2' />
+                </div>
+                <div className='flex gap-2'>
+                    <Skeleton className='h-8 w-20' />
+                    <Skeleton className='h-8 w-24' />
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
 interface ReplyButtonProps {
     id: string;
     commentCount: number;

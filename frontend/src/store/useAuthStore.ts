@@ -14,11 +14,11 @@ type AuthState = {
     isLoggingIn: boolean;
     isLoggingOut: boolean;
     isCheckingAuth: boolean;
-    signup: (arg: Credential) => void;
-    login: (arg: Credential) => void;
+    signup: (_: Credential) => void;
+    login: (_: Credential) => void;
     logout: () => void;
     authCheck: () => void;
-    setUser: (arg: IUser) => void;
+    setUser: (_: IUser) => void;
 };
 
 const useAuthStore = create<AuthState>((set) => ({
