@@ -4,10 +4,12 @@ import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
 import { getAllThreads } from '@/api/thread';
 
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
-const MAX_ITEMS = 5;
+const TO_ADD = 3;
 
 export default function LatestThreads() {
+    const [count, setCount] = useState(TO_ADD);
     const { data, isError, isPending } = useQuery({
         queryKey: ['all-threads'],
         queryFn: getAllThreads,
@@ -16,18 +18,7 @@ export default function LatestThreads() {
 
     return (
         <>
-            <div className='flex w-full flex-row'>
-                <div className='mb-2 mr-auto text-xl font-bold'>Recent Threads</div>
-                {data && data.length > MAX_ITEMS ? (
-                    <a href='/thread/recent'>
-                        <Button
-                            variant={'link'}
-                            className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'>
-                            Show All
-                        </Button>
-                    </a>
-                ) : null}
-            </div>
+            <div className='mb-2 mr-auto text-xl font-bold'>Recent Threads</div>
             <div className='flex flex-col gap-4'>
                 {isPending ? (
                     <>
@@ -38,10 +29,15 @@ export default function LatestThreads() {
                 ) : isError || !data ? (
                     <ErrorFallback errorMessage='Error Fetching Recent Threads' />
                 ) : (
-                    data
-                        .slice(0, MAX_ITEMS)
-                        .map((thread) => <Thread key={thread._id} {...thread} />)
+                    data.slice(0, count).map((thread) => <Thread key={thread._id} {...thread} />)
                 )}
+                {data ? (
+                    <Button
+                        variant={'outline'}
+                        onClick={() => setCount(count < data.length ? count + TO_ADD : TO_ADD)}>
+                        Show {count < data.length ? 'More' : 'Less'} Threads
+                    </Button>
+                ) : null}
             </div>
         </>
     );

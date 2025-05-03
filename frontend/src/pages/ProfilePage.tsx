@@ -8,6 +8,10 @@ import useAuthStore from '@/store/useAuthStore';
 import { useQuery } from '@tanstack/react-query';
 import { WEEKDAYS } from '@/common/constants';
 import { Navigate } from 'react-router';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+
+const TO_ADD = 3;
 
 export default function ProfilePage() {
     const { user } = useAuthStore();
@@ -44,6 +48,7 @@ export default function ProfilePage() {
 }
 
 function ThreadsContainer() {
+    const [count, setCount] = useState(TO_ADD);
     const { user } = useAuthStore();
     const { data, isPending } = useQuery({
         queryKey: ['threads', user?._id],
@@ -67,9 +72,14 @@ function ThreadsContainer() {
 
     return (
         <>
-            {data.slice(0, 3).map((thread) => (
+            {data.slice(0, count).map((thread) => (
                 <Thread key={thread._id} {...thread} />
             ))}
+            <Button
+                variant={'outline'}
+                onClick={() => setCount(count < data.length ? count + TO_ADD : TO_ADD)}>
+                Show {count < data.length ? 'More' : 'Less'} Threads
+            </Button>
         </>
     );
 }
