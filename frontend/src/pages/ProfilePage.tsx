@@ -67,7 +67,7 @@ function ThreadsContainer() {
 
     return (
         <>
-            {data.map((thread) => (
+            {data.slice(0, 3).map((thread) => (
                 <Thread key={thread._id} {...thread} />
             ))}
         </>
