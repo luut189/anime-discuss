@@ -20,13 +20,7 @@ export default function ThreadPage() {
     });
 
     if (isThreadPending || isCommentPending) {
-        return (
-            <>
-                {Array.from({ length: 2 }).map((_, idx) => (
-                    <ThreadSkeleton key={idx} />
-                ))}
-            </>
-        );
+        return <ThreadSkeleton />;
     }
 
     if (!threadData) {

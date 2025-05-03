@@ -45,6 +45,7 @@ export function Thread({
 }: IThread) {
     const [isReply, setIsReply] = useState(false);
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuthStore();
 
@@ -65,55 +66,54 @@ export function Thread({
     const isAtAnimePage = location.pathname === `/anime/${mal_id}`;
 
     return (
-        <a href={isAtThreadPage ? '' : `/thread/${_id}`}>
-            <Card
-                title={!isAtThreadPage ? 'Go to thread page' : ''}
-                className={!isAtThreadPage ? 'group cursor-pointer hover:bg-secondary' : ''}>
-                <CardHeader>
-                    <div className='flex'>
-                        <div className='flex w-2/3 flex-col gap-2'>
-                            <CardTitle>{title}</CardTitle>
-                            <CardDescription>
-                                Created {timeAgo(createdAt)} by {author}
-                            </CardDescription>
-                            <CardDescription>Last updated {timeAgo(updatedAt)}</CardDescription>
-                        </div>
-                        {(user && user._id === authorId) || (!authorId && !user) ? (
-                            <IconButton
-                                variant='destructive'
-                                className='ml-auto'
-                                onClick={handleDelete}
-                                icon={<X />}>
-                                Delete Thread
-                            </IconButton>
-                        ) : null}
+        <Card
+            title={!isAtThreadPage ? 'Go to thread page' : ''}
+            className={!isAtThreadPage ? 'group cursor-pointer hover:bg-secondary' : ''}
+            onClick={() => navigate(isAtThreadPage ? '' : `/thread/${_id}`)}>
+            <CardHeader>
+                <div className='flex'>
+                    <div className='flex w-2/3 flex-col gap-2'>
+                        <CardTitle>{title}</CardTitle>
+                        <CardDescription>
+                            Created {timeAgo(createdAt)} by {author}
+                        </CardDescription>
+                        <CardDescription>Last updated {timeAgo(updatedAt)}</CardDescription>
                     </div>
-                </CardHeader>
-                <CardContent className='flex flex-col gap-2'>
-                    <p className='mb-3'>{content}</p>
-                    <div className='flex items-center justify-between gap-2'>
-                        {!isAtAnimePage ? (
-                            <a href={`/anime/${mal_id}`} onClick={(e) => e.stopPropagation()}>
-                                <IconButton icon={<Film />}>Jump to anime page</IconButton>
-                            </a>
-                        ) : null}
-                        <ReplyButton
-                            commentCount={commentCount}
-                            id={_id}
-                            isReply={isReply}
-                            setIsReply={setIsReply}
-                        />
-                    </div>
-                    {isReply && (
-                        <ReplyThread
-                            mal_id={mal_id}
-                            threadId={_id}
-                            onReplySubmit={() => setIsReply(false)}
-                        />
-                    )}
-                </CardContent>
-            </Card>
-        </a>
+                    {(user && user._id === authorId) || (!authorId && !user) ? (
+                        <IconButton
+                            variant='destructive'
+                            className='ml-auto'
+                            onClick={handleDelete}
+                            icon={<X />}>
+                            Delete Thread
+                        </IconButton>
+                    ) : null}
+                </div>
+            </CardHeader>
+            <CardContent className='flex flex-col gap-2'>
+                <p className='mb-3'>{content}</p>
+                <div className='flex items-center justify-between gap-2'>
+                    {!isAtAnimePage ? (
+                        <a href={`/anime/${mal_id}`} onClick={(e) => e.stopPropagation()}>
+                            <IconButton icon={<Film />}>Jump to anime page</IconButton>
+                        </a>
+                    ) : null}
+                    <ReplyButton
+                        commentCount={commentCount}
+                        id={_id}
+                        isReply={isReply}
+                        setIsReply={setIsReply}
+                    />
+                </div>
+                {isReply && (
+                    <ReplyThread
+                        mal_id={mal_id}
+                        threadId={_id}
+                        onReplySubmit={() => setIsReply(false)}
+                    />
+                )}
+            </CardContent>
+        </Card>
     );
 }
 
@@ -121,7 +121,7 @@ export function ThreadSkeleton() {
     return (
         <Card>
             <CardHeader>
-                <div className=''>
+                <div>
                     <Skeleton className='h-7 w-1/3' />
                 </div>
                 <div className='flex flex-col gap-2'>
