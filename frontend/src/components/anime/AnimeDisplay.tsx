@@ -5,7 +5,6 @@ import { fetchTodayAnimeData, fetchTopAnimeData } from '@/api/anime';
 import { REFRESH_INTERVAL } from '@/common/constants';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import ErrorFallback from '@/components/common/ErrorFallback';
-import { useNavigate } from 'react-router';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 function getMaxItems(breakpoint: string) {
@@ -82,18 +81,18 @@ function TopAnimeDisplay() {
         retry: 5,
         staleTime: 1000 * 60 * 5,
     });
-    const navigate = useNavigate();
 
     return (
         <>
             <div className='flex w-full flex-row'>
                 <div className='mb-2 mr-auto text-xl font-bold'>Top Anime</div>
-                <Button
-                    variant={'link'}
-                    className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
-                    onClick={() => navigate('/anime/top')}>
-                    Show All
-                </Button>
+                <a href='/anime/top'>
+                    <Button
+                        variant={'link'}
+                        className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'>
+                        Show All
+                    </Button>
+                </a>
             </div>
             {isError ? (
                 <ErrorFallback errorMessage='Error Fetching Trending Anime' />

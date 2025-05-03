@@ -5,7 +5,6 @@ import { PinAnimeButton } from '@/components/anime/PinAnimeButton';
 import useAuthStore from '@/store/useAuthStore';
 
 import { CirclePlay, CircleCheck, CircleHelp, Star } from 'lucide-react';
-import { useNavigate } from 'react-router';
 
 function AnimeCard({
     mal_id,
@@ -18,20 +17,18 @@ function AnimeCard({
     genres,
 }: JikanAnimeData) {
     const { user } = useAuthStore();
-    const navigate = useNavigate();
 
     return (
         <>
             <HoverCard>
                 <HoverCardTrigger>
-                    <img
-                        src={images.jpg.image_url}
-                        alt={title}
-                        onClick={() => {
-                            navigate(`/anime/${mal_id}`);
-                        }}
-                        className='h-48 w-32 cursor-pointer rounded-sm shadow-md transition-all hover:scale-105'
-                    />
+                    <a href={`/anime/${mal_id}`}>
+                        <img
+                            src={images.jpg.image_url}
+                            alt={title}
+                            className='h-48 w-32 cursor-pointer rounded-sm shadow-md transition-all hover:scale-105'
+                        />
+                    </a>
                 </HoverCardTrigger>
                 <HoverCardContent className='flex w-full flex-col gap-3'>
                     <div className='flex flex-row'>

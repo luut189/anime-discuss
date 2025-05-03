@@ -3,13 +3,11 @@ import ErrorFallback from '@/components/common/ErrorFallback';
 import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
 import { getAllThreads } from '@/api/thread';
 
-import { useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 const MAX_ITEMS = 5;
 
 export default function LatestThreads() {
-    const navigate = useNavigate();
     const { data, isError, isPending } = useQuery({
         queryKey: ['all-threads'],
         queryFn: getAllThreads,
@@ -21,12 +19,13 @@ export default function LatestThreads() {
             <div className='flex w-full flex-row'>
                 <div className='mb-2 mr-auto text-xl font-bold'>Recent Threads</div>
                 {data && data.length > MAX_ITEMS ? (
-                    <Button
-                        variant={'link'}
-                        className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
-                        onClick={() => navigate('/thread/recent')}>
-                        Show All
-                    </Button>
+                    <a href='/thread/recent'>
+                        <Button
+                            variant={'link'}
+                            className='mb-2 flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'>
+                            Show All
+                        </Button>
+                    </a>
                 ) : null}
             </div>
             <div className='flex flex-col gap-4'>

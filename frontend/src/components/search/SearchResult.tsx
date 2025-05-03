@@ -4,8 +4,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { PinAnimeButton } from '@/components/anime/PinAnimeButton';
 
-import { useNavigate } from 'react-router';
-
 interface SearchResultProp {
     isError: boolean;
     isPending: boolean;
@@ -13,7 +11,6 @@ interface SearchResultProp {
 }
 
 export default function SearchResult({ isError, isPending, data }: SearchResultProp) {
-    const navigate = useNavigate();
     if (isPending) {
         return (
             <Card className='p-4'>
@@ -52,18 +49,17 @@ export default function SearchResult({ isError, isPending, data }: SearchResultP
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <div className='flex items-center justify-between'>
-                                        <div
-                                            onClick={() => {
-                                                navigate(`/anime/${anime.mal_id}`);
-                                            }}
-                                            className='w-2/3'>
-                                            <div className='line-clamp-2 break-words text-start font-bold'>
-                                                {anime.title || 'Untitled'}
+                                        <a href={`/anime/${anime.mal_id}`} className='w-full'>
+                                            <div className='w-2/3'>
+                                                <div className='line-clamp-2 break-words text-start font-bold'>
+                                                    {anime.title || 'Untitled'}
+                                                </div>
+                                                <div className='line-clamp-2 break-words text-start text-sm'>
+                                                    {anime.title_japanese ||
+                                                        'Unknown Japanese Title'}
+                                                </div>
                                             </div>
-                                            <div className='line-clamp-2 break-words text-start text-sm'>
-                                                {anime.title_japanese || 'Unknown Japanese Title'}
-                                            </div>
-                                        </div>
+                                        </a>
                                         <PinAnimeButton {...anime} />
                                     </div>
                                 </TooltipTrigger>
