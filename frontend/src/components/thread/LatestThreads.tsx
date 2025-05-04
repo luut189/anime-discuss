@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import ShowMoreButton from '@/components/common/ShowMoreButton';
 import ErrorFallback from '@/components/common/ErrorFallback';
 import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
 import { getAllThreads } from '@/api/thread';
@@ -18,7 +18,7 @@ export default function LatestThreads() {
 
     return (
         <>
-            <div className='mb-2 mr-auto text-xl font-bold'>Recent Threads</div>
+            <h1 className='mb-2 mr-auto text-xl font-bold'>Recent Threads</h1>
             <div className='flex flex-col gap-4'>
                 {isPending ? (
                     <>
@@ -32,11 +32,12 @@ export default function LatestThreads() {
                     data.slice(0, count).map((thread) => <Thread key={thread._id} {...thread} />)
                 )}
                 {data ? (
-                    <Button
-                        variant={'outline'}
-                        onClick={() => setCount(count < data.length ? count + TO_ADD : TO_ADD)}>
-                        Show {count < data.length ? 'More' : 'Less'} Threads
-                    </Button>
+                    <ShowMoreButton
+                        count={count}
+                        setCount={setCount}
+                        length={data.length}
+                        range={TO_ADD}
+                    />
                 ) : null}
             </div>
         </>

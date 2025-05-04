@@ -1,4 +1,5 @@
 import { getPinnedAnime, getUserThreads } from '@/api/user';
+import ShowMoreButton from '@/components/common/ShowMoreButton';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
@@ -9,7 +10,6 @@ import { useQuery } from '@tanstack/react-query';
 import { WEEKDAYS } from '@/common/constants';
 import { Navigate } from 'react-router';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 
 const TO_ADD = 3;
 
@@ -75,11 +75,7 @@ function ThreadsContainer() {
             {data.slice(0, count).map((thread) => (
                 <Thread key={thread._id} {...thread} />
             ))}
-            <Button
-                variant={'outline'}
-                onClick={() => setCount(count < data.length ? count + TO_ADD : TO_ADD)}>
-                Show {count < data.length ? 'More' : 'Less'} Threads
-            </Button>
+            <ShowMoreButton count={count} setCount={setCount} length={data.length} range={TO_ADD} />
         </>
     );
 }
