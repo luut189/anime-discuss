@@ -21,14 +21,12 @@ function AnimeCard({
     return (
         <>
             <HoverCard>
-                <HoverCardTrigger>
-                    <a href={`/anime/${mal_id}`}>
-                        <img
-                            src={images.jpg.image_url}
-                            alt={title}
-                            className='h-48 w-32 cursor-pointer rounded-sm shadow-md transition-all hover:scale-105'
-                        />
-                    </a>
+                <HoverCardTrigger href={`/anime/${mal_id}`}>
+                    <img
+                        src={images.jpg.image_url}
+                        alt={title}
+                        className='h-48 w-32 cursor-pointer rounded-sm shadow-md transition-all hover:scale-105'
+                    />
                 </HoverCardTrigger>
                 <HoverCardContent className='flex w-full flex-col gap-3'>
                     <div className='flex flex-row'>

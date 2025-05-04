@@ -35,7 +35,7 @@ export default function App() {
     }
 
     return (
-        <div className='flex min-h-screen flex-col transition-colors'>
+        <div className='flex min-h-screen flex-col gap-2 transition-colors'>
             <Navbar />
             <main className='flex w-full flex-1 flex-col gap-1 px-4'>
                 <Routes>
@@ -60,9 +60,9 @@ export default function App() {
                     <Route path='/*' element={<NotFoundPage />} />
                 </Routes>
             </main>
-            <Footer />
             <ScrollToTop />
             <Toaster richColors />
+            <Footer />
         </div>
     );
 }
