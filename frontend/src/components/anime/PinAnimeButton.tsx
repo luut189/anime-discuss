@@ -11,7 +11,11 @@ interface PinAnimeButtonProps {
 export function PinAnimeButton({ mal_id, title }: PinAnimeButtonProps) {
     const { isPinned, handlePin } = usePinAnime(mal_id, title);
     return (
-        <Button size='icon' variant={isPinned ? 'destructive' : 'ghost'} onClick={handlePin}>
+        <Button
+            title={isPinned ? `Unpin ${title}` : `Pin ${title}`}
+            size='icon'
+            variant={isPinned ? 'destructive' : 'ghost'}
+            onClick={handlePin}>
             {isPinned ? <PinOff /> : <Pin />}
         </Button>
     );

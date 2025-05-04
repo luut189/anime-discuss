@@ -46,12 +46,12 @@ function UserAvatarButton({ image, username }: IUser) {
                 <DropdownMenuLabel>{username}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <a href='/profile'>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer'>
                         <User />
                         Profile
                     </DropdownMenuItem>
                 </a>
-                <DropdownMenuItem onClick={logout}>
+                <DropdownMenuItem onClick={logout} className='cursor-pointer'>
                     <LogOut />
                     Logout
                 </DropdownMenuItem>
