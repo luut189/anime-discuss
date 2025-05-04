@@ -2,6 +2,7 @@ import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
 import ScrollToTop from '@/components/common/ScrollToTop';
 
+import LandingPage from '@/pages/LandingPage';
 import Homepage from '@/pages/Homepage';
 import LoginPage from '@/pages/auth/LoginPage';
 import SignupPage from '@/pages/auth/SignupPage';
@@ -39,12 +40,16 @@ export default function App() {
             <Navbar />
             <main className='flex w-full flex-1 flex-col gap-1 px-4'>
                 <Routes>
-                    <Route path='/' element={<Homepage />} />
+                    <Route path='/' element={user ? <Navigate to='/home' /> : <LandingPage />} />
+                    <Route path='/home' element={user ? <Homepage /> : <Navigate to='/' />} />
                     <Route path='/auth'>
-                        <Route path='login' element={user ? <Navigate to='/' /> : <LoginPage />} />
+                        <Route
+                            path='login'
+                            element={user ? <Navigate to='/home' /> : <LoginPage />}
+                        />
                         <Route
                             path='signup'
-                            element={user ? <Navigate to='/' /> : <SignupPage />}
+                            element={user ? <Navigate to='/home' /> : <SignupPage />}
                         />
                     </Route>
                     <Route path='/anime'>

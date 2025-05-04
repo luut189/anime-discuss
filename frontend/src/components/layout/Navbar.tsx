@@ -1,6 +1,6 @@
 import SearchBar from '@/components/search/SearchBar';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
-import { IconButton } from '@/components/ui/button';
+import { Button, IconButton } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
@@ -12,8 +12,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import useAuthStore from '@/store/useAuthStore';
 
-import { LogIn, LogOut, MessagesSquare, User } from 'lucide-react';
+import { LogIn, LogOut, Menu, MessagesSquare, User } from 'lucide-react';
 import { IUser } from '@/common/interfaces';
+import { useEffect, useState } from 'react';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 export default function Navbar() {
     const { user } = useAuthStore();
@@ -24,11 +26,60 @@ export default function Navbar() {
                 AniDis
             </a>
             <div className='flex w-full items-center justify-end gap-2 sm:gap-4'>
-                <SearchBar />
+                {user ? <SearchBar /> : <NavigationLinks />}
                 <ThemeToggle />
                 {user ? <UserAvatarButton {...user} /> : <LoginButton />}
             </div>
         </nav>
+    );
+}
+
+interface NavigationLink {
+    displayName: string;
+    href: string;
+}
+
+function NavigationLinks() {
+    const links: NavigationLink[] = [
+        { displayName: 'Anime List', href: '/anime/top' },
+        { displayName: 'Features', href: '/#features' },
+        { displayName: 'Community', href: '/#community' },
+    ];
+
+    const [onMobile, setOnMobile] = useState(false);
+    const breakpoint = useBreakpoint();
+
+    useEffect(() => {
+        setOnMobile(breakpoint === 'sm' || breakpoint == 'base');
+    }, [breakpoint]);
+
+    const dropdownNav = (
+        <DropdownMenu>
+            <DropdownMenuTrigger className='mx-2 flex items-center justify-center transition-transform data-[state=open]:rotate-90'>
+                <Menu />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuLabel>Menu</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {links.map((link, idx) => (
+                    <DropdownMenuItem key={idx} asChild>
+                        <a href={link.href}>{link.displayName}</a>
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+
+    return (
+        <div>
+            {onMobile
+                ? dropdownNav
+                : links.map((link, idx) => (
+                      <Button key={idx} variant={'link'} asChild>
+                          <a href={link.href}>{link.displayName}</a>
+                      </Button>
+                  ))}
+        </div>
     );
 }
 

@@ -13,7 +13,6 @@ export default function Footer() {
                         Tuong Luu
                     </a>
                 </p>
-                <p>Hello World</p>
             </div>
             <div className='text-right'>
                 <p>
