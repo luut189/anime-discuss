@@ -25,6 +25,10 @@ export default function SearchResultPage() {
         return <ErrorFallback errorMessage='There is nothing to search for...' />;
     }
 
+    if (data && data.data.length < 1) {
+        return <ErrorFallback errorMessage={`There is nothing here for ${query}...`} />;
+    }
+
     return (
         <AnimePage
             title={`Search Results for "${decodedQuery}"`}
