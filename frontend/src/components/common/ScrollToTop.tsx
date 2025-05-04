@@ -19,7 +19,7 @@ export default function ScrollToTop() {
 
     return isVisible ? (
         <Button
-            className='fixed bottom-10 right-10 rounded-full'
+            className='fixed bottom-12 right-12 rounded-full'
             size={'icon'}
             onClick={handleScroll}>
             <ChevronUp />
