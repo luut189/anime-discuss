@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
-function getBreakpoint(width: number) {
+type Breakpoint = '2xl' | 'xl' | 'lg' | 'md' | 'sm' | 'base';
+
+function getBreakpoint(width: number): Breakpoint {
     if (width >= 1536) return '2xl';
     if (width >= 1280) return 'xl';
     if (width >= 1024) return 'lg';
@@ -9,7 +11,7 @@ function getBreakpoint(width: number) {
     return 'base';
 }
 
-export function useBreakpoint() {
+export function useBreakpoint(): Breakpoint {
     const [breakpoint, setBreakpoint] = useState(getBreakpoint(window.innerWidth));
 
     useEffect(() => {
