@@ -5,34 +5,38 @@ import { Separator } from '@/components/ui/separator';
 import { formatDate } from '@/lib/utils';
 import useAuthStore from '@/store/useAuthStore';
 
-import { ChevronUp, Heart, SquareUser, Star } from 'lucide-react';
+import { ChevronUp, Heart, SquareUser, Star, Tv } from 'lucide-react';
+import { useState } from 'react';
+import EpisodeTracker from './EpisodeTracker';
 
 interface AnimeInfoProps extends JikanAnimeData {
     showVoice: boolean;
     setShowVoice: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function AnimeInfo({
-    mal_id,
-    images,
-    title,
-    title_japanese,
-    type,
-    episodes,
-    aired,
-    score,
-    scored_by,
-    status,
-    synopsis,
-    genres,
-    favorites,
-    showVoice,
-    setShowVoice,
-}: AnimeInfoProps) {
+export default function AnimeInfo(props: AnimeInfoProps) {
+    const {
+        mal_id,
+        images,
+        title,
+        title_japanese,
+        type,
+        episodes,
+        aired,
+        score,
+        scored_by,
+        status,
+        synopsis,
+        genres,
+        favorites,
+        showVoice,
+        setShowVoice,
+    } = props;
     const { user } = useAuthStore();
+    const [showTracker, setShowTracker] = useState(false);
 
     return (
-        <div className='rounded-lg bg-muted/50 p-6'>
+        <div className='flex flex-col gap-2 rounded-lg bg-muted/50 p-6'>
             <div className='flex flex-col gap-6 md:flex-row'>
                 <div className='flex-shrink-0'>
                     <img src={images.jpg.image_url} alt={title} className='rounded-lg' />
@@ -97,18 +101,30 @@ export default function AnimeInfo({
                                 </span>
                             ))}
                         </div>
-                        <Button variant={'ghost'} onClick={() => setShowVoice(!showVoice)}>
-                            <SquareUser />
-                            Seiyuu Info
-                            <ChevronUp
-                                className={
-                                    'transition-transform' + (showVoice ? '' : ' rotate-180')
-                                }
-                            />
-                        </Button>
+                        <div>
+                            <Button variant={'ghost'} onClick={() => setShowTracker(!showTracker)}>
+                                <Tv />
+                                Episode Tracker
+                                <ChevronUp
+                                    className={
+                                        'transition-transform' + (showTracker ? '' : ' rotate-180')
+                                    }
+                                />
+                            </Button>
+                            <Button variant={'ghost'} onClick={() => setShowVoice(!showVoice)}>
+                                <SquareUser />
+                                Seiyuu Info
+                                <ChevronUp
+                                    className={
+                                        'transition-transform' + (showVoice ? '' : ' rotate-180')
+                                    }
+                                />
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
+            {showTracker ? <EpisodeTracker {...props} /> : null}
         </div>
     );
 }

@@ -170,7 +170,10 @@ export interface IUser {
     username: string;
     password: string;
     image: string;
-    pinnedAnime: string[];
+    pinnedAnime: {
+        animeId: string;
+        watchedEpisodes: number[];
+    }[];
 }
 
 export interface IThread {

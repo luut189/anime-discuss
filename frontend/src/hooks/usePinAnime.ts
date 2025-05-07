@@ -12,7 +12,7 @@ function usePinAnime(mal_id: number, title: string) {
 
     useEffect(() => {
         if (user?.pinnedAnime) {
-            setIsPinned(user.pinnedAnime.includes(`${mal_id}`));
+            setIsPinned(user.pinnedAnime.some((item) => item.animeId === `${mal_id}`));
         }
     }, [user, mal_id]);
 
@@ -21,8 +21,8 @@ function usePinAnime(mal_id: number, title: string) {
 
         try {
             const newPinnedAnime = isPinned
-                ? user.pinnedAnime.filter((id) => id !== `${mal_id}`)
-                : [...user.pinnedAnime, `${mal_id}`];
+                ? user.pinnedAnime.filter((item) => item.animeId !== `${mal_id}`)
+                : [...user.pinnedAnime, { animeId: `${mal_id}`, watchedEpisodes: [] }];
 
             setUser({ ...user, pinnedAnime: newPinnedAnime });
 

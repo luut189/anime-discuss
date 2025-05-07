@@ -4,7 +4,7 @@ interface IUser extends Document {
     username: string;
     password: string;
     image: string;
-    pinnedAnime: string[];
+    pinnedAnime: { animeId: string; watchedEpisodes: number[] }[];
     threads: mongoose.Types.ObjectId[];
 }
 
@@ -24,8 +24,14 @@ const UserSchema = new Schema<IUser>({
     },
     pinnedAnime: [
         {
-            type: String,
-            default: [],
+            animeId: {
+                type: String,
+                required: true,
+            },
+            watchedEpisodes: {
+                type: [Number],
+                default: [],
+            },
         },
     ],
     threads: [

@@ -48,3 +48,19 @@ export async function getPinnedAnime() {
         return [];
     }
 }
+
+export async function updateWatchedEpisode(mal_id: number, ep: number, watched: boolean) {
+    try {
+        const response = await fetch(`/api/user/pinnedAnime/${mal_id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ episode: ep, watched }),
+        });
+
+        if (!response.ok) throw new Error('Failed to update watched anime');
+
+        return await response.json();
+    } catch (error) {
+        console.log(error);
+    }
+}
