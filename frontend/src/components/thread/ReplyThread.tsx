@@ -109,26 +109,20 @@ export default function ReplyThread({
                                 <FormItem>
                                     <FormLabel>Content</FormLabel>
                                     <FormControl>
-                                        <div className='flex flex-col gap-2 sm:flex-row'>
-                                            <Textarea
-                                                className='w-full sm:w-1/2'
-                                                placeholder='What are your thought?'
-                                                {...field}
-                                            />
-                                            <div
-                                                className={
-                                                    'w-full rounded-md border p-2 text-base sm:w-1/2 md:text-sm' +
-                                                    (field.value ? '' : ' text-muted-foreground')
-                                                }>
-                                                <Markdown>
-                                                    {field.value
-                                                        ? field.value.replace(/\n/g, '  \n')
-                                                        : 'Content Preview'}
-                                                </Markdown>
-                                            </div>
-                                        </div>
+                                        <Textarea placeholder='What are your thought?' {...field} />
                                     </FormControl>
                                     <FormMessage />
+                                    <div
+                                        className={
+                                            'h-32 rounded-md border p-2 text-base md:text-sm' +
+                                            (field.value ? '' : ' text-muted-foreground')
+                                        }>
+                                        <Markdown>
+                                            {field.value
+                                                ? field.value.replace(/\n/g, '  \n')
+                                                : 'Content Preview'}
+                                        </Markdown>
+                                    </div>
                                 </FormItem>
                             )}
                         />

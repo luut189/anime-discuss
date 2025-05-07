@@ -117,7 +117,7 @@ export default function CreateThread({ id }: CreateThreadProps) {
                                     <FormMessage />
                                     <div
                                         className={
-                                            'rounded-md border p-2 text-base md:text-sm' +
+                                            'h-32 rounded-md border p-2 text-base md:text-sm' +
                                             (field.value ? '' : ' text-muted-foreground')
                                         }>
                                         <Markdown>

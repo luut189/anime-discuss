@@ -1,5 +1,6 @@
 import { getCommentsByThreadId, getThreadById } from '@/api/thread';
-import { Comment, CommentSkeleton, Thread, ThreadSkeleton } from '@/components/thread/Thread';
+import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
+import { Comment, CommentSkeleton } from '@/components/thread/Comment';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 
