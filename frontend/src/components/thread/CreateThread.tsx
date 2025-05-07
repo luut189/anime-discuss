@@ -112,26 +112,20 @@ export default function CreateThread({ id }: CreateThreadProps) {
                                 <FormItem>
                                     <FormLabel>Content</FormLabel>
                                     <FormControl>
-                                        <div className='flex flex-col gap-2 sm:flex-row'>
-                                            <Textarea
-                                                className='w-full sm:w-1/2'
-                                                placeholder='How are you feeling?'
-                                                {...field}
-                                            />
-                                            <div
-                                                className={
-                                                    'w-full rounded-md border p-2 text-base sm:w-1/2 md:text-sm' +
-                                                    (field.value ? '' : ' text-muted-foreground')
-                                                }>
-                                                <Markdown>
-                                                    {field.value
-                                                        ? field.value.replace(/\n/g, '  \n')
-                                                        : 'Content Preview'}
-                                                </Markdown>
-                                            </div>
-                                        </div>
+                                        <Textarea placeholder='How are you feeling?' {...field} />
                                     </FormControl>
                                     <FormMessage />
+                                    <div
+                                        className={
+                                            'rounded-md border p-2 text-base md:text-sm' +
+                                            (field.value ? '' : ' text-muted-foreground')
+                                        }>
+                                        <Markdown>
+                                            {field.value
+                                                ? field.value.replace(/\n/g, '  \n')
+                                                : 'Content Preview'}
+                                        </Markdown>
+                                    </div>
                                 </FormItem>
                             )}
                         />
