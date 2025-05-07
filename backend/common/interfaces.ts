@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export interface JikanAnimeData {
     mal_id: number;
     url: string;
@@ -119,4 +121,8 @@ export interface JikanPaginationData {
         total: number;
         per_page: number;
     };
+}
+
+export interface MulterRequest extends Request {
+    file?: Express.Multer.File;
 }

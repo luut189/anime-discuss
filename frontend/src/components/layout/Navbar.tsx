@@ -89,7 +89,7 @@ function UserAvatarButton({ image, username }: IUser) {
         <DropdownMenu>
             <DropdownMenuTrigger>
                 <Avatar>
-                    <AvatarImage src={image} />
+                    <AvatarImage className='object-cover' src={image} />
                     <AvatarFallback>{username}</AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>

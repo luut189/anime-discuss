@@ -1,9 +1,13 @@
+import { MulterRequest } from '@/common/interfaces';
 import { AuthRequest } from '@/middleware/protect.route';
 import { Anime } from '@/models/anime.model';
 import Thread from '@/models/thread.model';
 import User from '@/models/user.model';
+import { uploadToCloudinary } from '@/service/cloudinary';
 import { getAnimeById } from '@/service/jikan';
+
 import { Response } from 'express';
+import { v2 as cloudinary } from 'cloudinary';
 
 async function getUserThreads(req: AuthRequest, res: Response) {
     try {
@@ -179,4 +183,80 @@ async function updateWatchedEpisode(req: AuthRequest, res: Response) {
     }
 }
 
-export { getUserThreads, getPinnedAnime, addPinnedAnime, removePinnedAnime, updateWatchedEpisode };
+async function updateAvatar(req: MulterRequest & AuthRequest, res: Response) {
+    try {
+        if (!req.file) {
+            res.status(400).json({ error: 'No file uploaded' });
+            return;
+        }
+
+        const userId = req.user;
+
+        const { url } = await uploadToCloudinary(req.file.buffer, 'avatars');
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        if (!user.image) {
+            res.status(400).json({ message: 'No avatar found for this user' });
+            return;
+        }
+
+        const avatarPublicId = user.image.split('/').pop()?.split('.')[0];
+
+        if (avatarPublicId) await cloudinary.uploader.destroy(`avatars/${avatarPublicId}`);
+
+        await User.findByIdAndUpdate(userId, { image: url });
+
+        res.status(200).json({ url });
+    } catch (error) {
+        console.error('Cloudinary upload failed:', error);
+        res.status(500).json({ error: 'Failed to upload image' });
+    }
+}
+
+async function removeAvatar(req: MulterRequest & AuthRequest, res: Response) {
+    try {
+        const userId = req.user?._id;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        if (!user.image) {
+            res.status(400).json({ message: 'No avatar found for this user' });
+            return;
+        }
+
+        const avatarPublicId = user.image.split('/').pop()?.split('.')[0];
+
+        if (avatarPublicId) await cloudinary.uploader.destroy(`avatars/${avatarPublicId}`);
+
+        const PROFILE_PICS = ['/avatar1.png', '/avatar2.png', '/avatar3.png'];
+        user.image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
+
+        await user.save();
+
+        res.status(200).json({ url: user.image });
+    } catch (error) {
+        console.log('Failed to remove avatar:', error);
+        res.status(500).json({ error: 'Failed to remove avatar' });
+    }
+}
+
+export {
+    getUserThreads,
+    getPinnedAnime,
+    addPinnedAnime,
+    removePinnedAnime,
+    updateWatchedEpisode,
+    updateAvatar,
+    removeAvatar,
+};

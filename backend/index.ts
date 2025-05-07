@@ -3,6 +3,7 @@ import connectMongoDB from '@/config/db';
 import { AnimeRoute, AuthRoute, ThreadRoute, UserRoute } from '@/routes';
 
 import express from 'express';
+import { v2 as cloudinary } from 'cloudinary';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
@@ -18,6 +19,12 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: 'Too many requests, please try again in 1 second',
+});
+
+cloudinary.config({
+    cloud_name: ENV.CLOUDINARY_CLOUD_NAME,
+    api_key: ENV.CLOUDINARY_API_KEY,
+    api_secret: ENV.CLOUDINARY_API_SECRET,
 });
 
 app.use(limiter);
