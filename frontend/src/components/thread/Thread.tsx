@@ -19,6 +19,7 @@ import { ChevronUp, Film, MessageSquare, X } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
+import Markdown from 'react-markdown';
 
 function ReplyText({ commentCount }: { commentCount: number }) {
     return (
@@ -91,7 +92,9 @@ export function Thread({
                 </div>
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>
-                <p className='mb-3'>{content}</p>
+                <div className='mb-2'>
+                    <Markdown>{content.replace(/\n/g, '  \n')}</Markdown>
+                </div>
                 <div className='flex items-center justify-between gap-2'>
                     {!isAtAnimePage ? (
                         <a href={`/anime/${mal_id}`} onClick={(e) => e.stopPropagation()}>
@@ -187,7 +190,9 @@ export function Comment({
                 <CardDescription>Created {timeAgo(createdAt)}</CardDescription>
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>
-                <p className='mb-3'>{content}</p>
+                <div className='mb-2'>
+                    <Markdown>{content.replace(/\n/g, '  \n')}</Markdown>
+                </div>
                 <div className='mr-auto flex w-fit'>
                     <ReplyButton
                         commentCount={commentCount}

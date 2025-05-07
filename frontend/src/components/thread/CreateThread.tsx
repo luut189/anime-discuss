@@ -19,6 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import Markdown from 'react-markdown';
 
 interface CreateThreadProps {
     id: string;
@@ -111,7 +112,24 @@ export default function CreateThread({ id }: CreateThreadProps) {
                                 <FormItem>
                                     <FormLabel>Content</FormLabel>
                                     <FormControl>
-                                        <Textarea placeholder='How are you feeling?' {...field} />
+                                        <div className='flex flex-col gap-2 sm:flex-row'>
+                                            <Textarea
+                                                className='w-full sm:w-1/2'
+                                                placeholder='How are you feeling?'
+                                                {...field}
+                                            />
+                                            <div
+                                                className={
+                                                    'w-full rounded-md border p-2 text-base sm:w-1/2 md:text-sm' +
+                                                    (field.value ? '' : ' text-muted-foreground')
+                                                }>
+                                                <Markdown>
+                                                    {field.value
+                                                        ? field.value.replace(/\n/g, '  \n')
+                                                        : 'Content Preview'}
+                                                </Markdown>
+                                            </div>
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
