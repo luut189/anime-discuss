@@ -52,7 +52,7 @@ async function getAllThreads(req: Request, res: Response) {
     }
 }
 
-async function getThreads(req: Request, res: Response) {
+async function getThreadsByMalId(req: Request, res: Response) {
     try {
         const { mal_id } = req.params;
 
@@ -187,7 +187,7 @@ async function getComments(req: Request, res: Response) {
 export {
     createThread,
     getAllThreads,
-    getThreads,
+    getThreadsByMalId,
     getThread,
     deleteThread,
     createComment,

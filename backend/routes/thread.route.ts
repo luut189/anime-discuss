@@ -1,7 +1,7 @@
 import {
     createThread,
     getAllThreads,
-    getThreads,
+    getThreadsByMalId,
     getThread,
     createComment,
     deleteThread,
@@ -16,7 +16,7 @@ router.post('/public', createThread);
 router.post('/auth', protectRoute, createThread);
 
 router.get('/', getAllThreads);
-router.get('/anime/:mal_id', getThreads);
+router.get('/anime/:mal_id', getThreadsByMalId);
 router.get('/:id', getThread);
 
 router.delete('/public/:id', deleteThread);
