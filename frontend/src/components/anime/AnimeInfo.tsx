@@ -51,7 +51,7 @@ export default function AnimeInfo(props: AnimeInfoProps) {
                         </div>
                         {user ? <PinAnimeButton mal_id={mal_id} title={title} /> : null}
                     </div>
-                    <div className='mb-4 grid grid-cols-2 gap-4'>
+                    <div className='mb-4 flex grid-cols-2 flex-col gap-0 sm:grid sm:gap-4'>
                         <div>
                             <p className='text-sm font-semibold'>
                                 Type: <span className='font-normal'>{type || 'Unknown'}</span>
@@ -101,7 +101,7 @@ export default function AnimeInfo(props: AnimeInfoProps) {
                                 </span>
                             ))}
                         </div>
-                        <div>
+                        <div className='flex flex-col items-end sm:flex-row'>
                             <Button variant={'ghost'} onClick={() => setShowTracker(!showTracker)}>
                                 <Tv />
                                 Episode Tracker
