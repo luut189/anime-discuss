@@ -13,9 +13,10 @@ import ReplyThread from '@/components/thread/ReplyThread';
 import useAuthStore from '@/store/useAuthStore';
 import { deleteThread } from '@/api/thread';
 import { timeAgo } from '@/lib/utils';
+import useSubmit from '@/hooks/useSubmit';
 
 import { useState } from 'react';
-import { Film, MessageSquare, X } from 'lucide-react';
+import { Film, Loader, MessageSquare, X } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -50,7 +51,7 @@ export function Thread({
     const location = useLocation();
     const { user } = useAuthStore();
 
-    async function handleDelete(e: React.MouseEvent) {
+    const { isSubmitting, onSubmit } = useSubmit(async (e: React.MouseEvent) => {
         e.stopPropagation();
         if (!window.confirm('Are you sure you want to delete this thread?')) return;
 
@@ -64,7 +65,7 @@ export function Thread({
         }
         queryClient.invalidateQueries({ queryKey: [`threads-${mal_id}`] });
         if (user) queryClient.invalidateQueries({ queryKey: ['threads', user.username] });
-    }
+    });
 
     const isAtThreadPage = location.pathname === `/thread/${_id}`;
     const isAtAnimePage = location.pathname === `/anime/${mal_id}`;
@@ -87,9 +88,10 @@ export function Thread({
                         <IconButton
                             variant='destructive'
                             className='ml-auto'
-                            onClick={handleDelete}
+                            onClick={onSubmit}
+                            disabled={isSubmitting}
                             icon={<X />}>
-                            Delete Thread
+                            {isSubmitting ? <Loader className='animate-spin' /> : 'Delete Thread'}
                         </IconButton>
                     ) : null}
                 </div>

@@ -23,6 +23,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
 import { useState } from 'react';
 import imageCompression from 'browser-image-compression';
+import useSubmit from '@/hooks/useSubmit';
 
 const TO_ADD = 3;
 
@@ -72,37 +73,35 @@ export default function ProfilePage() {
 function EditProfilePicture() {
     const [image, setImage] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
-    const [isUploading, setIsUploading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const { user, setUser } = useAuthStore();
 
-    async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const options = {
-            maxSizeMB: 1,
-            maxWidthOrHeight: 1920,
-            useWebWorker: true,
-        };
-        try {
-            setIsUploading(true);
-            const compressedFile = await imageCompression(file, options);
-            setImage(compressedFile);
-            setPreview(URL.createObjectURL(compressedFile));
-            setIsUploading(false);
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    const { isSubmitting: isChanging, onSubmit: handleImageChange } = useSubmit(
+        async (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const options = {
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1920,
+                useWebWorker: true,
+            };
+            try {
+                const compressedFile = await imageCompression(file, options);
+                setImage(compressedFile);
+                setPreview(URL.createObjectURL(compressedFile));
+            } catch (error) {
+                console.log(error);
+            }
+        },
+    );
 
-    async function handleUpload() {
+    const { isSubmitting: isUploading, onSubmit: handleUpload } = useSubmit(async () => {
         if (!image) return;
         if (!user) return;
 
         const formData = new FormData();
         formData.append('file', image);
 
-        setIsUploading(true);
         const response = await fetch('/api/user/avatar', {
             method: 'POST',
             body: formData,
@@ -115,14 +114,13 @@ function EditProfilePicture() {
         }
         const data = (await response.json()).url as string;
         setUser({ ...user, image: data });
-        setIsUploading(false);
         setIsOpen(false);
-    }
+    });
 
-    async function removeAvatar() {
+    const { isSubmitting: isRemoving, onSubmit: removeAvatar } = useSubmit(async () => {
+        if (!window.confirm('Are you sure to remove this avatar?')) return;
         if (!user) return;
 
-        setIsUploading(true);
         const response = await fetch('/api/user/avatar', {
             method: 'DELETE',
         });
@@ -131,11 +129,12 @@ function EditProfilePicture() {
         } else {
             console.error('Delete failed');
         }
-        setIsUploading(false);
         const data = (await response.json()).url as string;
         setUser({ ...user, image: data });
         setIsOpen(false);
-    }
+    });
+
+    const isLoading = isUploading || isChanging || isRemoving;
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -169,14 +168,25 @@ function EditProfilePicture() {
                 )}
                 <Input type='file' accept='image/*' onChange={handleImageChange} />
                 <DialogFooter>
-                    <Button disabled={isUploading} variant={'destructive'} onClick={removeAvatar}>
-                        <X /> Remove avatar
+                    <Button disabled={isLoading} variant={'destructive'} onClick={removeAvatar}>
+                        {isRemoving ? (
+                            <Loader className='animate-spin' />
+                        ) : (
+                            <>
+                                <X />
+                                Remove avatar
+                            </>
+                        )}
                     </Button>
                     <Button
-                        disabled={!image || isUploading}
+                        disabled={!image || isLoading}
                         onClick={handleUpload}
-                        size={isUploading ? 'icon' : 'default'}>
-                        {isUploading ? <Loader className='animate-spin' /> : 'Upload image'}
+                        size={isLoading ? 'icon' : 'default'}>
+                        {isUploading || isChanging ? (
+                            <Loader className='animate-spin' />
+                        ) : (
+                            'Upload image'
+                        )}
                     </Button>
                 </DialogFooter>
             </DialogContent>
