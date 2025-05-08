@@ -15,7 +15,7 @@ import useAuthStore from '@/store/useAuthStore';
 import { LogIn, LogOut, Menu, MessagesSquare, User } from 'lucide-react';
 import { IUser } from '@/common/interfaces';
 import { useEffect, useState } from 'react';
-import { useBreakpoint } from '@/hooks/useBreakpoint';
+import useBreakpoint from '@/hooks/useBreakpoint';
 
 export default function Navbar() {
     const { user } = useAuthStore();

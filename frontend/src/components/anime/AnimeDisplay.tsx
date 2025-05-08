@@ -5,7 +5,7 @@ import { fetchTodayAnimeData, fetchTopAnimeData } from '@/api/anime';
 import { REFRESH_INTERVAL } from '@/common/constants';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import ErrorFallback from '@/components/common/ErrorFallback';
-import { useBreakpoint } from '@/hooks/useBreakpoint';
+import useBreakpoint from '@/hooks/useBreakpoint';
 
 function getMaxItems(breakpoint: string) {
     switch (breakpoint) {

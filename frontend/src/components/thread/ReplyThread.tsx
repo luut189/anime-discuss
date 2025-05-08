@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useAuthStore from '@/store/useAuthStore';
 import { createComment } from '@/api/thread';
+import MarkdownPreview from '@/components/common/MarkdownPreview';
 
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -19,7 +20,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import Markdown from 'react-markdown';
+import { Loader } from 'lucide-react';
+import useSubmit from '@/hooks/useSubmit';
 
 interface ReplyThreadProps {
     mal_id: number;
@@ -55,9 +57,9 @@ export default function ReplyThread({
 
     useEffect(() => {
         if (user) form.setValue('author', user?.username);
-    });
+    }, [user, form]);
 
-    async function onSubmit(data: z.infer<typeof formSchema>) {
+    const { isSubmitting, onSubmit } = useSubmit(async (data: z.infer<typeof formSchema>) => {
         try {
             await createComment(data);
             onReplySubmit();
@@ -71,7 +73,7 @@ export default function ReplyThread({
             toast.error('Error creating comment.');
             console.error('Error creating comment:', error);
         }
-    }
+    });
 
     return (
         <Card className='w-full'>
@@ -112,22 +114,12 @@ export default function ReplyThread({
                                         <Textarea placeholder='What are your thought?' {...field} />
                                     </FormControl>
                                     <FormMessage />
-                                    <div
-                                        className={
-                                            'h-32 rounded-md border p-2 text-base md:text-sm' +
-                                            (field.value ? '' : ' text-muted-foreground')
-                                        }>
-                                        <Markdown>
-                                            {field.value
-                                                ? field.value.replace(/\n/g, '  \n')
-                                                : 'Content Preview'}
-                                        </Markdown>
-                                    </div>
+                                    <MarkdownPreview content={field.value} />
                                 </FormItem>
                             )}
                         />
-                        <Button type='submit' className='ml-auto'>
-                            Reply
+                        <Button type='submit' className='ml-auto' disabled={isSubmitting}>
+                            {isSubmitting ? <Loader className='animate-spin' /> : 'Reply'}
                         </Button>
                     </form>
                 </Form>

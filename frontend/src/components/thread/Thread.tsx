@@ -50,7 +50,10 @@ export function Thread({
     const location = useLocation();
     const { user } = useAuthStore();
 
-    async function handleDelete() {
+    async function handleDelete(e: React.MouseEvent) {
+        e.stopPropagation();
+        if (!window.confirm('Are you sure you want to delete this thread?')) return;
+
         try {
             await deleteThread(_id, !!user);
             toast.success('Thread deleted!');

@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useAuthStore from '@/store/useAuthStore';
 import { createThread } from '@/api/thread';
+import MarkdownPreview from '@/components/common/MarkdownPreview';
+import useSubmit from '@/hooks/useSubmit';
 
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -19,7 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import Markdown from 'react-markdown';
+import { Loader } from 'lucide-react';
 
 interface CreateThreadProps {
     id: string;
@@ -45,12 +47,7 @@ export default function CreateThread({ id }: CreateThreadProps) {
             content: '',
         },
     });
-
-    useEffect(() => {
-        if (user) form.setValue('author', user?.username);
-    });
-
-    async function onSubmit(data: z.infer<typeof formSchema>) {
+    const { isSubmitting, onSubmit } = useSubmit(async (data: z.infer<typeof formSchema>) => {
         try {
             await createThread(data, !!user);
             queryClient.invalidateQueries({ queryKey: [`threads-${id}`] });
@@ -61,7 +58,11 @@ export default function CreateThread({ id }: CreateThreadProps) {
             toast.error('Error creating thread.');
             console.error('Error creating thread:', error);
         }
-    }
+    });
+
+    useEffect(() => {
+        if (user) form.setValue('author', user?.username);
+    }, [user, form]);
 
     return (
         <Card>
@@ -115,22 +116,12 @@ export default function CreateThread({ id }: CreateThreadProps) {
                                         <Textarea placeholder='How are you feeling?' {...field} />
                                     </FormControl>
                                     <FormMessage />
-                                    <div
-                                        className={
-                                            'h-32 rounded-md border p-2 text-base md:text-sm' +
-                                            (field.value ? '' : ' text-muted-foreground')
-                                        }>
-                                        <Markdown>
-                                            {field.value
-                                                ? field.value.replace(/\n/g, '  \n')
-                                                : 'Content Preview'}
-                                        </Markdown>
-                                    </div>
+                                    <MarkdownPreview content={field.value} />
                                 </FormItem>
                             )}
                         />
-                        <Button type='submit' className='ml-auto'>
-                            Create
+                        <Button type='submit' className='ml-auto' disabled={isSubmitting}>
+                            {isSubmitting ? <Loader className='animate-spin' /> : 'Create'}
                         </Button>
                     </form>
                 </Form>
