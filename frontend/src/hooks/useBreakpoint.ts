@@ -11,6 +11,19 @@ function getBreakpoint(width: number): Breakpoint {
     return 'base';
 }
 
+const breakpointOrder: Record<Breakpoint, number> = {
+    base: 0,
+    sm: 1,
+    md: 2,
+    lg: 3,
+    xl: 4,
+    '2xl': 5,
+};
+
+export function isBreakpointAtLeast(current: Breakpoint, minimum: Breakpoint): boolean {
+    return breakpointOrder[current] >= breakpointOrder[minimum];
+}
+
 function useBreakpoint(): Breakpoint {
     const [breakpoint, setBreakpoint] = useState(getBreakpoint(window.innerWidth));
 
