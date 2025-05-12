@@ -125,7 +125,7 @@ function EditProfilePicture() {
             method: 'DELETE',
         });
         if (response.ok) {
-            console.log('Deleteed successfully!');
+            console.log('Deleted successfully!');
         } else {
             console.error('Delete failed');
         }
@@ -134,7 +134,7 @@ function EditProfilePicture() {
         setIsOpen(false);
     });
 
-    const isLoading = isUploading || isChanging || isRemoving;
+    const isLoading = isUploading || isChanging;
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -147,7 +147,7 @@ function EditProfilePicture() {
                     <Pencil />
                 </Button>
             </DialogTrigger>
-            <DialogContent className='sm:max-w-[425px]'>
+            <DialogContent className='sm:w-2/3'>
                 <DialogHeader>
                     <DialogTitle>Edit Avatar</DialogTitle>
                     <DialogDescription>
@@ -167,8 +167,11 @@ function EditProfilePicture() {
                     </div>
                 )}
                 <Input type='file' accept='image/*' onChange={handleImageChange} />
-                <DialogFooter>
-                    <Button disabled={isLoading} variant={'destructive'} onClick={removeAvatar}>
+                <DialogFooter className='gap-1'>
+                    <Button
+                        disabled={isLoading || isRemoving}
+                        variant={'destructive'}
+                        onClick={removeAvatar}>
                         {isRemoving ? (
                             <Loader className='animate-spin' />
                         ) : (
@@ -182,11 +185,7 @@ function EditProfilePicture() {
                         disabled={!image || isLoading}
                         onClick={handleUpload}
                         size={isLoading ? 'icon' : 'default'}>
-                        {isUploading || isChanging ? (
-                            <Loader className='animate-spin' />
-                        ) : (
-                            'Upload image'
-                        )}
+                        {isLoading ? <Loader className='animate-spin' /> : 'Upload image'}
                     </Button>
                 </DialogFooter>
             </DialogContent>
