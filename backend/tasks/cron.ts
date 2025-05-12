@@ -22,7 +22,7 @@ async function runTask() {
     const users = await User.find({});
     const animeIdToUpdate = new Set<string>();
     for (const user of users) {
-        const animeIds = user.pinnedAnime;
+        const animeIds = user.pinnedAnime.map((anime) => anime.animeId);
         animeIds.forEach((id) => animeIdToUpdate.add(id));
     }
 
