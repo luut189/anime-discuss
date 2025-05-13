@@ -17,13 +17,14 @@ import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
 import useAuthStore from '@/store/useAuthStore';
 import { WEEKDAYS } from '@/common/constants';
+import useSubmit from '@/hooks/useSubmit';
 
 import { Loader, Pencil, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import imageCompression from 'browser-image-compression';
-import useSubmit from '@/hooks/useSubmit';
+import { toast } from 'sonner';
 
 const TO_ADD = 3;
 
@@ -32,7 +33,7 @@ export default function ProfilePage() {
     if (!user) return <Navigate to='/auth/login' />;
     return (
         <div className='flex flex-col items-center justify-center gap-4'>
-            <Card className='w-2/3'>
+            <Card className='w-full sm:w-2/3'>
                 <CardHeader>
                     <div className='flex flex-col items-center justify-center gap-2'>
                         <div className='group relative h-32 w-32'>
@@ -54,19 +55,30 @@ export default function ProfilePage() {
                     </div>
                 </CardHeader>
             </Card>
-            <div className='flex w-full flex-col gap-4'>
-                <h2 className='text-2xl font-bold'>Threads</h2>
+            <Section title='Threads'>
                 <ThreadsContainer />
-            </div>
-            <div className='flex w-full flex-col gap-4'>
-                <h2 className='text-2xl font-bold'>Today Anime</h2>
+            </Section>
+            <Section title='Today Anime'>
                 <AnimeContainer type='today' />
-            </div>
-            <div className='flex w-full flex-col gap-4'>
-                <h2 className='text-2xl font-bold'>Pinned Anime</h2>
+            </Section>
+            <Section title='Pinned Anime'>
                 <AnimeContainer type='pinned' />
-            </div>
+            </Section>
         </div>
+    );
+}
+
+interface SectionProps {
+    children: React.ReactNode;
+    title: string;
+}
+
+function Section({ children, title }: SectionProps) {
+    return (
+        <section className='flex w-full flex-col gap-4'>
+            <h2 className='text-2xl font-bold'>{title}</h2>
+            {children}
+        </section>
     );
 }
 
@@ -75,6 +87,19 @@ function EditProfilePicture() {
     const [preview, setPreview] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const { user, setUser } = useAuthStore();
+
+    useEffect(() => {
+        return () => {
+            if (preview) URL.revokeObjectURL(preview);
+        };
+    }, [preview]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            setImage(null);
+            setPreview(null);
+        }
+    }, [isOpen]);
 
     const { isSubmitting: isChanging, onSubmit: handleImageChange } = useSubmit(
         async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,12 +134,13 @@ function EditProfilePicture() {
 
         if (response.ok) {
             console.log('Uploaded successfully!');
+            const data = (await response.json()).url as string;
+            setUser({ ...user, image: data });
+            setIsOpen(false);
+            toast.success('Avatar uploaded successfully!');
         } else {
             console.error('Upload failed');
         }
-        const data = (await response.json()).url as string;
-        setUser({ ...user, image: data });
-        setIsOpen(false);
     });
 
     const { isSubmitting: isRemoving, onSubmit: removeAvatar } = useSubmit(async () => {
@@ -126,12 +152,13 @@ function EditProfilePicture() {
         });
         if (response.ok) {
             console.log('Deleted successfully!');
+            const data = (await response.json()).url as string;
+            setUser({ ...user, image: data });
+            setIsOpen(false);
+            toast.success('Avatar deleted successfully!');
         } else {
             console.error('Delete failed');
         }
-        const data = (await response.json()).url as string;
-        setUser({ ...user, image: data });
-        setIsOpen(false);
     });
 
     const isLoading = isUploading || isChanging;
@@ -139,11 +166,7 @@ function EditProfilePicture() {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button
-                    variant={'ghost'}
-                    size={'icon'}
-                    className='rounded-full'
-                    onClick={() => console.log('Edit avatar clicked')}>
+                <Button variant={'ghost'} size={'icon'} className='rounded-full'>
                     <Pencil />
                 </Button>
             </DialogTrigger>
