@@ -13,12 +13,20 @@ export default function EpisodeTracker({ airing, mal_id, episodes }: JikanAnimeD
     const handleClick = async (ep: number, watched: boolean) => {
         if (!user) return;
 
+        let minEp = Number.MAX_VALUE;
         let updatedEpisodes = [...watchedEpisodes];
         if (watched && !updatedEpisodes.includes(ep)) {
-            updatedEpisodes.push(ep);
+            for (let i = 1; i <= ep; i++) {
+                if (!updatedEpisodes.includes(i)) {
+                    minEp = Math.min(i, minEp);
+                    updatedEpisodes.push(i);
+                }
+            }
         } else if (!watched) {
             updatedEpisodes = updatedEpisodes.filter((item) => item !== ep);
         }
+
+        const epWatched = minEp == ep ? String(ep) : `${minEp} to ${ep}`;
 
         const updatedAnime = {
             animeId: String(mal_id),
@@ -32,7 +40,7 @@ export default function EpisodeTracker({ airing, mal_id, episodes }: JikanAnimeD
             : [...user.pinnedAnime, updatedAnime];
 
         setUser({ ...user, pinnedAnime: newPinnedAnime });
-        toast.success(`Episode ${ep} ${watched ? 'marked as watched' : 'unmarked'}`);
+        toast.success(`Episode ${watched ? `${epWatched} marked as watched` : `${ep} unmarked`}`);
         await updateWatchedEpisode(mal_id, ep, watched);
     };
 
