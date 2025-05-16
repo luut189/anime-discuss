@@ -40,7 +40,7 @@ async function getPinnedAnime(req: AuthRequest, res: Response) {
 
         const animeIds = userData.pinnedAnime.map((item) => item.animeId);
         if (animeIds.length === 0) {
-            res.status(201).json([]);
+            res.status(204).json([]);
             return;
         }
 

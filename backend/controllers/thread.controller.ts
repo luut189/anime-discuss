@@ -42,7 +42,7 @@ async function createThread(req: AuthRequest, res: Response) {
 async function getAllThreads(req: Request, res: Response) {
     try {
         const threads = await Thread.find().sort({ createdAt: -1 });
-        res.status(201).json(threads);
+        res.status(200).json(threads);
     } catch (error) {
         console.error('Error getting all threads', error);
         res.status(500).json({
@@ -57,7 +57,7 @@ async function getThreadsByMalId(req: Request, res: Response) {
         const { mal_id } = req.params;
 
         const threads = await Thread.find({ mal_id }).sort({ createdAt: -1 });
-        res.json(threads);
+        res.status(200).json(threads);
     } catch (error) {
         res.status(500).json({
             error: `Failed to fetch threads: ${error}`,
@@ -69,7 +69,7 @@ async function getThread(req: Request, res: Response) {
     try {
         const thread = await Thread.findById(req.params.id);
 
-        res.json(thread);
+        res.status(200).json(thread);
     } catch (error) {
         res.status(500).json({
             error: `Failed to fetch thread: ${error}`,
@@ -104,7 +104,7 @@ async function deleteThread(req: AuthRequest, res: Response) {
         await Comment.deleteMany({ thread: id });
         await thread.deleteOne();
 
-        res.json({ message: 'Thread deleted successfully' });
+        res.status(200).json({ message: 'Thread deleted successfully' });
     } catch (error) {
         console.error('Error deleting thread:', error);
         res.status(500).json({ error: 'Failed to delete thread' });
