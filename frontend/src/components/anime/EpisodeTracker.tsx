@@ -23,7 +23,7 @@ export default function EpisodeTracker({ airing, mal_id, episodes }: JikanAnimeD
                 }
             }
         } else if (!watched) {
-            updatedEpisodes = updatedEpisodes.filter((item) => item !== ep);
+            updatedEpisodes = updatedEpisodes.filter((item) => item < ep);
         }
 
         const epWatched = minEp == ep ? String(ep) : `${minEp} to ${ep}`;

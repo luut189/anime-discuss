@@ -172,7 +172,7 @@ async function updateWatchedEpisode(req: AuthRequest, res: Response) {
                 }
             }
         } else if (!watched && animeEntry.watchedEpisodes.includes(episode)) {
-            animeEntry.watchedEpisodes = animeEntry.watchedEpisodes.filter((ep) => ep !== episode);
+            animeEntry.watchedEpisodes = animeEntry.watchedEpisodes.filter((ep) => ep < episode);
         }
 
         await user.save();
