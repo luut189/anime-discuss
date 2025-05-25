@@ -1,5 +1,6 @@
 import {
     AnimeDataResponse,
+    Day,
     JikanAnimeData,
     JikanCharacterData,
     JikanData,
@@ -31,7 +32,10 @@ async function fetchFromAPI<T>(
     }
 }
 
-export const fetchTodayAnimeData = () => fetchFromAPI<JikanAnimeData[]>('/api/anime/today');
+export const fetchAnimeByDay = (day: Day | null) =>
+    day
+        ? fetchFromAPI<JikanAnimeData[]>(`/api/anime?day=${day}`)
+        : fetchFromAPI<JikanAnimeData[]>('/api/anime/today');
 
 export const fetchTopAnimeData = (page = 1, limit = 25) =>
     fetchFromAPI<JikanData>(`${JIKAN_URI}/top/anime?page=${page}&limit=${limit}`);

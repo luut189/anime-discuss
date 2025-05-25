@@ -1,3 +1,7 @@
+import { WEEKDAYS } from './constants';
+
+export type Day = (typeof WEEKDAYS)[number];
+
 export interface JikanAnimeData {
     mal_id: number;
     url: string;
