@@ -1,5 +1,4 @@
 import { searchAnimeByText } from '@/api/anime';
-import { REFRESH_INTERVAL } from '@/common/constants';
 import ErrorFallback from '@/components/common/ErrorFallback';
 import usePagination from '@/hooks/usePagination';
 import AnimePage from '@/pages/common/AnimePage';
@@ -15,10 +14,8 @@ export default function SearchResultPage() {
 
     const { isError, isPending, data } = useQuery({
         queryKey: ['search-result', decodedQuery, page],
-        enabled: !!query,
         queryFn: () => searchAnimeByText(decodedQuery, 25, page),
-        refetchInterval: REFRESH_INTERVAL,
-        retry: 5,
+        enabled: !!query,
     });
 
     if (!query) {

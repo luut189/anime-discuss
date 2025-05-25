@@ -1,5 +1,4 @@
 import { fetchTopAnimeData } from '@/api/anime';
-import { REFRESH_INTERVAL } from '@/common/constants';
 import usePagination from '@/hooks/usePagination';
 import AnimePage from '@/pages/common/AnimePage';
 
@@ -11,8 +10,6 @@ export default function TopAnimePage() {
     const { isError, isPending, data } = useQuery({
         queryKey: ['trending-anime', page],
         queryFn: () => fetchTopAnimeData(page),
-        refetchInterval: REFRESH_INTERVAL,
-        retry: 5,
     });
 
     return (

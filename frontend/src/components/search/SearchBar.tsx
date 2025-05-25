@@ -1,6 +1,5 @@
 import { Input } from '@/components/ui/input';
 import { searchAnimeByText } from '@/api/anime';
-import { REFRESH_INTERVAL } from '@/common/constants';
 import { JikanAnimeData } from '@/common/interfaces';
 import SearchResult from '@/components/search/SearchResult';
 
@@ -19,8 +18,6 @@ export default function SearchBar() {
     const { isError, isPending, data } = useQuery({
         queryKey: ['search-result', debouncedQuery, 1],
         queryFn: () => searchAnimeByText(debouncedQuery, 5, 1),
-        refetchInterval: REFRESH_INTERVAL,
-        retry: 5,
         enabled: debouncedQuery.length > 0,
     });
 

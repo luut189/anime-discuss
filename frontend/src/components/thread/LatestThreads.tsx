@@ -13,7 +13,6 @@ export default function LatestThreads() {
     const { data, isError, isPending } = useQuery({
         queryKey: ['all-threads'],
         queryFn: getAllThreads,
-        retry: 5,
     });
 
     return (

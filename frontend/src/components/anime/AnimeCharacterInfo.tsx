@@ -16,7 +16,6 @@ export default function AnimeCharacterInfo({ id }: AnimeCharacterInfoProps) {
         queryKey: ['seiyuu', id],
         queryFn: () => fetchAnimeCharacters(id || '0'),
         enabled: !!id,
-        retry: 5,
     });
 
     if (isError) {

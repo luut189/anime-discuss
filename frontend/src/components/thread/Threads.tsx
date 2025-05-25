@@ -12,7 +12,6 @@ export default function Threads({ id }: ThreadsProp) {
         queryKey: [`threads-${id}`],
         queryFn: () => getThreadsByMalId(id),
         enabled: !!id,
-        retry: 5,
     });
 
     if (isPending) {

@@ -29,24 +29,24 @@ function AnimeCard({
                     />
                 </HoverCardTrigger>
                 <HoverCardContent className='flex w-full flex-col gap-3'>
-                    <div className='flex flex-row'>
+                    <div className='flex'>
                         <div className='ml-auto w-72'>
                             <div className='font-bold'>{title || 'Untitled'}</div>
                             <div className='text-sm'>
                                 {title_japanese || 'Unknown Japanese Title'}
                             </div>
                         </div>
-                        <div className='mr-auto flex flex-row items-start justify-end gap-2 font-bold'>
+                        <div className='mr-auto flex items-start justify-end gap-2 font-bold'>
                             {score}
                             <Star color='#fef084' fill='#fef083' />
                         </div>
                     </div>
                     <div className='flex gap-3'>
-                        <div className='mr-auto flex flex-row items-center justify-center gap-1'>
-                            {getAiringStatusIcon(status)}
+                        <div className='mr-auto flex items-center justify-center gap-1'>
+                            <AiringStatusIcon status={status} />
                             {status || 'Unknown Status'}
                         </div>
-                        <div className='ml-auto flex flex-row items-center justify-center'>
+                        <div className='ml-auto flex items-center justify-center'>
                             {episodes || '?'} episodes
                         </div>
                     </div>
@@ -78,7 +78,7 @@ function AnimeCardSkeleton() {
     );
 }
 
-function getAiringStatusIcon(status: string) {
+function AiringStatusIcon({ status }: { status: string }) {
     if (status === 'Currently Airing') return <CirclePlay size={16} className='text-green-500' />;
     else if (status === 'Finished Airing')
         return <CircleCheck size={16} className='text-red-500' />;

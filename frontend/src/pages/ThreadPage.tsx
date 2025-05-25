@@ -10,14 +10,12 @@ export default function ThreadPage() {
         queryKey: [`thread-${id}`],
         queryFn: () => getThreadById(id as string),
         enabled: !!id,
-        retry: 5,
     });
 
     const { data: commentData, isPending: isCommentPending } = useQuery({
         queryKey: [`comments-${id}`],
         queryFn: () => getCommentsByThreadId(id as string),
         enabled: !!id,
-        retry: 5,
     });
 
     if (isThreadPending || isCommentPending) {

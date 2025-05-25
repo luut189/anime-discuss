@@ -18,7 +18,6 @@ export default function AnimeThreadPage() {
         queryKey: ['data', id],
         queryFn: () => fetchAnimeById(id || '0'),
         enabled: !!id,
-        retry: 5,
     });
 
     if (isError) {
