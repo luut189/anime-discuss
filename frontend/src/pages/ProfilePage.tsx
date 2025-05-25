@@ -22,7 +22,7 @@ import useSubmit from '@/hooks/useSubmit';
 import { Loader, Pencil, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Navigate } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import imageCompression from 'browser-image-compression';
 import { toast } from 'sonner';
 
@@ -47,7 +47,7 @@ export default function ProfilePage() {
                                     {user.username.substring(0, 2).toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
-                            <div className='absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100'>
+                            <div className='absolute inset-0 flex items-center justify-center rounded-full bg-primary-foreground/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100'>
                                 <EditProfilePicture />
                             </div>
                         </div>
@@ -189,7 +189,12 @@ function EditProfilePicture() {
                         Preview Image
                     </div>
                 )}
-                <Input type='file' accept='image/*' onChange={handleImageChange} />
+                <Input
+                    type='file'
+                    accept='image/*'
+                    onChange={handleImageChange}
+                    disabled={isLoading}
+                />
                 <DialogFooter className='gap-1'>
                     <Button
                         disabled={isLoading || isRemoving}
@@ -257,13 +262,16 @@ function AnimeContainer({ type }: AnimeContainerProps) {
         queryKey: ['pinned-anime', user?._id],
         queryFn: getPinnedAnime,
         enabled: !!user,
-        retry: 5,
-        staleTime: 1000 * 60 * 5,
     });
 
-    const todayAnime = pinnedAnime?.filter(
-        (anime) =>
-            anime.broadcast.day?.slice(0, -1) === WEEKDAYS[new Date().getDay()] && anime.airing,
+    const todayAnime = useMemo(
+        () =>
+            pinnedAnime?.filter(
+                (anime) =>
+                    anime.broadcast.day?.slice(0, -1) === WEEKDAYS[new Date().getDay()] &&
+                    anime.airing,
+            ),
+        [pinnedAnime],
     );
 
     const animeList = type === 'today' ? todayAnime : pinnedAnime;
