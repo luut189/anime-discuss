@@ -2,6 +2,7 @@ import { AuthRequest } from '@/common/interfaces';
 import Thread, { IThread } from '@/models/thread.model';
 import Comment, { IComment } from '@/models/comment.model';
 import User from '@/models/user.model';
+import { getRandomProfilePicture } from '@/common/utils';
 
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
@@ -49,14 +50,15 @@ async function getAllThreads(req: Request, res: Response) {
             if (authorObject && typeof authorObject === 'object' && 'image' in authorObject) {
                 return {
                     ...thread.toObject(),
-                    authorId: undefined,
+                    authorId: thread.authorId?.id,
                     avatar: authorObject.image,
                 };
             }
 
             return {
-                authorId: undefined,
+                authorId: thread.authorId?.id,
                 ...thread.toObject(),
+                avatar: getRandomProfilePicture(),
             };
         });
 
@@ -83,14 +85,15 @@ async function getThreadsByMalId(req: Request, res: Response) {
             if (authorObject && typeof authorObject === 'object' && 'image' in authorObject) {
                 return {
                     ...thread.toObject(),
-                    authorId: undefined,
+                    authorId: thread.authorId?.id,
                     avatar: authorObject.image,
                 };
             }
 
             return {
-                authorId: undefined,
+                authorId: thread.authorId?.id,
                 ...thread.toObject(),
+                avatar: getRandomProfilePicture(),
             };
         });
         res.status(200).json(threadsWithAvatar);
@@ -187,7 +190,7 @@ async function createComment(req: AuthRequest, res: Response) {
 }
 
 interface NestedComment extends Omit<IComment, ''> {
-    avatar?: string;
+    avatar: string;
     children: NestedComment[];
 }
 
@@ -206,11 +209,11 @@ async function getComments(req: Request, res: Response) {
         for (const comment of comments) {
             const withChildren: NestedComment = {
                 ...comment,
-                authorId: undefined,
+                authorId: comment.authorId?._id,
                 avatar:
                     comment.authorId && 'image' in comment.authorId
                         ? (comment.authorId.image as string)
-                        : undefined,
+                        : getRandomProfilePicture(),
                 children: [],
             };
             commentMap.set(comment._id.toString(), withChildren);
