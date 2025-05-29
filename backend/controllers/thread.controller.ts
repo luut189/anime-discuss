@@ -1,5 +1,4 @@
 import { AuthRequest } from '@/common/interfaces';
-import { getRandomProfilePicture } from '@/common/utils';
 import Thread, { IThread } from '@/models/thread.model';
 import Comment, { IComment } from '@/models/comment.model';
 import User from '@/models/user.model';
@@ -22,8 +21,7 @@ async function createThread(req: AuthRequest, res: Response) {
             title,
             content,
             author: user ? user.username : 'Anonymous',
-            authorId: user ? user.id : undefined,
-            authorAvatar: user ? user.image : getRandomProfilePicture(),
+            authorId: user ? (user._id as mongoose.Types.ObjectId) : undefined,
         };
 
         const newThread = await Thread.create(threadData);
@@ -44,8 +42,25 @@ async function createThread(req: AuthRequest, res: Response) {
 
 async function getAllThreads(req: Request, res: Response) {
     try {
-        const threads = await Thread.find().sort({ createdAt: -1 });
-        res.status(200).json(threads);
+        const threads = await Thread.find().sort({ createdAt: -1 }).populate('authorId', 'image');
+        const threadsWithAvatar = threads.map((thread) => {
+            const authorObject = thread.authorId;
+
+            if (authorObject && typeof authorObject === 'object' && 'image' in authorObject) {
+                return {
+                    ...thread.toObject(),
+                    authorId: undefined,
+                    avatar: authorObject.image,
+                };
+            }
+
+            return {
+                authorId: undefined,
+                ...thread.toObject(),
+            };
+        });
+
+        res.status(200).json(threadsWithAvatar);
     } catch (error) {
         console.error('Error getting all threads', error);
         res.status(500).json({
@@ -59,8 +74,26 @@ async function getThreadsByMalId(req: Request, res: Response) {
     try {
         const { mal_id } = req.params;
 
-        const threads = await Thread.find({ mal_id }).sort({ createdAt: -1 });
-        res.status(200).json(threads);
+        const threads = await Thread.find({ mal_id })
+            .sort({ createdAt: -1 })
+            .populate('authorId', 'image');
+        const threadsWithAvatar = threads.map((thread) => {
+            const authorObject = thread.authorId;
+
+            if (authorObject && typeof authorObject === 'object' && 'image' in authorObject) {
+                return {
+                    ...thread.toObject(),
+                    authorId: undefined,
+                    avatar: authorObject.image,
+                };
+            }
+
+            return {
+                authorId: undefined,
+                ...thread.toObject(),
+            };
+        });
+        res.status(200).json(threadsWithAvatar);
     } catch (error) {
         res.status(500).json({
             error: `Failed to fetch threads: ${error}`,
@@ -141,6 +174,7 @@ async function createComment(req: AuthRequest, res: Response) {
             thread: threadId,
             content,
             author: user ? user.username : 'Anonymous',
+            authorId: user ? (user._id as mongoose.Types.ObjectId) : undefined,
             parentComment: parentCommentId || null,
             path,
         });
@@ -153,6 +187,7 @@ async function createComment(req: AuthRequest, res: Response) {
 }
 
 interface NestedComment extends Omit<IComment, ''> {
+    avatar?: string;
     children: NestedComment[];
 }
 
@@ -160,13 +195,24 @@ async function getComments(req: Request, res: Response) {
     try {
         const { id } = req.params;
 
-        const comments = await Comment.find({ thread: id }).lean().sort({ path: 1, updatedAt: 1 });
+        const comments = await Comment.find({ thread: id })
+            .populate('authorId', 'image')
+            .lean()
+            .sort({ path: 1, updatedAt: 1 });
 
         const commentMap = new Map<string, NestedComment>();
         const rootComments: NestedComment[] = [];
 
         for (const comment of comments) {
-            const withChildren: NestedComment = { ...comment, children: [] };
+            const withChildren: NestedComment = {
+                ...comment,
+                authorId: undefined,
+                avatar:
+                    comment.authorId && 'image' in comment.authorId
+                        ? (comment.authorId.image as string)
+                        : undefined,
+                children: [],
+            };
             commentMap.set(comment._id.toString(), withChildren);
         }
 

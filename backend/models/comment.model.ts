@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 interface IComment extends Document {
     thread: mongoose.Types.ObjectId;
     author: string;
+    authorId?: mongoose.Types.ObjectId;
     content: string;
     parentComment?: mongoose.Types.ObjectId | null;
     path: mongoose.Types.ObjectId[];
@@ -20,6 +21,12 @@ const CommentSchema = new Schema<IComment>(
         author: {
             type: String,
             default: 'Anonymous',
+        },
+        authorId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            default: null,
+            required: false,
         },
         content: {
             type: String,
