@@ -41,7 +41,6 @@ function AnimeByDayDisplay() {
     const breakpoint = useBreakpoint();
     const maxItems = getMaxItems(breakpoint);
     const [day, setDay] = useState<Day | null>(null);
-    const [isOpen, setIsOpen] = useState(false);
     const [showAll, setShowAll] = useState(false);
     const handleDayChange = (val: Day | null) => setDay(val);
 
@@ -62,13 +61,11 @@ function AnimeByDayDisplay() {
         <>
             <div className='mb-2 flex w-full'>
                 <div className='mr-auto text-xl font-bold'>{day ? day : 'Today'} Anime</div>
-                <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+                <DropdownMenu>
                     <DropdownMenuTrigger title='Change broadcast day' asChild>
-                        <Button variant={'ghost'}>
+                        <Button variant={'ghost'} className='group'>
                             {day ? day : 'Today'}
-                            <ChevronDown
-                                className={'transition-transform ' + (isOpen ? 'rotate-180' : '')}
-                            />
+                            <ChevronDown className='transition-transform group-data-[state=open]:rotate-180' />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
