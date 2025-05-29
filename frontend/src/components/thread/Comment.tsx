@@ -1,5 +1,6 @@
 import { IComment } from '@/common/interfaces';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import ReplyThread from '@/components/thread/ReplyThread';
@@ -19,6 +20,7 @@ export function Comment({
     mal_id,
     thread,
     author,
+    avatar,
     content,
     children,
     createdAt,
@@ -48,7 +50,13 @@ export function Comment({
                     : ''
             }>
             <CardHeader>
-                <CardTitle className='text-xl'>{author}</CardTitle>
+                <CardTitle className='flex items-center justify-start gap-2 text-xl'>
+                    <Avatar>
+                        <AvatarImage src={avatar} />
+                        <AvatarFallback>{author.toUpperCase().substring(0, 1)}</AvatarFallback>
+                    </Avatar>
+                    <p>{author}</p>
+                </CardTitle>
                 <CardDescription>Created {timeAgo(createdAt)}</CardDescription>
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>

@@ -8,6 +8,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Button, IconButton } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReplyThread from '@/components/thread/ReplyThread';
 import useAuthStore from '@/store/useAuthStore';
@@ -38,6 +39,7 @@ export function Thread({
     _id,
     author,
     authorId,
+    avatar,
     content,
     title,
     mal_id,
@@ -78,7 +80,15 @@ export function Thread({
             <CardHeader>
                 <div className='flex'>
                     <div className='flex w-2/3 flex-col gap-2'>
-                        <CardTitle>{title}</CardTitle>
+                        <CardTitle className='flex items-center justify-start gap-2'>
+                            <Avatar>
+                                <AvatarImage src={avatar} />
+                                <AvatarFallback>
+                                    {author.toUpperCase().substring(0, 1)}
+                                </AvatarFallback>
+                            </Avatar>
+                            <p>{title}</p>
+                        </CardTitle>
                         <CardDescription>
                             Created {timeAgo(createdAt)} by {author}
                         </CardDescription>

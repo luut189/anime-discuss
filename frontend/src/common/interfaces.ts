@@ -187,6 +187,7 @@ export interface IThread {
     title: string;
     author: string;
     authorId?: string;
+    avatar: string;
     content: string;
     commentCount: number;
     createdAt: string;
@@ -199,6 +200,8 @@ export interface IComment {
     mal_id: number;
     thread: string;
     author: string;
+    authorId?: string;
+    avatar: string;
     content: string;
     createdAt: string;
     updatedAt: string;
