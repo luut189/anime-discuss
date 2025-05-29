@@ -12,12 +12,26 @@ import { v2 as cloudinary } from 'cloudinary';
 async function getUserThreads(req: AuthRequest, res: Response) {
     try {
         const user = req.user;
+
         if (!user) {
             res.status(401).json({ error: 'Unauthorized' });
             return;
         }
-        const threads = await Thread.find({ authorId: user.id }).sort({ path: 1, createdAt: -1 });
-        res.status(200).json(threads);
+
+        const threads = await Thread.find({ author: user.username })
+            .sort({
+                path: 1,
+                createdAt: -1,
+            })
+            .populate('authorId', 'image');
+
+        const threadsWithAvatar = threads.map((thread) => ({
+            ...thread.toObject(),
+            authorId: thread.authorId,
+            avatar: thread.authorId && 'image' in thread.authorId ? thread.authorId.image : null,
+        }));
+
+        res.status(200).json(threadsWithAvatar);
     } catch (error) {
         console.error('Error fetching threads:', error);
         res.status(500).json({ error: 'Failed to fetch threads' });

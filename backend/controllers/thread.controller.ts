@@ -106,9 +106,17 @@ async function getThreadsByMalId(req: Request, res: Response) {
 
 async function getThread(req: Request, res: Response) {
     try {
-        const thread = await Thread.findById(req.params.id);
+        const thread = await Thread.findById(req.params.id).populate('authorId', 'image');
 
-        res.status(200).json(thread);
+        const threadWithAvatar = {
+            ...thread?.toObject(),
+            avatar:
+                thread?.authorId && 'image' in thread.authorId
+                    ? thread?.authorId.image
+                    : getRandomProfilePicture(),
+        };
+
+        res.status(200).json(threadWithAvatar);
     } catch (error) {
         res.status(500).json({
             error: `Failed to fetch thread: ${error}`,

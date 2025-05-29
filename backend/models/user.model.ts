@@ -8,6 +8,25 @@ interface IUser extends Document {
     threads: mongoose.Types.ObjectId[];
 }
 
+interface IPinnedAnime {
+    animeId: string;
+    watchedEpisodes: number[];
+}
+
+const PinnedAnimeSchema = new Schema<IPinnedAnime>(
+    {
+        animeId: {
+            type: String,
+            required: true,
+        },
+        watchedEpisodes: {
+            type: [Number],
+            default: [],
+        },
+    },
+    { _id: false },
+);
+
 const UserSchema = new Schema<IUser>({
     username: {
         type: String,
@@ -22,18 +41,7 @@ const UserSchema = new Schema<IUser>({
         type: String,
         default: '',
     },
-    pinnedAnime: [
-        {
-            animeId: {
-                type: String,
-                required: true,
-            },
-            watchedEpisodes: {
-                type: [Number],
-                default: [],
-            },
-        },
-    ],
+    pinnedAnime: [PinnedAnimeSchema],
     threads: [
         {
             type: mongoose.Schema.Types.ObjectId,
