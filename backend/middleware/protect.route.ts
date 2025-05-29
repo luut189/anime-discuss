@@ -1,11 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import User, { IUser } from '@/models/user.model';
+import { AuthRequest } from '@/common/interfaces';
+import User from '@/models/user.model';
 import { ENV } from '@/common/constants';
 
-export interface AuthRequest extends Request {
-    user?: IUser;
-}
+import jwt from 'jsonwebtoken';
+import { Response, NextFunction } from 'express';
 
 export async function protectRoute(req: AuthRequest, res: Response, next: NextFunction) {
     try {

@@ -1,6 +1,6 @@
 import { WEEKDAYS } from '@/common/constants';
-import { Request, Response } from 'express';
 import { SeasonalAnime } from '@/models/anime.model';
+import { Request, Response } from 'express';
 
 async function getAnimeByDay(req: Request, res: Response) {
     const { day } = req.query;

@@ -1,8 +1,10 @@
+import { AuthRequest } from '@/common/interfaces';
+import { getRandomProfilePicture } from '@/common/utils';
 import Thread, { IThread } from '@/models/thread.model';
 import Comment, { IComment } from '@/models/comment.model';
-import { Request, Response } from 'express';
 import User from '@/models/user.model';
-import { AuthRequest } from '@/middleware/protect.route';
+
+import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 
 async function createThread(req: AuthRequest, res: Response) {
@@ -21,6 +23,7 @@ async function createThread(req: AuthRequest, res: Response) {
             content,
             author: user ? user.username : 'Anonymous',
             authorId: user ? user.id : undefined,
+            authorAvatar: user ? user.image : getRandomProfilePicture(),
         };
 
         const newThread = await Thread.create(threadData);

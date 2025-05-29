@@ -5,6 +5,7 @@ interface IThread extends Document {
     title: string;
     author: string;
     authorId?: string;
+    authorAvatar: string;
     content: string;
     commentCount: number;
     createdAt: Date;
@@ -24,6 +25,10 @@ const ThreadSchema = new Schema<IThread>(
         authorId: {
             type: String,
             required: false,
+        },
+        authorAvatar: {
+            type: String,
+            require: true,
         },
         title: {
             type: String,

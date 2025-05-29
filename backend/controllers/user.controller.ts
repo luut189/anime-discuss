@@ -1,5 +1,5 @@
-import { MulterRequest } from '@/common/interfaces';
-import { AuthRequest } from '@/middleware/protect.route';
+import { AuthRequest, MulterRequest } from '@/common/interfaces';
+import { getRandomProfilePicture } from '@/common/utils';
 import { Anime } from '@/models/anime.model';
 import Thread from '@/models/thread.model';
 import User from '@/models/user.model';
@@ -243,8 +243,7 @@ async function removeAvatar(req: MulterRequest & AuthRequest, res: Response) {
 
         if (avatarPublicId) await cloudinary.uploader.destroy(`avatars/${avatarPublicId}`);
 
-        const PROFILE_PICS = ['/avatar1.png', '/avatar2.png', '/avatar3.png'];
-        user.image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
+        user.image = getRandomProfilePicture();
 
         await user.save();
 

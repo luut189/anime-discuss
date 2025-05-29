@@ -1,3 +1,4 @@
+import { IUser } from '@/models/user.model';
 import { Request } from 'express';
 
 export interface JikanAnimeData {
@@ -125,4 +126,8 @@ export interface JikanPaginationData {
 
 export interface MulterRequest extends Request {
     file?: Express.Multer.File;
+}
+
+export interface AuthRequest extends Request {
+    user?: IUser
 }

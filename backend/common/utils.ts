@@ -1,4 +1,4 @@
-import { ENV } from '@/common/constants';
+import { ENV, PROFILE_PICS } from '@/common/constants';
 
 import jwt from 'jsonwebtoken';
 import { Response } from 'express';
@@ -15,3 +15,6 @@ export const generateJWTAndSetCookie = (userId: string, res: Response) => {
         secure: ENV.NODE_ENV !== 'development',
     });
 };
+
+export const getRandomProfilePicture = () =>
+    PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];

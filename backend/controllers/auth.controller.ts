@@ -1,9 +1,10 @@
+import { AuthRequest } from '@/common/interfaces';
+import { ENV } from '@/common/constants';
+import User from '@/models/user.model';
+import { generateJWTAndSetCookie, getRandomProfilePicture } from '@/common/utils';
+
 import bcryptjs from 'bcryptjs';
 import { Request, Response } from 'express';
-import User from '@/models/user.model';
-import { generateJWTAndSetCookie } from '@/common/utils';
-import { AuthRequest } from '@/middleware/protect.route';
-import { ENV } from '@/common/constants';
 
 async function signup(req: Request, res: Response) {
     try {
@@ -23,8 +24,7 @@ async function signup(req: Request, res: Response) {
         const salt = await bcryptjs.genSalt(10);
         const hashedPassword = await bcryptjs.hash(password, salt);
 
-        const PROFILE_PICS = ['/avatar1.png', '/avatar2.png', '/avatar3.png'];
-        const image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
+        const image = getRandomProfilePicture();
 
         const newUser = new User({
             username,

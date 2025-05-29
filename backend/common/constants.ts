@@ -12,6 +12,8 @@ export const WEEKDAYS = [
     'Saturday',
 ];
 
+export const PROFILE_PICS = ['/avatar1.png', '/avatar2.png', '/avatar3.png'];
+
 export const ENV = {
     PORT: process.env.PORT,
     MONGO_URI: process.env.MONGO_URI!,
