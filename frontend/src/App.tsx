@@ -4,8 +4,7 @@ import ScrollToTop from '@/components/common/ScrollToTop';
 
 import LandingPage from '@/pages/LandingPage';
 import Homepage from '@/pages/Homepage';
-import LoginPage from '@/pages/auth/LoginPage';
-import SignupPage from '@/pages/auth/SignupPage';
+import AuthPage from '@/pages/AuthPage';
 import TopAnimePage from '@/pages/TopAnimePage';
 import AnimeThreadPage from '@/pages/AnimeThreadPage';
 import ThreadPage from '@/pages/ThreadPage';
@@ -42,16 +41,7 @@ export default function App() {
                 <Routes>
                     <Route path='/' element={user ? <Navigate to='/home' /> : <LandingPage />} />
                     <Route path='/home' element={user ? <Homepage /> : <Navigate to='/' />} />
-                    <Route path='/auth'>
-                        <Route
-                            path='login'
-                            element={user ? <Navigate to='/home' /> : <LoginPage />}
-                        />
-                        <Route
-                            path='signup'
-                            element={user ? <Navigate to='/home' /> : <SignupPage />}
-                        />
-                    </Route>
+                    <Route path='/auth' element={<AuthPage />} />
                     <Route path='/anime'>
                         <Route path='top' element={<TopAnimePage />} />
                         <Route path=':id' element={<AnimeThreadPage />} />

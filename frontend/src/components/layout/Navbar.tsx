@@ -112,13 +112,9 @@ function UserAvatarButton({ image, username }: IUser) {
 }
 
 function LoginButton() {
-    const { authCheck } = useAuthStore();
-
     return (
-        <a href='/auth/login'>
-            <IconButton icon={<LogIn />} onClick={authCheck}>
-                Login
-            </IconButton>
+        <a href='/auth?tab=login'>
+            <IconButton icon={<LogIn />}>Login</IconButton>
         </a>
     );
 }
