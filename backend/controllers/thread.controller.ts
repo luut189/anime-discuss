@@ -44,23 +44,15 @@ async function createThread(req: AuthRequest, res: Response) {
 async function getAllThreads(req: Request, res: Response) {
     try {
         const threads = await Thread.find().sort({ createdAt: -1 }).populate('authorId', 'image');
-        const threadsWithAvatar = threads.map((thread) => {
-            const authorObject = thread.authorId;
 
-            if (authorObject && typeof authorObject === 'object' && 'image' in authorObject) {
-                return {
-                    ...thread.toObject(),
-                    authorId: thread.authorId?.id,
-                    avatar: authorObject.image,
-                };
-            }
-
-            return {
-                authorId: thread.authorId?.id,
-                ...thread.toObject(),
-                avatar: getRandomProfilePicture(),
-            };
-        });
+        const threadsWithAvatar = threads.map((thread) => ({
+            ...thread?.toObject(),
+            authorId: thread?.authorId?.id,
+            avatar:
+                thread?.authorId && 'image' in thread.authorId
+                    ? thread?.authorId.image
+                    : getRandomProfilePicture(),
+        }));
 
         res.status(200).json(threadsWithAvatar);
     } catch (error) {
@@ -79,23 +71,15 @@ async function getThreadsByMalId(req: Request, res: Response) {
         const threads = await Thread.find({ mal_id })
             .sort({ createdAt: -1 })
             .populate('authorId', 'image');
-        const threadsWithAvatar = threads.map((thread) => {
-            const authorObject = thread.authorId;
 
-            if (authorObject && typeof authorObject === 'object' && 'image' in authorObject) {
-                return {
-                    ...thread.toObject(),
-                    authorId: thread.authorId?.id,
-                    avatar: authorObject.image,
-                };
-            }
-
-            return {
-                authorId: thread.authorId?.id,
-                ...thread.toObject(),
-                avatar: getRandomProfilePicture(),
-            };
-        });
+        const threadsWithAvatar = threads.map((thread) => ({
+            ...thread?.toObject(),
+            authorId: thread?.authorId?.id,
+            avatar:
+                thread?.authorId && 'image' in thread.authorId
+                    ? thread?.authorId.image
+                    : getRandomProfilePicture(),
+        }));
         res.status(200).json(threadsWithAvatar);
     } catch (error) {
         res.status(500).json({
@@ -110,6 +94,7 @@ async function getThread(req: Request, res: Response) {
 
         const threadWithAvatar = {
             ...thread?.toObject(),
+            authorId: thread?.authorId?.id,
             avatar:
                 thread?.authorId && 'image' in thread.authorId
                     ? thread?.authorId.image
