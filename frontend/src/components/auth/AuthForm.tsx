@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DefaultValues, Path, useForm } from 'react-hook-form';
+import { LoaderCircle } from 'lucide-react';
 
 export interface IFormItem<T> {
     name: Path<T>;
@@ -40,7 +41,8 @@ export default function AuthForm<T extends z.ZodType>({
         resolver: zodResolver(schema),
         defaultValues,
     });
-    
+
+    const { isSubmitting } = form.formState;
     const [password, setPassword] = useState('');
 
     return (
@@ -80,8 +82,8 @@ export default function AuthForm<T extends z.ZodType>({
                         )}
                     />
                 ))}
-                <Button className='mt-2 w-full' type='submit'>
-                    {type}
+                <Button className='mt-2 w-full' type='submit' disabled={isSubmitting}>
+                    {isSubmitting ? <LoaderCircle className='animate-spin' /> : type}
                 </Button>
             </form>
         </Form>

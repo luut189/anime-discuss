@@ -29,13 +29,13 @@ export default function AuthPage() {
         if (user) navigate('/');
     });
 
-    function handleLogin(values: z.infer<typeof loginSchema>) {
-        login(values);
+    async function handleLogin(values: z.infer<typeof loginSchema>) {
+        await login(values);
         if (user) navigate('/');
     }
 
-    function handleSignup(values: z.infer<typeof signupSchema>) {
-        signup(values);
+    async function handleSignup(values: z.infer<typeof signupSchema>) {
+        await signup(values);
         if (user) navigate('/');
     }
 

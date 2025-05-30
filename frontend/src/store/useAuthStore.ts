@@ -14,10 +14,10 @@ type AuthState = {
     isLoggingIn: boolean;
     isLoggingOut: boolean;
     isCheckingAuth: boolean;
-    signup: (_: Credential) => void;
-    login: (_: Credential) => void;
-    logout: () => void;
-    authCheck: () => void;
+    signup: (_: Credential) => Promise<void>;
+    login: (_: Credential) => Promise<void>;
+    logout: () => Promise<void>;
+    authCheck: () => Promise<void>;
     setUser: (_: IUser) => void;
 };
 
