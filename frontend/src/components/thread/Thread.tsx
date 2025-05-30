@@ -80,6 +80,7 @@ export function Thread({
             <CardHeader>
                 <div className='flex'>
                     <div className='flex w-2/3 flex-col gap-2'>
+                        <CardTitle className='mb-2'>{title}</CardTitle>
                         <CardTitle className='flex items-center justify-start gap-2'>
                             <Avatar>
                                 <AvatarImage src={avatar} />
@@ -87,11 +88,15 @@ export function Thread({
                                     {author.toUpperCase().substring(0, 1)}
                                 </AvatarFallback>
                             </Avatar>
-                            <p>{title}</p>
+                            <Button variant={'link'} className='p-0 text-lg' asChild>
+                                <a
+                                    href={`/profile/${authorId}`}
+                                    onClick={(e) => e.stopPropagation()}>
+                                    {author}
+                                </a>
+                            </Button>
                         </CardTitle>
-                        <CardDescription>
-                            Created {timeAgo(createdAt)} by {author}
-                        </CardDescription>
+                        <CardDescription>Created {timeAgo(createdAt)}</CardDescription>
                         <CardDescription>Last updated {timeAgo(updatedAt)}</CardDescription>
                     </div>
                     {(user && user._id === authorId) || (!authorId && !user) ? (

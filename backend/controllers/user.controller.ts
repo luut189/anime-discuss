@@ -6,12 +6,37 @@ import User from '@/models/user.model';
 import { uploadToCloudinary } from '@/service/cloudinary';
 import { getAnimeById } from '@/service/jikan';
 
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
+
+async function getUserProfile(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            res.status(401).json({ error: 'No user ID provided' });
+            return;
+        }
+
+        const user = await User.findById(id);
+
+        if (!user) {
+            res.status(401).json({ error: `No user found with ID ${id}` });
+            return;
+        }
+
+        res.status(200).json({ ...user.toObject(), password: undefined });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(400).json({ error: 'Error fetching user profile' });
+    }
+}
 
 async function getUserThreads(req: AuthRequest, res: Response) {
     try {
-        const user = req.user;
+        const { id } = req.params;
+
+        const user = id ? await User.findById(id) : req.user;
 
         if (!user) {
             res.status(401).json({ error: 'Unauthorized' });
@@ -27,8 +52,11 @@ async function getUserThreads(req: AuthRequest, res: Response) {
 
         const threadsWithAvatar = threads.map((thread) => ({
             ...thread.toObject(),
-            authorId: thread.authorId,
-            avatar: thread.authorId && 'image' in thread.authorId ? thread.authorId.image : null,
+            authorId: thread.authorId?.id,
+            avatar:
+                thread.authorId && 'image' in thread.authorId
+                    ? thread.authorId.image
+                    : getRandomProfilePicture(),
         }));
 
         res.status(200).json(threadsWithAvatar);
@@ -40,7 +68,10 @@ async function getUserThreads(req: AuthRequest, res: Response) {
 
 async function getPinnedAnime(req: AuthRequest, res: Response) {
     try {
-        const user = req.user;
+        const { id } = req.params;
+
+        const user = id ? await User.findById(id) : req.user;
+
         if (!user) {
             res.status(401).json({ error: 'Unauthorized' });
             return;
@@ -269,6 +300,7 @@ async function removeAvatar(req: MulterRequest & AuthRequest, res: Response) {
 }
 
 export {
+    getUserProfile,
     getUserThreads,
     getPinnedAnime,
     addPinnedAnime,

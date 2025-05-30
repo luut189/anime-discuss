@@ -1,4 +1,4 @@
-import { getPinnedAnime, getUserThreads } from '@/api/user';
+import { getPinnedAnime, getUserProfile, getUserThreads } from '@/api/user';
 import ShowMoreButton from '@/components/common/ShowMoreButton';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,13 +15,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AnimeCardGrid from '@/components/anime/AnimeCardGrid';
 import { Thread, ThreadSkeleton } from '@/components/thread/Thread';
+import ErrorFallback from '@/components/common/ErrorFallback';
 import useAuthStore from '@/store/useAuthStore';
 import { WEEKDAYS } from '@/common/constants';
 import useSubmit from '@/hooks/useSubmit';
 
 import { Loader, Pencil, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { Navigate } from 'react-router';
+import { useParams } from 'react-router';
 import { useEffect, useMemo, useState } from 'react';
 import imageCompression from 'browser-image-compression';
 import { toast } from 'sonner';
@@ -29,8 +30,24 @@ import { toast } from 'sonner';
 const TO_ADD = 3;
 
 export default function ProfilePage() {
+    const { id } = useParams();
+
     const { user } = useAuthStore();
-    if (!user) return <Navigate to='/auth/login' />;
+
+    const { data, isPending } = useQuery({
+        queryKey: ['profile', id],
+        queryFn: () => getUserProfile(id as string),
+        enabled: !!id,
+    });
+
+    if (isPending) {
+        return <div></div>;
+    }
+
+    if (!data) {
+        return <ErrorFallback errorMessage={`No user found with ID ${id}`} />;
+    }
+
     return (
         <div className='flex flex-col items-center justify-center gap-4'>
             <Card className='w-full sm:w-2/3'>
@@ -40,30 +57,44 @@ export default function ProfilePage() {
                             <Avatar className='h-full w-full'>
                                 <AvatarImage
                                     className='object-cover'
-                                    src={user.image}
-                                    alt={user.username}
+                                    src={data.image}
+                                    alt={data.username}
                                 />
                                 <AvatarFallback>
-                                    {user.username.substring(0, 2).toUpperCase()}
+                                    {data.username.substring(0, 1).toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
-                            <div className='absolute inset-0 flex items-center justify-center rounded-full bg-primary-foreground/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100'>
-                                <EditProfilePicture />
-                            </div>
+                            {id === user?._id ? (
+                                <div className='absolute inset-0 flex items-center justify-center rounded-full bg-primary-foreground/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100'>
+                                    <EditProfilePicture />
+                                </div>
+                            ) : null}
                         </div>
-                        <CardTitle className='text-2xl'>Hello {user.username}!</CardTitle>
+                        <CardTitle className='text-2xl'>
+                            {id === user?._id ? `Hello ${user?.username}!` : data.username}
+                        </CardTitle>
                     </div>
                 </CardHeader>
             </Card>
-            <Section title='Threads'>
-                <ThreadsContainer />
-            </Section>
-            <Section title='Today Anime'>
-                <AnimeContainer type='today' />
-            </Section>
-            <Section title='Pinned Anime'>
-                <AnimeContainer type='pinned' />
-            </Section>
+            {user ? (
+                <>
+                    <Section title='Threads'>
+                        <ThreadsContainer username={data?.username} id={id as string} />
+                    </Section>
+                    <Section title='Today Anime'>
+                        <AnimeContainer type='today' username={data?.username} id={id as string} />
+                    </Section>
+                    <Section title='Pinned Anime'>
+                        <AnimeContainer type='pinned' username={data?.username} id={id as string} />
+                    </Section>
+                </>
+            ) : (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Please login to view other's profile</CardTitle>
+                    </CardHeader>
+                </Card>
+            )}
         </div>
     );
 }
@@ -221,13 +252,18 @@ function EditProfilePicture() {
     );
 }
 
-function ThreadsContainer() {
+interface ProfileContainerProps {
+    username: string;
+    id: string;
+}
+
+function ThreadsContainer({ username, id }: ProfileContainerProps) {
     const [count, setCount] = useState(TO_ADD);
     const { user } = useAuthStore();
     const { data, isPending } = useQuery({
-        queryKey: ['threads', user?._id],
-        queryFn: getUserThreads,
-        enabled: !!user,
+        queryKey: ['threads', id],
+        queryFn: () => getUserThreads(id),
+        enabled: !!id,
     });
 
     if (isPending) {
@@ -237,7 +273,8 @@ function ThreadsContainer() {
     if (!data || data.length === 0) {
         return (
             <div className='flex items-center justify-center rounded-lg border p-4'>
-                You haven't created any thread yet. Want to start something?
+                {id === user?._id ? 'You' : username} haven't created any thread yet.
+                {id === user?._id ? ' Want to start something?' : null}
             </div>
         );
     }
@@ -247,21 +284,29 @@ function ThreadsContainer() {
             {data.slice(0, count).map((thread) => (
                 <Thread key={thread._id} {...thread} />
             ))}
-            <ShowMoreButton count={count} setCount={setCount} length={data.length} range={TO_ADD} />
+            {count < data.length ? (
+                <ShowMoreButton
+                    count={count}
+                    setCount={setCount}
+                    length={data.length}
+                    range={TO_ADD}
+                />
+            ) : null}
         </>
     );
 }
 
-interface AnimeContainerProps {
+interface AnimeContainerProps extends ProfileContainerProps {
     type: 'today' | 'pinned';
 }
 
-function AnimeContainer({ type }: AnimeContainerProps) {
+function AnimeContainer({ id, username, type }: AnimeContainerProps) {
     const { user } = useAuthStore();
+
     const { data: pinnedAnime, isPending } = useQuery({
-        queryKey: ['pinned-anime', user?._id],
-        queryFn: getPinnedAnime,
-        enabled: !!user,
+        queryKey: ['pinned-anime', id],
+        queryFn: () => getPinnedAnime(id),
+        enabled: !!id,
     });
 
     const todayAnime = useMemo(
@@ -280,7 +325,7 @@ function AnimeContainer({ type }: AnimeContainerProps) {
         return (
             <div className='flex items-center justify-center rounded-lg border p-4'>
                 {type === 'today'
-                    ? 'There is nothing broadcast today that you like :('
+                    ? `There is nothing broadcast today that ${id === user?._id ? 'you' : username} like :(`
                     : 'There is nothing here but loneliness...'}
             </div>
         );

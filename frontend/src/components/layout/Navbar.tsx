@@ -1,3 +1,4 @@
+import { IUser } from '@/common/interfaces';
 import SearchBar from '@/components/search/SearchBar';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { Button, IconButton } from '@/components/ui/button';
@@ -13,7 +14,6 @@ import {
 import useAuthStore from '@/store/useAuthStore';
 
 import { LogIn, LogOut, Menu, MessagesSquare, User } from 'lucide-react';
-import { IUser } from '@/common/interfaces';
 import { useEffect, useState } from 'react';
 import useBreakpoint, { isBreakpointAtLeast } from '@/hooks/useBreakpoint';
 
@@ -83,7 +83,7 @@ function NavigationLinks() {
     );
 }
 
-function UserAvatarButton({ image, username }: IUser) {
+function UserAvatarButton({ _id, image, username }: IUser) {
     const { logout } = useAuthStore();
     return (
         <DropdownMenu>
@@ -96,7 +96,7 @@ function UserAvatarButton({ image, username }: IUser) {
             <DropdownMenuContent className='mt-2 flex flex-col gap-2 p-2'>
                 <DropdownMenuLabel>{username}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <a href='/profile'>
+                <a href={`/profile/${_id}`}>
                     <DropdownMenuItem className='cursor-pointer'>
                         <User />
                         Profile

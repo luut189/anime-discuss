@@ -1,4 +1,4 @@
-import { IThread, JikanAnimeData } from '@/common/interfaces';
+import { IThread, IUser, JikanAnimeData } from '@/common/interfaces';
 
 export async function pinAnime(mal_id: number) {
     const response = await fetch('/api/user/pinnedAnime', {
@@ -20,9 +20,24 @@ export async function unpinAnime(mal_id: number) {
     if (!response.ok) throw new Error('Failed to unpin anime');
 }
 
-export async function getUserThreads() {
+export async function getUserProfile(id: string) {
     try {
-        const response = await fetch('/api/user/threads');
+        const response = await fetch(`/api/user/${id}`);
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch profile: ${response.statusText}`);
+        }
+
+        const data: IUser = await response.json();
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getUserThreads(id: string) {
+    try {
+        const response = await fetch(`/api/user/threads/${id}`);
 
         if (!response.ok) {
             throw new Error(`Failed to fetch threads: ${response.statusText}`);
@@ -35,9 +50,9 @@ export async function getUserThreads() {
     }
 }
 
-export async function getPinnedAnime() {
+export async function getPinnedAnime(id: string) {
     try {
-        const response = await fetch('/api/user/pinnedAnime');
+        const response = await fetch(`/api/user/pinnedAnime/${id}`);
         if (!response.ok) throw new Error('Failed to fetch pinned anime');
 
         const data = (await response.json()) as JikanAnimeData[];

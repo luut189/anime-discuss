@@ -48,10 +48,7 @@ export default function App() {
                         <Route path='search' element={<SearchResultPage />} />
                     </Route>
                     <Route path='/thread/:id' element={<ThreadPage />} />
-                    <Route
-                        path='/profile'
-                        element={user ? <ProfilePage /> : <Navigate to='/auth/login' />}
-                    />
+                    <Route path='/profile/:id' element={<ProfilePage />} />
                     <Route path='/*' element={<NotFoundPage />} />
                 </Routes>
             </main>
