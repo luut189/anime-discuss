@@ -22,6 +22,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import Markdown from 'react-markdown';
+import clsx from 'clsx';
 
 export function ReplyText({ commentCount }: { commentCount: number }) {
     return (
@@ -88,12 +89,19 @@ export function Thread({
                                     {author.toUpperCase().substring(0, 1)}
                                 </AvatarFallback>
                             </Avatar>
-                            <Button variant={'link'} className='p-0 text-lg' asChild>
-                                <a
-                                    href={`/profile/${authorId}`}
-                                    onClick={(e) => e.stopPropagation()}>
-                                    {author}
-                                </a>
+                            <Button
+                                variant={'link'}
+                                className={clsx('p-0 text-lg', authorId ?? 'hover:no-underline')}
+                                asChild={!!authorId}>
+                                {authorId ? (
+                                    <a
+                                        href={`/profile/${authorId}`}
+                                        onClick={(e) => e.stopPropagation()}>
+                                        {author}
+                                    </a>
+                                ) : (
+                                    <>{author}</>
+                                )}
                             </Button>
                         </CardTitle>
                         <CardDescription>Created {timeAgo(createdAt)}</CardDescription>
