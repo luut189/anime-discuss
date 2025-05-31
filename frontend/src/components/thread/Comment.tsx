@@ -10,6 +10,7 @@ import { timeAgo } from '@/lib/utils';
 import { useState } from 'react';
 import { ChevronUp, MessageSquare } from 'lucide-react';
 import Markdown from 'react-markdown';
+import clsx from 'clsx';
 
 interface CommentProps extends IComment {
     depth: number;
@@ -20,6 +21,7 @@ export function Comment({
     mal_id,
     thread,
     author,
+    authorId,
     avatar,
     content,
     children,
@@ -44,18 +46,22 @@ export function Comment({
 
     return (
         <Card
-            className={
-                depth > 0
-                    ? 'ml-2 rounded-none border-0 border-l-2 py-1 pl-4 shadow-none dark:shadow-none'
-                    : ''
-            }>
+            className={clsx(
+                depth > 0 &&
+                    'ml-2 rounded-none border-0 border-l-2 py-1 pl-4 shadow-none dark:shadow-none',
+            )}>
             <CardHeader>
                 <CardTitle className='flex items-center justify-start gap-2 text-xl'>
                     <Avatar>
                         <AvatarImage src={avatar} />
                         <AvatarFallback>{author.toUpperCase().substring(0, 1)}</AvatarFallback>
                     </Avatar>
-                    <p>{author}</p>
+                    <Button
+                        variant={'link'}
+                        className={clsx('p-0 text-lg', authorId && 'hover:no-underline')}
+                        asChild={!!authorId}>
+                        {authorId ? <a href={`/profile/${authorId}`}>{author}</a> : <>{author}</>}
+                    </Button>
                 </CardTitle>
                 <CardDescription>Created {timeAgo(createdAt)}</CardDescription>
             </CardHeader>
@@ -75,10 +81,7 @@ export function Comment({
                             <MessageSquare />
                             <ReplyText commentCount={commentCount} />
                             <ChevronUp
-                                className={
-                                    'transition-transform ' +
-                                    (viewReply ? 'rotate-0' : 'rotate-180')
-                                }
+                                className={`transition-transform ${viewReply ? 'rotate-0' : 'rotate-180'}`}
                             />
                         </Button>
                     ) : null}
@@ -106,11 +109,10 @@ export function Comment({
 export function CommentSkeleton({ depth = 0 }: { depth?: number }) {
     return (
         <Card
-            className={
-                depth > 0
-                    ? 'ml-2 rounded-none border-0 border-l-2 py-1 pl-4 shadow-none dark:shadow-none'
-                    : ''
-            }>
+            className={clsx(
+                depth > 0 &&
+                    'ml-2 rounded-none border-0 border-l-2 py-1 pl-4 shadow-none dark:shadow-none',
+            )}>
             <CardHeader>
                 <Skeleton className='mb-1 h-6 w-32' />
                 <Skeleton className='h-4 w-24' />

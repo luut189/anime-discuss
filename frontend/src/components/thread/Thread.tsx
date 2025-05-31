@@ -75,9 +75,9 @@ export function Thread({
 
     return (
         <Card
-            title={!isAtThreadPage ? 'Go to thread page' : ''}
-            className={!isAtThreadPage ? 'group cursor-pointer hover:bg-secondary' : ''}
-            onClick={() => navigate(isAtThreadPage ? '' : `/thread/${_id}`)}>
+            title={clsx(!isAtThreadPage && 'Go to thread page')}
+            className={clsx(!isAtThreadPage && 'group cursor-pointer hover:bg-secondary')}
+            onClick={() => navigate(clsx(!isAtThreadPage && `/thread/${_id}`))}>
             <CardHeader>
                 <div className='flex'>
                     <div className='flex w-2/3 flex-col gap-2'>
@@ -91,7 +91,7 @@ export function Thread({
                             </Avatar>
                             <Button
                                 variant={'link'}
-                                className={clsx('p-0 text-lg', authorId ?? 'hover:no-underline')}
+                                className={clsx('p-0 text-lg', !authorId && 'hover:no-underline')}
                                 asChild={!!authorId}>
                                 {authorId ? (
                                     <a

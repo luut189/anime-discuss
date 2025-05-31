@@ -1,4 +1,6 @@
 import { Button } from '@/components/ui/button';
+
+import clsx from 'clsx';
 import { ChevronLeft, Ellipsis, ChevronRight } from 'lucide-react';
 
 interface PaginationProps {
@@ -38,7 +40,7 @@ export default function Pagination({ page, lastVisiblePage, move, moveToPage }: 
                         key={val}
                         size={'icon'}
                         onClick={() => moveToPage(val)}
-                        className={page === val ? 'hover:cursor-default hover:bg-background' : ''}
+                        className={clsx(page === val && 'hover:cursor-default hover:bg-background')}
                         variant={page === val ? 'outline' : 'default'}>
                         {val}
                     </Button>

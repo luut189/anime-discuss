@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { formatDate } from '@/lib/utils';
 import useAuthStore from '@/store/useAuthStore';
+import EpisodeTracker from '@/components/anime/EpisodeTracker';
 
 import { ChevronUp, Heart, SquareUser, Star, Tv } from 'lucide-react';
 import { useState } from 'react';
-import EpisodeTracker from './EpisodeTracker';
+import clsx from 'clsx';
 
 interface AnimeInfoProps extends JikanAnimeData {
     showVoice: boolean;
@@ -106,18 +107,20 @@ export default function AnimeInfo(props: AnimeInfoProps) {
                                 <Tv />
                                 Episode Tracker
                                 <ChevronUp
-                                    className={
-                                        'transition-transform' + (showTracker ? '' : ' rotate-180')
-                                    }
+                                    className={clsx(
+                                        'transition-transform',
+                                        !showTracker && 'rotate-180',
+                                    )}
                                 />
                             </Button>
                             <Button variant={'ghost'} onClick={() => setShowVoice(!showVoice)}>
                                 <SquareUser />
                                 Seiyuu Info
                                 <ChevronUp
-                                    className={
-                                        'transition-transform' + (showVoice ? '' : ' rotate-180')
-                                    }
+                                    className={clsx(
+                                        'transition-transform',
+                                        !showVoice && 'rotate-180',
+                                    )}
                                 />
                             </Button>
                         </div>

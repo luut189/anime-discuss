@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import useAuthStore from '@/store/useAuthStore';
 
 import { toast } from 'sonner';
+import clsx from 'clsx';
 
 export default function EpisodeTracker({ airing, mal_id, episodes }: JikanAnimeData) {
     const { user, setUser } = useAuthStore();
@@ -55,9 +56,10 @@ export default function EpisodeTracker({ airing, mal_id, episodes }: JikanAnimeD
                     onClick={() => handleClick(ep, !watched)}
                     size='icon'
                     variant={watched ? 'default' : 'destructive'}
-                    className={`rounded-full transition-colors ${
-                        watched ? 'bg-emerald-500 text-white hover:bg-emerald-400' : ''
-                    }`}>
+                    className={clsx(
+                        'rounded-full transition-colors',
+                        watched && 'bg-emerald-500 text-white hover:bg-emerald-400',
+                    )}>
                     {ep}
                 </Button>
             );
