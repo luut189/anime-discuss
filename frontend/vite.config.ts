@@ -23,11 +23,19 @@ export default defineConfig({
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules')) {
-                        return 'vendor';
+                        if (id.includes('react')) return 'vendor-react';
+                        if (id.includes('@tanstack/react-query')) return 'vendor-react-query';
+                        if (id.includes('@radix-ui')) return 'vendor-radix';
+                        if (id.includes('zod')) return 'vendor-zod';
+                        if (id.includes('clsx') || id.includes('tailwind-merge'))
+                            return 'vendor-style-utils';
+                        if (id.includes('zustand')) return 'vendor-zustand';
+                        if (id.includes('react-markdown')) return 'vendor-markdown';
+
+                        return 'vendor-others'; // fallback for remaining vendor code
                     }
-                    if (id.includes('src/components')) {
-                        return 'components';
-                    }
+
+                    if (id.includes('src/components')) return 'components';
                     return null;
                 },
             },
