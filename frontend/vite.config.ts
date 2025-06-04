@@ -21,22 +21,37 @@ export default defineConfig({
     build: {
         rollupOptions: {
             output: {
-                manualChunks(id) {
-                    if (id.includes('node_modules')) {
-                        if (id.includes('react')) return 'vendor-react';
-                        if (id.includes('@tanstack/react-query')) return 'vendor-react-query';
-                        if (id.includes('@radix-ui')) return 'vendor-radix';
-                        if (id.includes('zod')) return 'vendor-zod';
-                        if (id.includes('clsx') || id.includes('tailwind-merge'))
-                            return 'vendor-style-utils';
-                        if (id.includes('zustand')) return 'vendor-zustand';
-                        if (id.includes('react-markdown')) return 'vendor-markdown';
+                manualChunks: {
+                    'react-vendor': ['react', 'react-dom'],
 
-                        return 'vendor-others'; // fallback for remaining vendor code
-                    }
+                    router: ['react-router'],
 
-                    if (id.includes('src/components')) return 'components';
-                    return null;
+                    forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
+
+                    'radix-ui': [
+                        '@radix-ui/react-avatar',
+                        '@radix-ui/react-dialog',
+                        '@radix-ui/react-dropdown-menu',
+                        '@radix-ui/react-hover-card',
+                        '@radix-ui/react-label',
+                        '@radix-ui/react-separator',
+                        '@radix-ui/react-slot',
+                        '@radix-ui/react-tabs',
+                        '@radix-ui/react-tooltip',
+                    ],
+
+                    styling: [
+                        'class-variance-authority',
+                        'clsx',
+                        'tailwind-merge',
+                        'tailwindcss-animate',
+                    ],
+
+                    data: ['@tanstack/react-query', 'zustand'],
+
+                    content: ['react-markdown', 'browser-image-compression'],
+
+                    'ui-utils': ['lucide-react', 'next-themes', 'sonner'],
                 },
             },
         },
