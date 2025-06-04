@@ -27,7 +27,7 @@ cloudinary.config({
     api_secret: ENV.CLOUDINARY_API_SECRET,
 });
 
-app.use(limiter);
+app.use('/api', limiter);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
