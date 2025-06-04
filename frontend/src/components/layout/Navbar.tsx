@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import useAuthStore from '@/store/useAuthStore';
 
-import { LogIn, LogOut, Menu, MessagesSquare, User } from 'lucide-react';
+import { LogIn, LogOut, Menu, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import useBreakpoint, { isBreakpointAtLeast } from '@/hooks/useBreakpoint';
 
@@ -22,7 +22,7 @@ export default function Navbar() {
     return (
         <nav className='flex p-4'>
             <a className='flex cursor-pointer items-center gap-2 text-xl font-bold' href='/'>
-                <MessagesSquare />
+                <img src='/apple-touch-icon.png' alt='AniDis icon' className='h-16 w-16' />
                 AniDis
             </a>
             <div className='flex w-full items-center justify-end gap-2 sm:gap-4'>

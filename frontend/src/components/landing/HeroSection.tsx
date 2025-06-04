@@ -19,13 +19,11 @@ export default function HeroSection() {
                         <a href='/auth/login'>Get Started</a>
                     </Button>
                 </div>
-                <div className='rounded-lg border'>
-                    <img
-                        className='rounded-lg object-cover'
-                        src='/app_preview.png'
-                        alt='App Preview'
-                    />
-                </div>
+                <img
+                    className='rounded-lg border object-cover'
+                    src='/app_preview.png'
+                    alt='App Preview'
+                />
             </div>
         </section>
     );
