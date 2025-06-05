@@ -19,11 +19,22 @@ import useBreakpoint, { isBreakpointAtLeast } from '@/hooks/useBreakpoint';
 
 export default function Navbar() {
     const { user } = useAuthStore();
+    const [onMobile, setOnMobile] = useState(false);
+    const breakpoint = useBreakpoint();
+
+    useEffect(() => {
+        setOnMobile(!isBreakpointAtLeast(breakpoint, 'sm'));
+    }, [breakpoint]);
+
     return (
         <nav className='flex p-4'>
-            <a className='flex cursor-pointer items-center gap-2 text-xl font-bold' href='/'>
-                <img src='/apple-touch-icon.png' alt='AniDis icon' className='h-16 w-16' />
-                AniDis
+            <a className='flex cursor-pointer items-center text-xl font-bold' href='/'>
+                <img
+                    src='/apple-touch-icon.png'
+                    alt='AniDis icon'
+                    className='h-16 w-16 shrink-0 object-cover'
+                />
+                {!onMobile ? <>AniDis</> : null}
             </a>
             <div className='flex w-full items-center justify-end gap-2 sm:gap-4'>
                 {user ? <SearchBar /> : <NavigationLinks />}

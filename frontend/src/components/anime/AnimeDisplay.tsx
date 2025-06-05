@@ -13,7 +13,7 @@ import ErrorFallback from '@/components/common/ErrorFallback';
 import useBreakpoint from '@/hooks/useBreakpoint';
 import { Day } from '@/common/interfaces';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
@@ -49,13 +49,13 @@ function AnimeByDayDisplay() {
         queryFn: () => fetchAnimeByDay(day),
     });
 
-    function getItems() {
+    const getItems = useCallback(() => {
         if (isPending || !data) return Array.from({ length: maxItems }).map(() => null);
 
         if (data.length > maxItems && !showAll) return data.slice(0, maxItems);
 
         return data;
-    }
+    }, [data, maxItems, isPending, showAll]);
 
     return (
         <>
@@ -118,20 +118,19 @@ function TopAnimeDisplay() {
     const maxItems = getMaxItems(breakpoint);
     const { isError, isPending, data } = useQuery({
         queryKey: ['trending-anime', 0],
-        queryFn: () => fetchTopAnimeData(1, maxItems),
+        queryFn: () => fetchTopAnimeData(1),
     });
 
     return (
         <>
             <div className='mb-2 flex w-full'>
                 <div className='mr-auto text-xl font-bold'>Top Anime</div>
-                <a href='/anime/top'>
-                    <Button
-                        variant={'link'}
-                        className='flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'>
-                        Show All
-                    </Button>
-                </a>
+                <Button
+                    variant={'link'}
+                    className='flex items-center justify-center text-muted-foreground transition-colors hover:text-primary'
+                    asChild>
+                    <a href='/anime/top'>Show All</a>
+                </Button>
             </div>
             {isError ? (
                 <ErrorFallback errorMessage='Error Fetching Trending Anime' />
