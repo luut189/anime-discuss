@@ -41,13 +41,13 @@ export default function AuthPage() {
 
     return (
         <div className='flex flex-grow items-center justify-center'>
-            <Card className='w-full sm:w-2/3 md:w-1/2'>
+            <Card className='w-full sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-1/4'>
                 <CardHeader className='text-center'>
                     <CardTitle>Welcome</CardTitle>
                     <CardDescription>Sign in to your account or create a new one</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className='w-full'>
+                    <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
                         <TabsList className='grid w-full grid-cols-2'>
                             <TabsTrigger value='login'>Login</TabsTrigger>
                             <TabsTrigger value='signup'>Sign up</TabsTrigger>

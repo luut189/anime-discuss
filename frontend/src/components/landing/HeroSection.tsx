@@ -16,14 +16,16 @@ export default function HeroSection() {
                         connect with fellow fans from around the world.
                     </p>
                     <Button className='mt-4' onClick={authCheck} asChild>
-                        <a href='/auth/login'>Get Started</a>
+                        <a href='/auth'>Get Started</a>
                     </Button>
                 </div>
-                <img
-                    className='rounded-lg border object-cover'
-                    src='/app_preview.png'
-                    alt='App Preview'
-                />
+                <div>
+                    <img
+                        className='rounded-lg border object-cover'
+                        src='/app_preview.png'
+                        alt='App Preview'
+                    />
+                </div>
             </div>
         </section>
     );
