@@ -5,6 +5,7 @@ import Thread from '@/models/thread.model';
 import User from '@/models/user.model';
 import { uploadToCloudinary } from '@/service/cloudinary';
 import { getAnimeById } from '@/service/jikan';
+import logger from '@/common/logger';
 
 import { Request, Response } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
@@ -27,7 +28,7 @@ async function getUserProfile(req: Request, res: Response) {
 
         res.status(200).json({ ...user.toObject(), password: undefined });
     } catch (error) {
-        console.error('Error fetching user profile:', error);
+        logger.error('Error fetching user profile:', error);
         res.status(400).json({ error: 'Error fetching user profile' });
     }
 }
@@ -61,7 +62,7 @@ async function getUserThreads(req: AuthRequest, res: Response) {
 
         res.status(200).json(threadsWithAvatar);
     } catch (error) {
-        console.error('Error fetching threads:', error);
+        logger.error('Error fetching threads:', error);
         res.status(500).json({ error: 'Failed to fetch threads' });
     }
 }
@@ -108,7 +109,7 @@ async function getPinnedAnime(req: AuthRequest, res: Response) {
 
         res.status(200).json(sortedData);
     } catch (error) {
-        console.error('Error fetching pinned anime:', error);
+        logger.error('Error fetching pinned anime:', error);
         res.status(500).json({ error: 'Failed to fetch pinned anime' });
     }
 }
@@ -148,7 +149,7 @@ async function addPinnedAnime(req: AuthRequest, res: Response) {
 
         res.status(200).json(userData.pinnedAnime);
     } catch (error) {
-        console.error('Error adding pinned anime:', error);
+        logger.error('Error adding pinned anime:', error);
         res.status(500).json({ error: 'Failed to pin anime' });
     }
 }
@@ -181,7 +182,7 @@ async function removePinnedAnime(req: AuthRequest, res: Response) {
 
         res.status(200).json(updatedUser.pinnedAnime);
     } catch (error) {
-        console.error('Error removing pinned anime:', error);
+        logger.error('Error removing pinned anime:', error);
         res.status(500).json({ error: 'Failed to unpin anime' });
     }
 }
@@ -227,7 +228,7 @@ async function updateWatchedEpisode(req: AuthRequest, res: Response) {
             pinnedAnime: user.pinnedAnime.filter((item) => item.animeId === animeId),
         });
     } catch (error) {
-        console.error('Error updating watched episode:', error);
+        logger.error('Error updating watched episode:', error);
         res.status(500).json({ error: 'Error updating watched episode' });
     }
 }
@@ -263,7 +264,7 @@ async function updateAvatar(req: MulterRequest & AuthRequest, res: Response) {
 
         res.status(200).json({ url });
     } catch (error) {
-        console.error('Cloudinary upload failed:', error);
+        logger.error('Cloudinary upload failed:', error);
         res.status(500).json({ error: 'Failed to upload image' });
     }
 }
@@ -294,7 +295,7 @@ async function removeAvatar(req: MulterRequest & AuthRequest, res: Response) {
 
         res.status(200).json({ url: user.image });
     } catch (error) {
-        console.log('Failed to remove avatar:', error);
+        logger.log('Failed to remove avatar:', error);
         res.status(500).json({ error: 'Failed to remove avatar' });
     }
 }

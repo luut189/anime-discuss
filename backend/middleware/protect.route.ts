@@ -1,6 +1,7 @@
 import { AuthRequest } from '@/common/interfaces';
 import User from '@/models/user.model';
 import { ENV } from '@/common/constants';
+import logger from '@/common/logger';
 
 import jwt from 'jsonwebtoken';
 import { Response, NextFunction } from 'express';
@@ -28,7 +29,7 @@ export async function protectRoute(req: AuthRequest, res: Response, next: NextFu
             });
         }
     } catch (error) {
-        console.error('Unexpected error in auth middleware:', error);
+        logger.error('Unexpected error in auth middleware:', error);
         res.status(500).json({ success: false, message: 'Server error in authentication' });
     }
 }

@@ -1,4 +1,5 @@
 import { JikanAnimeData, JikanPaginationData } from '@/common/interfaces';
+import logger from '@/common/logger';
 import { delay } from '@/common/utils';
 
 interface JikanSeasonResponse {
@@ -57,12 +58,12 @@ async function getCurrentSeasonAnime(): Promise<JikanAnimeData[]> {
             )) as JikanSeasonResponse;
 
             results.push(...data);
-            console.log(`Fetching page ${page}`);
+            logger.info(`Fetching page ${page}`);
 
             if (!pagination.has_next_page) break;
             page++;
         } catch (error) {
-            console.error('Failed to fetch season data:', error);
+            logger.error(`Failed to fetch season data: ${error}`);
             break;
         }
     }
@@ -74,7 +75,7 @@ async function getAnimeById(id: string) {
     try {
         return (await fetchWithRetry(`${JIKAN_URI}/anime/${id}/full`)).data;
     } catch (error) {
-        console.error('Failed to fetch anime: ', error);
+        logger.error('Failed to fetch anime: ', error);
     }
 }
 

@@ -1,6 +1,8 @@
 import { ENV } from '@/common/constants';
+import logger from '@/common/logger';
 import connectMongoDB from '@/config/db';
 import { AnimeRoute, AuthRoute, ThreadRoute, UserRoute } from '@/routes';
+import { logMiddleware } from '@/middleware/logMiddleware';
 
 import express from 'express';
 import { v2 as cloudinary } from 'cloudinary';
@@ -30,6 +32,7 @@ cloudinary.config({
 app.use('/api', limiter);
 app.use(express.json());
 app.use(cookieParser());
+app.use(logMiddleware);
 app.use(cors());
 app.use('/api/auth', AuthRoute);
 app.use('/api/user', UserRoute);
@@ -44,6 +47,6 @@ if (ENV.NODE_ENV === 'production') {
 }
 
 app.listen(ENV.PORT, () => {
-    console.log('Server started at http://localhost:' + ENV.PORT);
+    logger.info('Server started at http://localhost:' + ENV.PORT);
     connectMongoDB();
 });

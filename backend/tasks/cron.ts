@@ -2,6 +2,8 @@ import connectMongoDB from '@/config/db';
 import { getAnimeById, getCurrentSeasonAnime } from '@/service/jikan';
 import { Anime, SeasonalAnime } from '@/models/anime.model';
 import User from '@/models/user.model';
+import logger from '@/common/logger';
+
 import mongoose from 'mongoose';
 
 async function runTask() {
@@ -16,7 +18,7 @@ async function runTask() {
     for (const anime of animes) {
         await SeasonalAnime.create(anime);
         await Anime.findOneAndUpdate({ mal_id: anime.mal_id }, anime, { upsert: true });
-        console.log(`Updating ${anime.title}`);
+        logger.info(`Updating ${anime.title}`);
     }
 
     const users = await User.find({});
@@ -28,7 +30,7 @@ async function runTask() {
 
     for (const id of animeIdToUpdate) {
         const anime = await getAnimeById(id);
-        console.log(`Updating ${id}`);
+        logger.info(`Updating ${id}`);
         await Anime.findOneAndUpdate({ mal_id: id }, anime, { upsert: true });
     }
 }
@@ -38,10 +40,10 @@ runTask()
         return mongoose.disconnect();
     })
     .then(() => {
-        console.log('Finished');
+        logger.info('Finished');
         process.exit(0);
     })
     .catch((err) => {
-        console.error(err);
+        logger.error(err);
         process.exit(1);
     });

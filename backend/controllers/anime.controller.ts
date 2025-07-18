@@ -1,4 +1,5 @@
 import { WEEKDAYS } from '@/common/constants';
+import logger from '@/common/logger';
 import { SeasonalAnime } from '@/models/anime.model';
 import { Request, Response } from 'express';
 
@@ -13,7 +14,7 @@ async function getAnimeByDay(req: Request, res: Response) {
         }
     } catch (error) {
         res.status(400).json(error);
-        console.error(error);
+        logger.error(error);
     }
 }
 
@@ -28,7 +29,7 @@ async function getTodayAnime(req: Request, res: Response) {
         }
     } catch (error) {
         res.status(400).json(error);
-        console.error(error);
+        logger.error(error);
     }
 }
 

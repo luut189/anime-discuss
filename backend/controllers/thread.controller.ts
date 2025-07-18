@@ -1,4 +1,5 @@
 import { AuthRequest } from '@/common/interfaces';
+import logger from '@/common/logger';
 import Thread, { IThread } from '@/models/thread.model';
 import Comment, { IComment } from '@/models/comment.model';
 import User from '@/models/user.model';
@@ -33,7 +34,7 @@ async function createThread(req: AuthRequest, res: Response) {
 
         res.status(201).json(newThread);
     } catch (error) {
-        console.error('Error creating thread:', error);
+        logger.error('Error creating thread:', error);
         res.status(500).json({
             success: false,
             error: 'Failed to create thread',
@@ -56,7 +57,7 @@ async function getAllThreads(req: Request, res: Response) {
 
         res.status(200).json(threadsWithAvatar);
     } catch (error) {
-        console.error('Error getting all threads', error);
+        logger.error('Error getting all threads', error);
         res.status(500).json({
             success: false,
             error: 'Failed to get all threads',
@@ -138,7 +139,7 @@ async function deleteThread(req: AuthRequest, res: Response) {
 
         res.status(200).json({ message: 'Thread deleted successfully' });
     } catch (error) {
-        console.error('Error deleting thread:', error);
+        logger.error('Error deleting thread:', error);
         res.status(500).json({ error: 'Failed to delete thread' });
     }
 }
@@ -177,7 +178,7 @@ async function createComment(req: AuthRequest, res: Response) {
 
         res.status(201).json(newComment);
     } catch (error) {
-        console.error('Error creating comment:', error);
+        logger.error('Error creating comment:', error);
         res.status(500).json({ error: 'Failed to create comment' });
     }
 }
@@ -224,7 +225,7 @@ async function getComments(req: Request, res: Response) {
 
         res.status(200).json(rootComments);
     } catch (error) {
-        console.error('Failed to fetch comments:', error);
+        logger.error('Failed to fetch comments:', error);
         res.status(500).json({ error: 'Failed to fetch comments' });
     }
 }

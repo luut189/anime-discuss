@@ -5,6 +5,7 @@ import { generateJWTAndSetCookie, getRandomProfilePicture } from '@/common/utils
 
 import bcryptjs from 'bcryptjs';
 import { Request, Response } from 'express';
+import logger from '@/common/logger';
 
 async function signup(req: Request, res: Response) {
     try {
@@ -41,7 +42,7 @@ async function signup(req: Request, res: Response) {
             user: { ...newUser.toObject(), password: undefined },
         });
     } catch (error) {
-        console.error(`Error in signup controller: ${error}`);
+        logger.error(`Error in signup controller: ${error}`);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
@@ -74,7 +75,7 @@ async function login(req: Request, res: Response) {
             user: { ...user.toObject(), password: undefined },
         });
     } catch (error) {
-        console.error(`Error in login controller: ${error}`);
+        logger.error(`Error in login controller: ${error}`);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
@@ -89,7 +90,7 @@ async function logout(req: Request, res: Response) {
 
         res.status(200).json({ success: true, message: 'Signed out successfully' });
     } catch (error) {
-        console.error(`Error in logout controller: ${error}`);
+        logger.error(`Error in logout controller: ${error}`);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
@@ -98,7 +99,7 @@ async function authCheck(req: AuthRequest, res: Response) {
     try {
         res.status(200).json({ success: true, user: req.user });
     } catch (error) {
-        console.error(`Error in authCheck controller: ${error}`);
+        logger.error(`Error in authCheck controller: ${error}`);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }
