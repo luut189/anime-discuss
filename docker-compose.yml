@@ -1,0 +1,33 @@
+services:
+  anidis:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
+      MONGO_URI: ${MONGO_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      LOG_LEVEL: ${LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+      - anidis-network
+    
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: anidis-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+    depends_on:
+      - anidis
+    networks:
+      - anidis-network
+
+networks:
+  anidis-network:
+    driver: bridge
