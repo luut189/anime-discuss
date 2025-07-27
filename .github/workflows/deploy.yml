@@ -27,7 +27,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-      - name: Connect via SSH
+      - name: Connect and deploy via SSH
         run: |
           echo "ProxyCommand cloudflared access ssh --hostname ${{ secrets.SSH_HOST }}" >> ~/.ssh/config
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
@@ -40,7 +40,9 @@ jobs:
             git pull origin master
 
             echo "⛔ Stopping existing containers..."
-            docker compose down
+            docker compose stop anidis
+            docker compose rm -f anidis
+            docker compose up -d --build anidis
 
             echo "🐳 Rebuilding and starting containers..."
             docker compose up -d --build
