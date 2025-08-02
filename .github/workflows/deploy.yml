@@ -1,63 +1,63 @@
 name: Deploy
 
 on:
-  push:
-    branches:
-      - master
+    push:
+        branches:
+            - master
 
 jobs:
-  deploy:
-    name: Deploy to Home Server
-    runs-on: ubuntu-latest
+    deploy:
+        name: Deploy to Home Server
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout the code
+              uses: actions/checkout@v4
 
-      - name: Cache cloudflared binary
-        id: cache-cloudflared
-        uses: actions/cache@v4
-        with:
-          path: ~/.local/bin/cloudflared
-          key: cloudflared-bin-v2024-08
+            - name: Cache cloudflared binary
+              id: cache-cloudflared
+              uses: actions/cache@v4
+              with:
+                  path: ~/.local/bin/cloudflared
+                  key: cloudflared-bin-v2024-08
 
-      - name: Download cloudflared
-        if: steps.cache-cloudflared.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ~/.local/bin
-          curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o ~/.local/bin/cloudflared
-          chmod +x ~/.local/bin/cloudflared
+            - name: Download cloudflared
+              if: steps.cache-cloudflared.outputs.cache-hit != 'true'
+              run: |
+                  mkdir -p ~/.local/bin
+                  curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o ~/.local/bin/cloudflared
+                  chmod +x ~/.local/bin/cloudflared
 
-      - name: Add cloudflared to PATH
-        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+            - name: Add cloudflared to PATH
+              run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Set up SSH access
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+            - name: Set up SSH access
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
 
-      - name: Connect and deploy via SSH
-        run: |
-          echo "ProxyCommand cloudflared access ssh --hostname ${{ secrets.SSH_HOST }}" >> ~/.ssh/config
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            set -e  # stop script on error
+            - name: Connect and deploy via SSH
+              run: |
+                  echo "ProxyCommand cloudflared access ssh --hostname ${{ secrets.SSH_HOST }}" >> ~/.ssh/config
+                  ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+                    set -e  # stop script on error
 
-            echo "Changing to project directory..."
-            cd ~/anime-discuss
+                    echo "Changing to project directory..."
+                    cd ~/anime-discuss
 
-            echo "Pulling latest code..."
-            git pull origin master
+                    echo "Pulling latest code..."
+                    git pull origin master
 
-            echo "Stopping existing containers..."
-            docker compose stop anidis
-            docker compose rm -f anidis
+                    echo "Stopping existing containers..."
+                    docker compose stop anidis
+                    docker compose rm -f anidis
 
-            echo "Rebuilding and starting containers..."
-            docker compose up -d --build anidis
+                    echo "Rebuilding and starting containers..."
+                    docker compose up -d --build anidis
 
-            echo "Cleaning up unused images..."
-            docker image prune -f
+                    echo "Cleaning up unused images..."
+                    docker image prune -f
 
-            echo "Deployment complete."
-          EOF
+                    echo "Deployment complete."
+                  EOF
