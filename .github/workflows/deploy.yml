@@ -21,7 +21,7 @@ jobs:
           path: ~/.local/bin/cloudflared
           key: cloudflared-bin-v2024-08
 
-      - name: Download cloudflared if not cached
+      - name: Download cloudflared
         if: steps.cache-cloudflared.outputs.cache-hit != 'true'
         run: |
           mkdir -p ~/.local/bin
