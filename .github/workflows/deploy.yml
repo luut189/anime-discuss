@@ -1,53 +1,56 @@
-name: Deploy AniDis
-
-on:
-  push:
-    branches:
-      - master
-
 jobs:
-  deploy:
-    name: Deploy to Home Server
-    runs-on: ubuntu-latest
+    deploy:
+        name: Deploy to Home Server
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout the code
+              uses: actions/checkout@v4
 
-      - name: Install cloudflared
-        run: |
-          sudo mkdir -p --mode=0755 /usr/share/keyrings
-          curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
-          echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
-          sudo apt-get update && sudo apt-get install -y cloudflared
+            - name: Cache cloudflared binary
+              id: cache-cloudflared
+              uses: actions/cache@v4
+              with:
+                  path: ~/.local/bin/cloudflared
+                  key: cloudflared-bin-v2024-08
 
-      - name: Set up SSH access
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+            - name: Download cloudflared if not cached
+              if: steps.cache-cloudflared.outputs.cache-hit != 'true'
+              run: |
+                  mkdir -p ~/.local/bin
+                  curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o ~/.local/bin/cloudflared
+                  chmod +x ~/.local/bin/cloudflared
 
-      - name: Connect and deploy via SSH
-        run: |
-          echo "ProxyCommand cloudflared access ssh --hostname ${{ secrets.SSH_HOST }}" >> ~/.ssh/config
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            set -e  # stop script on error
+            - name: Add cloudflared to PATH
+              run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-            echo "Changing to project directory..."
-            cd ~/anime-discuss
+            - name: Set up SSH access
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
 
-            echo "Pulling latest code..."
-            git pull origin master
+            - name: Connect and deploy via SSH
+              run: |
+                  echo "ProxyCommand cloudflared access ssh --hostname ${{ secrets.SSH_HOST }}" >> ~/.ssh/config
+                  ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+                    set -e  # stop script on error
 
-            echo "Stopping existing containers..."
-            docker compose stop anidis
-            docker compose rm -f anidis
+                    echo "Changing to project directory..."
+                    cd ~/anime-discuss
 
-            echo "Rebuilding and starting containers..."
-            docker compose up -d --build anidis
+                    echo "Pulling latest code..."
+                    git pull origin master
 
-            echo "Cleaning up unused images..."
-            docker image prune -f
+                    echo "Stopping existing containers..."
+                    docker compose stop anidis
+                    docker compose rm -f anidis
 
-            echo "Deployment complete."
-          EOF
+                    echo "Rebuilding and starting containers..."
+                    docker compose up -d --build anidis
+
+                    echo "Cleaning up unused images..."
+                    docker image prune -f
+
+                    echo "Deployment complete."
+                  EOF
