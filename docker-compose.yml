@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
     
   tunnel:
-    image: cloudflare/cloudflared:latest
+    image: cloudflare/cloudflared:2025.10.1-amd64
     container_name: anidis-tunnel
     restart: unless-stopped
     command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
